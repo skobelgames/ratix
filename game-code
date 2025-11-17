@@ -2966,12 +2966,12 @@
     <div id="game-container">
         <div id="top-bar">
             <div id="top-buttons-left">
-                <button class="how-to-button" onclick="openHowToPlay()">How to Play</button>
+                <button id="how-to-play-btn" class="how-to-button" onclick="openHowToPlay()">How to Play</button>
                 <button id="RATIX-brand-button" type="button">RATIX</button>
-                <button onclick="returnToMainMenu()">Main Menu</button>
+                <button id="main-menu-btn" onclick="returnToMainMenu()">Main Menu</button>
             </div>
             <div id="top-buttons-right">
-                <button onclick="resetGame()">Reset Game</button>
+                <button id="reset-game-btn" onclick="resetGame()">Reset Game</button>
                 <button class="toggle-button" id="game-log-toggle" onclick="toggleGameLog()">Game Log</button>
                 <button class="toggle-button" id="graveyard-toggle" onclick="toggleGraveyard()">Graveyard</button>
                 <div class="online-stats-display" style="display: flex; gap: 10px; align-items: center; margin-left: 15px;">
@@ -4665,6 +4665,12 @@
             document.getElementById('game-container').style.display = 'flex';
             document.body.classList.add('game-loaded');
 
+            // Hide reset and how to play buttons for online games
+            const resetBtn = document.getElementById('reset-game-btn');
+            const howToPlayBtn = document.getElementById('how-to-play-btn');
+            if (resetBtn) resetBtn.style.display = 'none';
+            if (howToPlayBtn) howToPlayBtn.style.display = 'none';
+
             // Start the actual game
             handleVariantClick('24s');
         }
@@ -4806,6 +4812,32 @@
                 myPlayerColor = null;
             } catch (error) {
                 console.error('Error ending game:', error);
+            }
+        }
+
+        async function forfeitOnlineGame() {
+            if (!currentGameId || !isOnlineGame) return;
+
+            try {
+                // Determine opponent color
+                const opponentColor = myPlayerColor === 'W' ? 'B' : 'W';
+
+                // End the game with opponent as winner
+                await endOnlineGame({
+                    winner: opponentColor,
+                    reason: 'forfeit',
+                    finalScores: { W: scores['W'], B: scores['B'] }
+                });
+
+                // Stop all timers
+                stopGameTimer();
+                stopTurnTimer();
+
+                // Clean up game state
+                gameOver = true;
+
+            } catch (error) {
+                console.error('Error forfeiting game:', error);
             }
         }
 
@@ -5324,69 +5356,92 @@
         let trucePlayerVote = null; // null, 'accept', 'decline'
         let truceAIVote = null;
 
-        function returnToMainMenu() {
-            if (confirm('Return to main menu? Current game will be lost.')) {
-                // Stop all timers and intervals
-                stopGameTimer();
-                stopTurnTimer();
-                if (window.aiTurnWatch) {
-                    clearInterval(window.aiTurnWatch);
-                    window.aiTurnWatch = null;
+        async function returnToMainMenu() {
+            // Check if this is an online game
+            if (isOnlineGame && currentGameId && !gameOver) {
+                // Show forfeit warning for online games
+                const confirmed = confirm(
+                    'WARNING: Returning to main menu will forfeit this online game.\n\n' +
+                    'This will count as a LOSS and your opponent will be awarded the win.\n\n' +
+                    'Are you sure you want to forfeit?'
+                );
+
+                if (confirmed) {
+                    // Forfeit the online game
+                    await forfeitOnlineGame();
+
+                    // Continue with menu navigation after forfeit completes
+                    proceedToMainMenu();
                 }
-
-                // Clear zombie advance timer if active
-                if (zombieAdvanceTimer) {
-                    clearTimeout(zombieAdvanceTimer);
-                    zombieAdvanceTimer = null;
+            } else {
+                // Regular offline game or game already ended
+                if (confirm('Return to main menu? Current game will be lost.')) {
+                    proceedToMainMenu();
                 }
-
-                // Reset all game state variables
-                currentPlayer = 'W';
-                roundCount = 1;
-                playerRoundNumber = 0;
-                aiRoundNumber = 0;
-                gameRound = 1;
-                firstPlayer = null;
-                selectedPiece = null;
-                validMoves = [];
-                movedPieces.clear();
-                resetReinforcementState();
-                aiPending = false;
-                aiTurnTimeoutForced = false;
-                movesLeft = 0;
-                initialMovesLeft = 0;
-                capturedPieces = { 'W': [], 'B': [] };
-                wizardSacrificedByPlayer = { 'W': false, 'B': false };
-                scores = { 'W': 0, 'B': 0 };
-                gameLog = [];
-                lastAction = null;
-                zombieAutoAdvanceInProgress = false;
-                clearZombieCoinAnimations();
-                clearDiceRollAnimations();
-
-                // Reset game pause state
-                gamePaused = false;
-
-                // Reset mercenary bonus turn state
-                deactivateMercenaryBonusTurn();
-                mercenaryBonusTurnUsed = { 'W': new Set(), 'B': new Set() };
-                mercenaryBonusTurnCount = { 'W': 0, 'B': 0 };
-
-                // Close any open modals and clear pending special modes
-                cancelSpecialModes();
-                const reinforceModal = document.getElementById('reinforce-modal');
-                if (reinforceModal) reinforceModal.style.display = 'none';
-
-                // Show main menu
-                document.getElementById('game-container').style.display = 'none';
-                document.getElementById('start-menu').style.display = 'flex';
-                document.body.classList.remove('game-loaded');
-                const landingHeader = document.getElementById('landing-header');
-                if (landingHeader) landingHeader.style.display = 'block';
-                const landingFooter = document.getElementById('landing-footer');
-                if (landingFooter) landingFooter.style.display = 'block';
-                resetVariantSelections();
             }
+        }
+
+        function proceedToMainMenu() {
+            // Stop all timers and intervals
+            stopGameTimer();
+            stopTurnTimer();
+            if (window.aiTurnWatch) {
+                clearInterval(window.aiTurnWatch);
+                window.aiTurnWatch = null;
+            }
+
+            // Clear zombie advance timer if active
+            if (zombieAdvanceTimer) {
+                clearTimeout(zombieAdvanceTimer);
+                zombieAdvanceTimer = null;
+            }
+
+            // Reset all game state variables
+            currentPlayer = 'W';
+            roundCount = 1;
+            playerRoundNumber = 0;
+            aiRoundNumber = 0;
+            gameRound = 1;
+            firstPlayer = null;
+            selectedPiece = null;
+            validMoves = [];
+            movedPieces.clear();
+            resetReinforcementState();
+            aiPending = false;
+            aiTurnTimeoutForced = false;
+            movesLeft = 0;
+            initialMovesLeft = 0;
+            capturedPieces = { 'W': [], 'B': [] };
+            wizardSacrificedByPlayer = { 'W': false, 'B': false };
+            scores = { 'W': 0, 'B': 0 };
+            gameLog = [];
+            lastAction = null;
+            zombieAutoAdvanceInProgress = false;
+            clearZombieCoinAnimations();
+            clearDiceRollAnimations();
+
+            // Reset game pause state
+            gamePaused = false;
+
+            // Reset mercenary bonus turn state
+            deactivateMercenaryBonusTurn();
+            mercenaryBonusTurnUsed = { 'W': new Set(), 'B': new Set() };
+            mercenaryBonusTurnCount = { 'W': 0, 'B': 0 };
+
+            // Close any open modals and clear pending special modes
+            cancelSpecialModes();
+            const reinforceModal = document.getElementById('reinforce-modal');
+            if (reinforceModal) reinforceModal.style.display = 'none';
+
+            // Show main menu
+            document.getElementById('game-container').style.display = 'none';
+            document.getElementById('start-menu').style.display = 'flex';
+            document.body.classList.remove('game-loaded');
+            const landingHeader = document.getElementById('landing-header');
+            if (landingHeader) landingHeader.style.display = 'block';
+            const landingFooter = document.getElementById('landing-footer');
+            if (landingFooter) landingFooter.style.display = 'block';
+            resetVariantSelections();
         }
 
         function openHowToPlay() {
@@ -9498,6 +9553,13 @@
             if (landingFooter) landingFooter.style.display = 'none';
             document.getElementById('game-container').style.display = 'flex';
             document.body.classList.add('game-loaded');
+
+            // Ensure reset and how to play buttons are visible for offline games
+            const resetBtn = document.getElementById('reset-game-btn');
+            const howToPlayBtn = document.getElementById('how-to-play-btn');
+            if (resetBtn) resetBtn.style.display = '';
+            if (howToPlayBtn) howToPlayBtn.style.display = '';
+
             const boardDiv = document.getElementById('board');
             boardDiv.style.gridTemplateColumns = `repeat(${COLS}, 50px)`;
             boardDiv.style.gridTemplateRows = `repeat(${ROWS}, 50px)`;
@@ -10151,6 +10213,12 @@
             const endgameOverlay = document.getElementById('endgame-overlay');
             if (endgameOverlay) {
                 endgameOverlay.style.display = 'none';
+            }
+
+            // Ensure game is properly ended and board is reset
+            if (gameOver) {
+                // Reset the entire game state to ensure game doesn't continue
+                resetGame();
             }
 
             // Return to main menu
