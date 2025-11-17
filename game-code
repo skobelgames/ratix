@@ -11,6 +11,12 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
+    <!-- Stripe SDK -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <!-- PayPal SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=GBP"></script>
+
     <style>
         :root {
             --fixed-app-width: 1320px;
@@ -2314,6 +2320,46 @@
             border: none;
             border-radius: 8px;
         }
+        .variant-select-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .variant-select-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            color: #333;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            min-width: 180px;
+        }
+        .variant-select-btn:hover {
+            background-color: #e0e0e0;
+            transform: scale(1.05);
+        }
+        .variant-select-btn.selected-variant {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+        .variant-select-btn.locked {
+            background-color: #ffebee;
+            color: #666;
+            border-color: #ffcdd2;
+            cursor: not-allowed;
+        }
+        .variant-select-btn.locked:hover {
+            transform: none;
+        }
+        .pro-badge {
+            color: #FFD700;
+            font-size: 16px;
+            margin-left: 5px;
+        }
         .searching-indicator {
             display: none;
             margin-top: 20px;
@@ -2578,6 +2624,10 @@
             </div>
             <div id="live-stats-panel" class="stats-grid platform-stats-grid">
                 <div class="stat-card">
+                    <h3>Visitors Online</h3>
+                    <div class="stat-number" id="platform-visitors-count">0</div>
+                </div>
+                <div class="stat-card">
                     <h3>Players Online</h3>
                     <div class="stat-number" id="platform-online-count">0</div>
                 </div>
@@ -2668,9 +2718,25 @@
         <div class="lobby-content">
             <div id="quick-match-section" class="lobby-section active">
                 <div class="quick-match-section">
-                    <h3>Find an opponent and start playing!</h3>
-                    <button class="quick-match-btn" id="quick-match-btn" onclick="startQuickMatch()">Find Match</button>
-                    <button class="quick-match-btn" id="cancel-match-btn" onclick="cancelQuickMatch()" style="display:none; background-color:#d32f2f;">Cancel</button>
+                    <h3>Select Game Variant</h3>
+                    <div style="margin: 20px 0; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                        <div class="variant-select-card">
+                            <button class="variant-select-btn selected-variant" id="variant-elite-btn" onclick="selectMatchVariant('36s-elite')">
+                                36s Elite
+                            </button>
+                            <p style="font-size: 13px; color: #666; margin-top: 8px;">Free for all players</p>
+                        </div>
+                        <div class="variant-select-card">
+                            <button class="variant-select-btn" id="variant-supreme-btn" onclick="selectMatchVariant('36s-supreme')">
+                                36s Supreme
+                            </button>
+                            <p id="supreme-status" style="font-size: 13px; color: #ff9800; margin-top: 8px; font-weight: bold;">🔒 Pro Only</p>
+                        </div>
+                    </div>
+                    <div style="margin: 20px 0;">
+                        <button class="quick-match-btn" id="quick-match-btn" onclick="startQuickMatch()">Find Match</button>
+                        <button class="quick-match-btn" id="cancel-match-btn" onclick="cancelQuickMatch()" style="display:none; background-color:#d32f2f;">Cancel</button>
+                    </div>
                     <div class="searching-indicator" id="searching-indicator">
                         <div class="spinner"></div>
                         <p>Searching for opponent...</p>
@@ -2716,6 +2782,18 @@
             <div class="user-details">
                 <div class="user-name" id="profile-user-name" style="font-size:24px;">Player</div>
                 <div class="user-stats-summary">Member since: <span id="member-since">-</span></div>
+                <div id="pro-status-display" style="margin-top: 10px; font-size: 16px; font-weight: bold; color: #4CAF50; display: none;">
+                    <span class="pro-badge">⭐</span> Pro Member
+                </div>
+                <div id="upgrade-to-pro-section" style="margin-top: 10px;">
+                    <button onclick="showUpgradeModal()" style="padding: 10px 20px; background-color: #FFD700; color: #333; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 14px;">
+                        ⭐ Upgrade to Pro - £3
+                    </button>
+                    <p style="font-size: 12px; color: #666; margin-top: 5px;">Unlock 36s Supreme & unlimited ranked games</p>
+                </div>
+                <div id="games-remaining-display" style="margin-top: 10px; font-size: 14px; color: #ff9800; font-weight: bold; display: none;">
+                    Ranked games remaining today: <span id="games-remaining-count">5</span>/5
+                </div>
             </div>
         </div>
 
@@ -2896,6 +2974,14 @@
                 <button onclick="resetGame()">Reset Game</button>
                 <button class="toggle-button" id="game-log-toggle" onclick="toggleGameLog()">Game Log</button>
                 <button class="toggle-button" id="graveyard-toggle" onclick="toggleGraveyard()">Graveyard</button>
+                <div class="online-stats-display" style="display: flex; gap: 10px; align-items: center; margin-left: 15px;">
+                    <div class="online-stat-box" style="background: #4CAF50; color: white; padding: 8px 12px; border-radius: 5px; font-size: 13px; font-weight: bold;">
+                        <span>👥 Friends: <span id="in-game-friends-count">0</span></span>
+                    </div>
+                    <div class="online-stat-box" style="background: #2196F3; color: white; padding: 8px 12px; border-radius: 5px; font-size: 13px; font-weight: bold;">
+                        <span>🌐 Players: <span id="in-game-players-count">0</span></span>
+                    </div>
+                </div>
             </div>
         </div>
         <div id="game-layout">
@@ -3084,6 +3170,43 @@
         <h2 id="coin-flip-popup-title">Success</h2>
         <p id="coin-flip-popup-message"></p>
     </div>
+
+    <!-- Upgrade to Pro Modal -->
+    <div id="upgrade-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7);">
+        <div style="background-color: #fff; margin: 10% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; text-align: center;">
+            <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
+                <span style="font-size: 24px; font-weight: bold;">⭐ Upgrade to Pro</span>
+                <button class="modal-close" onclick="closeUpgradeModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
+            </div>
+            <div style="margin: 20px 0;">
+                <h3 style="color: #333; margin-bottom: 15px;">Unlock Premium Features</h3>
+                <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0;">
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Access to 36s Supreme variant</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Unlimited ranked games (no daily limits)</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Star badge next to your name</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Priority matchmaking</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Future tournament & league access</li>
+                </ul>
+                <div style="font-size: 32px; font-weight: bold; color: #4CAF50; margin: 20px 0;">£3.00</div>
+                <p style="color: #666; font-size: 14px;">One-time payment • Lifetime access</p>
+            </div>
+            <div style="margin-top: 25px;">
+                <h4 style="margin-bottom: 15px;">Choose Payment Method:</h4>
+                <div id="stripe-button-container" style="margin: 10px 0;">
+                    <button onclick="initiateStripePayment()" style="width: 100%; padding: 15px; background-color: #6772E5; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin: 5px 0;">
+                        Pay with Stripe
+                    </button>
+                </div>
+                <div id="paypal-button-container" style="margin: 10px 0;">
+                    <button onclick="initiatePayPalPayment()" style="width: 100%; padding: 15px; background-color: #0070BA; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin: 5px 0;">
+                        Pay with PayPal
+                    </button>
+                </div>
+            </div>
+            <p style="font-size: 12px; color: #999; margin-top: 20px;">Secure payment processing • Money-back guarantee</p>
+        </div>
+    </div>
+
     <div id="endgame-overlay"></div>
     <div id="game-stats-modal">
         <div class="modal-header">
@@ -3200,6 +3323,16 @@
         const PLATFORM_STATS_COLLECTION = 'platformStats';
         const PLATFORM_STATS_DOC = 'aggregates';
 
+        // Pro User & Payment System
+        let selectedMatchVariant = '36s-elite'; // Default variant
+        let onlinePlayersListener = null;
+        let visitorsListener = null;
+        const NON_PRO_DAILY_GAME_LIMIT = 5;
+        const stripe = Stripe('pk_test_YOUR_STRIPE_PUBLISHABLE_KEY'); // Replace with your Stripe key
+
+        // Session tracking for visitors
+        let sessionId = null;
+
         // Initialize Firebase when DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
             try {
@@ -3215,12 +3348,19 @@
                     if (user) {
                         currentUser = user;
                         loadUserProfile();
+                        // Start tracking as logged-in player
+                        startOnlinePresenceTracking();
                     } else {
                         currentUser = null;
                         currentUserProfile = null;
                         showAuthScreen();
+                        // Track as visitor
+                        trackVisitorSession();
                     }
                 });
+
+                // Initialize real-time listeners for online stats
+                setupRealtimeOnlineStats();
             } catch (error) {
                 console.error('Firebase initialization error:', error);
                 alert('Firebase setup required. Please add your Firebase configuration.');
@@ -3400,6 +3540,16 @@
             if (!data.lastActive) {
                 updates.lastActive = firebase.firestore.FieldValue.serverTimestamp();
             }
+            // Pro user defaults
+            if (data.isPro === undefined) {
+                updates.isPro = false;
+            }
+            if (!data.gamesPlayedToday) {
+                updates.gamesPlayedToday = {
+                    count: 0,
+                    lastReset: Date.now()
+                };
+            }
             if (Object.keys(updates).length > 0) {
                 await docRef.update(updates);
             }
@@ -3469,6 +3619,367 @@
                 });
             } catch (error) {
                 console.error('Error updating presence:', error);
+            }
+        }
+
+        // ========== VISITOR & ONLINE TRACKING FUNCTIONS ==========
+        function generateSessionId() {
+            return 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        async function trackVisitorSession() {
+            if (!db || currentUser) return;
+            try {
+                sessionId = generateSessionId();
+                const visitorsRef = db.collection('visitors').doc(sessionId);
+                await visitorsRef.set({
+                    sessionId: sessionId,
+                    joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Update visitor presence every 30 seconds
+                setInterval(async () => {
+                    if (!currentUser && sessionId) {
+                        try {
+                            await visitorsRef.update({
+                                lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        } catch (error) {
+                            console.error('Error updating visitor presence:', error);
+                        }
+                    }
+                }, 30000);
+
+                // Clean up on page unload
+                window.addEventListener('beforeunload', async () => {
+                    if (sessionId) {
+                        try {
+                            await visitorsRef.delete();
+                        } catch (error) {
+                            console.error('Error cleaning up visitor session:', error);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error tracking visitor:', error);
+            }
+        }
+
+        async function startOnlinePresenceTracking() {
+            if (!currentUser) return;
+            // Update presence every 30 seconds
+            setInterval(() => refreshPresence(), 30000);
+        }
+
+        function setupRealtimeOnlineStats() {
+            if (!db) return;
+
+            // Listen to online players (logged in users active in last 5 minutes)
+            const threshold = new Date(Date.now() - 5 * 60 * 1000);
+            onlinePlayersListener = db.collection('users')
+                .where('lastActive', '>=', threshold)
+                .onSnapshot(snapshot => {
+                    const count = snapshot.size;
+                    updateOnlinePlayersDisplay(count);
+                }, error => {
+                    console.error('Error listening to online players:', error);
+                });
+
+            // Listen to visitors (active in last 5 minutes)
+            visitorsListener = db.collection('visitors')
+                .where('lastActive', '>=', firebase.firestore.Timestamp.fromDate(threshold))
+                .onSnapshot(snapshot => {
+                    const count = snapshot.size;
+                    updateVisitorsDisplay(count);
+                }, error => {
+                    console.error('Error listening to visitors:', error);
+                });
+
+            // Refresh listeners every minute to update threshold
+            setInterval(() => {
+                if (onlinePlayersListener) onlinePlayersListener();
+                if (visitorsListener) visitorsListener();
+                setupRealtimeOnlineStats();
+            }, 60000);
+        }
+
+        function updateOnlinePlayersDisplay(count) {
+            const mainCount = document.getElementById('platform-online-count');
+            const inGameCount = document.getElementById('in-game-players-count');
+            if (mainCount) mainCount.textContent = count;
+            if (inGameCount) inGameCount.textContent = count;
+        }
+
+        function updateVisitorsDisplay(count) {
+            const visitorsCount = document.getElementById('platform-visitors-count');
+            if (visitorsCount) visitorsCount.textContent = count;
+        }
+
+        async function updateFriendsOnlineCount() {
+            if (!currentUser || !currentUserProfile) return;
+            try {
+                const friendIds = currentUserProfile.friends || [];
+                if (friendIds.length === 0) {
+                    const friendsCount = document.getElementById('in-game-friends-count');
+                    if (friendsCount) friendsCount.textContent = '0';
+                    return;
+                }
+
+                const threshold = firebase.firestore.Timestamp.fromMillis(Date.now() - (5 * 60 * 1000));
+                const chunks = [];
+                for (let i = 0; i < friendIds.length; i += 10) {
+                    chunks.push(friendIds.slice(i, i + 10));
+                }
+
+                let onlineFriendsCount = 0;
+                for (const chunk of chunks) {
+                    const snapshot = await db.collection('users')
+                        .where(firebase.firestore.FieldPath.documentId(), 'in', chunk)
+                        .where('lastActive', '>=', threshold)
+                        .get();
+                    onlineFriendsCount += snapshot.size;
+                }
+
+                const friendsCount = document.getElementById('in-game-friends-count');
+                if (friendsCount) friendsCount.textContent = onlineFriendsCount;
+            } catch (error) {
+                console.error('Error loading friends online count:', error);
+            }
+        }
+
+        // ========== PRO USER SYSTEM FUNCTIONS ==========
+        async function checkAndUpdateProStatus() {
+            if (!currentUser || !currentUserProfile) return;
+
+            const isPro = currentUserProfile.isPro || false;
+            const proDisplay = document.getElementById('pro-status-display');
+            const upgradeSection = document.getElementById('upgrade-to-pro-section');
+            const supremeBtn = document.getElementById('variant-supreme-btn');
+            const supremeStatus = document.getElementById('supreme-status');
+
+            if (isPro) {
+                // Show pro badge
+                if (proDisplay) proDisplay.style.display = 'block';
+                if (upgradeSection) upgradeSection.style.display = 'none';
+
+                // Unlock Supreme variant
+                if (supremeBtn) {
+                    supremeBtn.classList.remove('locked');
+                    supremeBtn.disabled = false;
+                }
+                if (supremeStatus) {
+                    supremeStatus.textContent = '⭐ Pro Unlocked';
+                    supremeStatus.style.color = '#4CAF50';
+                }
+
+                // Update player names with star emoji
+                updatePlayerNamesWithProBadge();
+            } else {
+                // Hide pro badge
+                if (proDisplay) proDisplay.style.display = 'none';
+                if (upgradeSection) upgradeSection.style.display = 'block';
+
+                // Lock Supreme variant
+                if (supremeBtn) {
+                    supremeBtn.classList.add('locked');
+                    supremeBtn.disabled = true;
+                }
+                if (supremeStatus) {
+                    supremeStatus.textContent = '🔒 Pro Only';
+                    supremeStatus.style.color = '#ff9800';
+                }
+
+                // Check and display game limits
+                await checkGameLimits();
+            }
+        }
+
+        function updatePlayerNamesWithProBadge() {
+            if (!currentUserProfile || !currentUserProfile.isPro) return;
+
+            const username = currentUserProfile.username || 'Player';
+            const usernameWithBadge = '⭐ ' + username;
+
+            // Update all username displays
+            const menuName = document.getElementById('menu-user-name');
+            const profileName = document.getElementById('profile-user-name');
+
+            if (menuName && !menuName.textContent.includes('⭐')) {
+                menuName.textContent = usernameWithBadge;
+            }
+            if (profileName && !profileName.textContent.includes('⭐')) {
+                profileName.textContent = usernameWithBadge;
+            }
+        }
+
+        async function checkGameLimits() {
+            if (!currentUser || !currentUserProfile) return true;
+
+            // Pro users have unlimited games
+            if (currentUserProfile.isPro) {
+                const gamesDisplay = document.getElementById('games-remaining-display');
+                if (gamesDisplay) gamesDisplay.style.display = 'none';
+                return true;
+            }
+
+            // Check if we need to reset daily counter
+            const gamesData = currentUserProfile.gamesPlayedToday || { count: 0, lastReset: Date.now() };
+            const lastReset = gamesData.lastReset;
+            const now = Date.now();
+            const oneDayMs = 24 * 60 * 60 * 1000;
+
+            if (now - lastReset > oneDayMs) {
+                // Reset counter
+                await db.collection('users').doc(currentUser.uid).update({
+                    'gamesPlayedToday.count': 0,
+                    'gamesPlayedToday.lastReset': now
+                });
+                gamesData.count = 0;
+                gamesData.lastReset = now;
+            }
+
+            const gamesRemaining = NON_PRO_DAILY_GAME_LIMIT - gamesData.count;
+            const gamesDisplay = document.getElementById('games-remaining-display');
+            const gamesCountEl = document.getElementById('games-remaining-count');
+
+            if (gamesDisplay) gamesDisplay.style.display = 'block';
+            if (gamesCountEl) gamesCountEl.textContent = Math.max(0, gamesRemaining);
+
+            return gamesRemaining > 0;
+        }
+
+        async function incrementGameCount() {
+            if (!currentUser || !currentUserProfile || currentUserProfile.isPro) return;
+
+            try {
+                await db.collection('users').doc(currentUser.uid).update({
+                    'gamesPlayedToday.count': firebase.firestore.FieldValue.increment(1)
+                });
+                await refreshCurrentUserProfile();
+                await checkGameLimits();
+            } catch (error) {
+                console.error('Error incrementing game count:', error);
+            }
+        }
+
+        // ========== VARIANT SELECTION FUNCTIONS ==========
+        function selectMatchVariant(variant) {
+            // Check if Supreme is locked for non-pro users
+            if (variant === '36s-supreme' && !currentUserProfile?.isPro) {
+                alert('36s Supreme is only available for Pro users. Upgrade to Pro to unlock this variant!');
+                showUpgradeModal();
+                return;
+            }
+
+            selectedMatchVariant = variant;
+
+            // Update button states
+            const eliteBtn = document.getElementById('variant-elite-btn');
+            const supremeBtn = document.getElementById('variant-supreme-btn');
+
+            if (eliteBtn) {
+                if (variant === '36s-elite') {
+                    eliteBtn.classList.add('selected-variant');
+                } else {
+                    eliteBtn.classList.remove('selected-variant');
+                }
+            }
+
+            if (supremeBtn) {
+                if (variant === '36s-supreme') {
+                    supremeBtn.classList.add('selected-variant');
+                } else {
+                    supremeBtn.classList.remove('selected-variant');
+                }
+            }
+        }
+
+        // ========== PAYMENT INTEGRATION FUNCTIONS ==========
+        function showUpgradeModal() {
+            const modal = document.getElementById('upgrade-modal');
+            if (modal) modal.style.display = 'block';
+        }
+
+        function closeUpgradeModal() {
+            const modal = document.getElementById('upgrade-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function initiateStripePayment() {
+            try {
+                // Create a checkout session on your server and redirect to Stripe
+                // This is a placeholder - you'll need to implement server-side logic
+                alert('Stripe payment integration requires server-side setup.\n\nPlease configure:\n1. Stripe publishable key\n2. Server endpoint to create checkout session\n3. Webhook to handle successful payments');
+
+                // Example implementation:
+                // const response = await fetch('/create-checkout-session', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({
+                //         userId: currentUser.uid,
+                //         amount: 300 // £3 in pence
+                //     })
+                // });
+                // const { sessionId } = await response.json();
+                // const { error } = await stripe.redirectToCheckout({ sessionId });
+                // if (error) console.error(error);
+
+            } catch (error) {
+                console.error('Stripe payment error:', error);
+                alert('Payment processing error. Please try again.');
+            }
+        }
+
+        async function initiatePayPalPayment() {
+            try {
+                // PayPal integration
+                alert('PayPal payment integration requires configuration.\n\nPlease set up:\n1. PayPal client ID in the script tag\n2. Server endpoint to create PayPal orders\n3. Webhook to handle successful payments');
+
+                // Example PayPal integration:
+                // paypal.Buttons({
+                //     createOrder: (data, actions) => {
+                //         return actions.order.create({
+                //             purchase_units: [{
+                //                 amount: { value: '3.00', currency_code: 'GBP' }
+                //             }]
+                //         });
+                //     },
+                //     onApprove: async (data, actions) => {
+                //         const order = await actions.order.capture();
+                //         await handleSuccessfulPayment(order);
+                //     }
+                // }).render('#paypal-button-container');
+
+            } catch (error) {
+                console.error('PayPal payment error:', error);
+                alert('Payment processing error. Please try again.');
+            }
+        }
+
+        async function handleSuccessfulPayment(paymentData) {
+            try {
+                // Update user to Pro status
+                await db.collection('users').doc(currentUser.uid).update({
+                    isPro: true,
+                    proUpgradeDate: firebase.firestore.FieldValue.serverTimestamp(),
+                    paymentData: {
+                        provider: paymentData.provider || 'stripe',
+                        transactionId: paymentData.id,
+                        amount: 3.00,
+                        currency: 'GBP',
+                        timestamp: Date.now()
+                    }
+                });
+
+                await refreshCurrentUserProfile();
+                await checkAndUpdateProStatus();
+
+                closeUpgradeModal();
+                alert('🎉 Congratulations! You are now a Pro user!\n\nYou now have access to:\n✓ 36s Supreme variant\n✓ Unlimited ranked games\n✓ Pro badge');
+            } catch (error) {
+                console.error('Error updating Pro status:', error);
+                alert('Error upgrading account. Please contact support.');
             }
         }
 
@@ -4003,15 +4514,24 @@
         async function startQuickMatch() {
             if (!currentUser || !currentUserProfile) return;
 
+            // Check game limits for non-pro users
+            const canPlay = await checkGameLimits();
+            if (!canPlay) {
+                alert('You have reached your daily game limit!\n\nUpgrade to Pro for unlimited ranked games.');
+                showUpgradeModal();
+                return;
+            }
+
             try {
                 // Show searching UI
                 document.getElementById('quick-match-btn').style.display = 'none';
                 document.getElementById('cancel-match-btn').style.display = 'block';
                 document.getElementById('searching-indicator').classList.add('active');
 
-                // Check for waiting opponents
+                // Check for waiting opponents with same variant
                 const waitingQuery = await db.collection('matchmaking')
                     .where('status', '==', 'waiting')
+                    .where('variant', '==', selectedMatchVariant)
                     .limit(1)
                     .get();
 
@@ -4022,7 +4542,7 @@
                     const matchData = matchDoc.data();
 
                     // Create game with both players
-                    await createOnlineGame(matchData.playerId, currentUser.uid);
+                    await createOnlineGame(matchData.playerId, currentUser.uid, selectedMatchVariant);
 
                     // Delete matchmaking entry
                     await db.collection('matchmaking').doc(matchId).delete();
@@ -4032,6 +4552,7 @@
                         playerId: currentUser.uid,
                         playerName: currentUserProfile.username,
                         playerAvatar: currentUserProfile.avatar,
+                        variant: selectedMatchVariant,
                         status: 'waiting',
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
@@ -4078,7 +4599,7 @@
             document.getElementById('searching-indicator').classList.remove('active');
         }
 
-        async function createOnlineGame(player1Id, player2Id) {
+        async function createOnlineGame(player1Id, player2Id, variant = '36s-elite') {
             try {
                 // Get both player profiles
                 const p1Doc = await db.collection('users').doc(player1Id).get();
@@ -4086,23 +4607,29 @@
                 const p1Data = p1Doc.data();
                 const p2Data = p2Doc.data();
 
+                // Add pro badge to usernames if applicable
+                const p1Username = (p1Data.isPro ? '⭐ ' : '') + p1Data.username;
+                const p2Username = (p2Data.isPro ? '⭐ ' : '') + p2Data.username;
+
                 // Create game document
                 const gameRef = await db.collection('games').add({
                     player1: {
                         uid: player1Id,
-                        username: p1Data.username,
+                        username: p1Username,
                         avatar: p1Data.avatar,
-                        color: 'W'
+                        color: 'W',
+                        isPro: p1Data.isPro || false
                     },
                     player2: {
                         uid: player2Id,
-                        username: p2Data.username,
+                        username: p2Username,
                         avatar: p2Data.avatar,
-                        color: 'B'
+                        color: 'B',
+                        isPro: p2Data.isPro || false
                     },
                     currentTurn: 'W',
                     status: 'active',
-                    variant: '24s', // Default variant
+                    variant: variant,
                     gameState: null, // Will be set when game starts
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     lastMove: firebase.firestore.FieldValue.serverTimestamp()
@@ -4111,6 +4638,9 @@
                 currentGameId = gameRef.id;
                 myPlayerColor = (currentUser.uid === player1Id) ? 'W' : 'B';
                 isOnlineGame = true;
+
+                // Increment game count for non-pro users
+                await incrementGameCount();
 
                 // Start the game
                 startOnlineGame(gameRef.id);
@@ -4297,6 +4827,8 @@
             refreshPresence();
             loadPlatformStats();
             loadFriendPanel();
+            checkAndUpdateProStatus();
+            updateFriendsOnlineCount();
         }
 
         function showMatchmakingLobby() {
@@ -4304,12 +4836,15 @@
             document.getElementById('matchmaking-lobby').style.display = 'flex';
             loadLeaderboard();
             loadActiveGames();
+            checkAndUpdateProStatus();
+            updateFriendsOnlineCount();
         }
 
         function showStatsProfile() {
             hideAllScreens();
             document.getElementById('stats-profile-screen').style.display = 'flex';
             updateStatsUI();
+            checkAndUpdateProStatus();
         }
 
         function backToMainMenu() {
