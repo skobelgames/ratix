@@ -6403,7 +6403,8 @@
                 showPieceInfo(null);
             } else if (selectedPiece) {
                 const { row, col } = selectedPiece;
-                if (board[row][col] && board[row][col].player === currentPlayer) {
+                // Check if board is initialized before accessing
+                if (board && board[row] && board[row][col] && board[row][col].player === currentPlayer) {
                     validMoves = getValidMoves(row, col);
                     showPieceInfo(board[row][col], currentPlayer);
                 } else {
@@ -10211,6 +10212,11 @@
         }
 
         function renderBoard() {
+            // Don't render if board is not properly initialized
+            if (!board || board.length === 0 || !board[0]) {
+                return;
+            }
+
             const boardDiv = document.getElementById('board');
             boardDiv.innerHTML = '';
             for (let r = 0; r < ROWS; r++) {
