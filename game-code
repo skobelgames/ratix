@@ -6208,6 +6208,8 @@
         }
 
         function triggerAiTurn() {
+            // Don't trigger AI turn if board is not initialized
+            if (!board || board.length === 0 || !board[0]) return;
             if (gameOver || gamePaused || aiPending || reinforcementPending || currentPlayer !== 'W' || lichSoulBlastResolving) return;
             if (isBlockingActionPending()) return;
             if (isElephantrySpecialActive()) return;
@@ -6298,6 +6300,8 @@
         }
 
         function ensureAITurnIfNeeded() {
+            // Don't process if board is not initialized
+            if (!board || board.length === 0 || !board[0]) return;
             if (gamePaused || currentPlayer !== 'W' || reinforcementPending || aiPending) return;
             if (isBlockingActionPending()) return;
             // Don't end turn if pistolier or elephantry specials are waiting for targeting
@@ -6488,6 +6492,11 @@
         }
 
         function pruneFusilierShotTracking(player) {
+            // Don't process if board is not initialized
+            if (!board || board.length === 0 || !board[0]) {
+                return;
+            }
+
             const activeFusiliers = new Set();
             for (let r = 0; r < ROWS; r++) {
                 for (let c = 0; c < COLS; c++) {
