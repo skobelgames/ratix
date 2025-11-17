@@ -1,0 +1,25 @@
+# robots.txt for RATIX Game
+
+# Allow all search engines
+User-agent: *
+Allow: /
+
+# Disallow admin/private areas (if any)
+Disallow: /admin/
+Disallow: /private/
+
+# Sitemap location
+Sitemap: https://yourdomain.com/sitemap.xml
+
+# Crawl-delay (optional, helps prevent server overload)
+# Uncomment if needed:
+# Crawl-delay: 1
+
+# Allow specific bots to crawl more frequently
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
