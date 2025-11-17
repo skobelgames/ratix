@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow authenticated users to read and write their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Game state rules - adjust based on your needs
+    match /gameStates/{stateId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+
+    // Leaderboards - public read, authenticated write
+    match /leaderboards/{entry} {
+      allow read: if true;
+      allow create, update: if request.auth != null;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+  }
+}
