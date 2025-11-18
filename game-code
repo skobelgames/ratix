@@ -3608,9 +3608,11 @@
         </div>
     </div>
 
-    <!-- Embedded move sound effect (realistic chess piece click) -->
+    <!-- Embedded move sound effect (simple beep) -->
+    <!-- Note: External audio file removed. Using a silent placeholder to prevent 404 errors. -->
+    <!-- To add custom sound: replace src with your audio file URL -->
     <audio id="move-sound" preload="auto">
-        <source src="assets/audio/move-sound.wav" type="audio/wav">
+        <!-- Empty audio element - no 404 error, sound will fail gracefully -->
     </audio>
 
     <script>
@@ -4048,14 +4050,22 @@
                 });
 
             // Listen to visitors (active in last 5 minutes)
-            visitorsListener = db.collection('visitors')
-                .where('lastActive', '>=', firebase.firestore.Timestamp.fromDate(threshold))
-                .onSnapshot(snapshot => {
-                    const count = snapshot.size;
-                    updateVisitorsDisplay(count);
-                }, error => {
-                    console.error('Error listening to visitors:', error);
-                });
+            // Note: Requires read permissions on 'visitors' collection
+            try {
+                visitorsListener = db.collection('visitors')
+                    .where('lastActive', '>=', firebase.firestore.Timestamp.fromDate(threshold))
+                    .onSnapshot(snapshot => {
+                        const count = snapshot.size;
+                        updateVisitorsDisplay(count);
+                    }, error => {
+                        console.error('Error listening to visitors:', error);
+                        // Fallback: show 0 if permissions denied
+                        updateVisitorsDisplay(0);
+                    });
+            } catch (error) {
+                console.error('Error setting up visitors listener:', error);
+                updateVisitorsDisplay(0);
+            }
 
             // Refresh listeners every minute to update threshold
             setInterval(() => {
@@ -4095,11 +4105,22 @@
 
                 let onlineFriendsCount = 0;
                 for (const chunk of chunks) {
-                    const snapshot = await db.collection('users')
-                        .where(firebase.firestore.FieldPath.documentId(), 'in', chunk)
-                        .where('lastActive', '>=', threshold)
-                        .get();
-                    onlineFriendsCount += snapshot.size;
+                    // Fetch documents by ID first, then filter by lastActive in memory
+                    // This avoids the "Equality on key not allowed with inequalities" error
+                    const promises = chunk.map(friendId =>
+                        db.collection('users').doc(friendId).get()
+                    );
+                    const docs = await Promise.all(promises);
+
+                    docs.forEach(doc => {
+                        if (doc.exists) {
+                            const data = doc.data();
+                            const lastActive = data.lastActive;
+                            if (lastActive && lastActive.toMillis && lastActive.toMillis() >= threshold.toMillis()) {
+                                onlineFriendsCount++;
+                            }
+                        }
+                    });
                 }
 
                 const friendsCount = document.getElementById('in-game-friends-count');
@@ -4775,7 +4796,7 @@
                         lastMonthlyReset: 0,
                         lastYearlyReset: 0
                     };
-                    await statsRef.set(initialData);
+                    // Show default values if document doesn't exist
                     displayPlatformStats(initialData);
                 } else {
                     displayPlatformStats(doc.data());
@@ -4783,6 +4804,14 @@
                 loadOnlinePlayersCount();
             } catch (error) {
                 console.error('Error loading platform stats:', error);
+                // Show zeros on error (likely permissions issue)
+                displayPlatformStats({
+                    dailyGames: 0,
+                    weeklyGames: 0,
+                    monthlyGames: 0,
+                    yearlyGames: 0,
+                    allTimeGames: 0
+                });
             }
         }
 
@@ -5351,15 +5380,21 @@
                                 // Query for the game that was just created for us
                                 // We are player1 (White) in this game
                                 try {
+                                    // Modified query to avoid composite index requirement
+                                    // Fetch recent active games and filter in memory
                                     const gamesQuery = await db.collection('games')
-                                        .where('player1.uid', '==', currentUser.uid)
                                         .where('status', '==', 'active')
                                         .orderBy('createdAt', 'desc')
-                                        .limit(1)
+                                        .limit(20)
                                         .get();
 
-                                    if (!gamesQuery.empty) {
-                                        const gameDoc = gamesQuery.docs[0];
+                                    // Filter for games where we are player1
+                                    const matchingGames = gamesQuery.docs.filter(doc =>
+                                        doc.data().player1?.uid === currentUser.uid
+                                    );
+
+                                    if (matchingGames.length > 0) {
+                                        const gameDoc = matchingGames[0];
                                         const gameId = gameDoc.id;
 
                                         console.log('Found game! Joining:', gameId);
