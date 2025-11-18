@@ -3321,6 +3321,7 @@
         let visitorsListener = null;
         const NON_PRO_DAILY_GAME_LIMIT = 5;
         const stripe = Stripe('pk_test_YOUR_STRIPE_PUBLISHABLE_KEY'); // Replace with your Stripe key
+        const API_BASE_URL = 'http://localhost:3000/api'; // Update for production
 
         // Session tracking for visitors
         let sessionId = null;
@@ -3900,22 +3901,38 @@
 
         async function initiateStripePayment() {
             try {
-                // Create a checkout session on your server and redirect to Stripe
-                // This is a placeholder - you'll need to implement server-side logic
-                alert('Stripe payment integration requires server-side setup.\n\nPlease configure:\n1. Stripe publishable key\n2. Server endpoint to create checkout session\n3. Webhook to handle successful payments');
+                if (!currentUser) {
+                    alert('Please log in to upgrade to Pro');
+                    return;
+                }
 
-                // Example implementation:
-                // const response = await fetch('/create-checkout-session', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({
-                //         userId: currentUser.uid,
-                //         amount: 300 // £3 in pence
-                //     })
-                // });
-                // const { sessionId } = await response.json();
-                // const { error } = await stripe.redirectToCheckout({ sessionId });
-                // if (error) console.error(error);
+                // Create checkout session via backend API
+                const response = await fetch(`${API_BASE_URL}/orders/create-stripe-checkout`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: currentUser.uid,
+                        email: currentUser.email,
+                        username: currentUser.displayName || currentUserProfile?.username || 'Unknown'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create checkout session');
+                }
+
+                const { sessionId, url } = await response.json();
+
+                // Redirect to Stripe checkout
+                if (url) {
+                    window.location.href = url;
+                } else {
+                    const { error } = await stripe.redirectToCheckout({ sessionId });
+                    if (error) {
+                        console.error('Stripe redirect error:', error);
+                        alert('Payment processing error. Please try again.');
+                    }
+                }
 
             } catch (error) {
                 console.error('Stripe payment error:', error);
@@ -3925,23 +3942,72 @@
 
         async function initiatePayPalPayment() {
             try {
-                // PayPal integration
-                alert('PayPal payment integration requires configuration.\n\nPlease set up:\n1. PayPal client ID in the script tag\n2. Server endpoint to create PayPal orders\n3. Webhook to handle successful payments');
+                if (!currentUser) {
+                    alert('Please log in to upgrade to Pro');
+                    return;
+                }
 
-                // Example PayPal integration:
-                // paypal.Buttons({
-                //     createOrder: (data, actions) => {
-                //         return actions.order.create({
-                //             purchase_units: [{
-                //                 amount: { value: '3.00', currency_code: 'GBP' }
-                //             }]
-                //         });
-                //     },
-                //     onApprove: async (data, actions) => {
-                //         const order = await actions.order.capture();
-                //         await handleSuccessfulPayment(order);
-                //     }
-                // }).render('#paypal-button-container');
+                // Create PayPal order via backend API
+                const response = await fetch(`${API_BASE_URL}/orders/create-paypal-order`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: currentUser.uid,
+                        email: currentUser.email,
+                        username: currentUser.displayName || currentUserProfile?.username || 'Unknown'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create PayPal order');
+                }
+
+                const { orderId } = await response.json();
+
+                // Initialize PayPal buttons
+                if (typeof paypal !== 'undefined') {
+                    // Clear any existing PayPal buttons
+                    const container = document.getElementById('paypal-button-container');
+                    if (container) {
+                        container.innerHTML = '';
+                    } else {
+                        // Create container if it doesn't exist
+                        const newContainer = document.createElement('div');
+                        newContainer.id = 'paypal-button-container';
+                        document.querySelector('.upgrade-modal-content')?.appendChild(newContainer);
+                    }
+
+                    paypal.Buttons({
+                        createOrder: () => orderId,
+                        onApprove: async (data, actions) => {
+                            // Capture the order via backend
+                            const captureResponse = await fetch(`${API_BASE_URL}/orders/capture-paypal-order`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ orderId: data.orderID })
+                            });
+
+                            if (!captureResponse.ok) {
+                                throw new Error('Failed to capture PayPal order');
+                            }
+
+                            const captureData = await captureResponse.json();
+
+                            // The webhook will handle the Pro upgrade, but we'll refresh the user profile
+                            await refreshCurrentUserProfile();
+                            await checkAndUpdateProStatus();
+
+                            closeUpgradeModal();
+                            alert('🎉 Payment successful! You are now a Pro user!\n\nYou now have access to:\n✓ 36s Supreme variant\n✓ Unlimited ranked games\n✓ Pro badge');
+                        },
+                        onError: (err) => {
+                            console.error('PayPal error:', err);
+                            alert('Payment processing error. Please try again.');
+                        }
+                    }).render('#paypal-button-container');
+                } else {
+                    alert('PayPal SDK not loaded. Please refresh the page and try again.');
+                }
 
             } catch (error) {
                 console.error('PayPal payment error:', error);

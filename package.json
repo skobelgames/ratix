@@ -1,0 +1,25 @@
+{
+  "name": "ratix-backend",
+  "version": "1.0.0",
+  "description": "Backend server for RATIX game with payment processing",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js"
+  },
+  "keywords": ["ratix", "chess", "payment", "webhook"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "stripe": "^14.10.0",
+    "@paypal/checkout-server-sdk": "^1.0.3",
+    "firebase-admin": "^12.0.0",
+    "dotenv": "^16.3.1",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
