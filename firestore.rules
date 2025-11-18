@@ -1,0 +1,113 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if user is authenticated
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user owns the document
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      // Anyone can read user profiles (for displaying usernames, avatars, stats, etc.)
+      allow read: if true;
+
+      // Only the user can create/update their own profile
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+
+      // Only the user can delete their own profile
+      allow delete: if isOwner(userId);
+    }
+
+    // Visitors collection - for tracking anonymous visitors
+    match /visitors/{visitorId} {
+      // Anyone can read visitor count (for displaying online stats)
+      allow read: if true;
+
+      // Anyone can create visitor sessions (for anonymous tracking)
+      allow create: if true;
+
+      // Anyone can update their own visitor session
+      allow update: if true;
+
+      // Auto-cleanup can delete old visitor sessions
+      allow delete: if true;
+    }
+
+    // Games collection
+    match /games/{gameId} {
+      // Anyone can read games (for matchmaking, spectating, etc.)
+      allow read: if true;
+
+      // Authenticated users can create games
+      allow create: if isSignedIn();
+
+      // Only players in the game can update it
+      allow update: if isSignedIn() && (
+        request.auth.uid == resource.data.player1Uid ||
+        request.auth.uid == resource.data.player2Uid
+      );
+
+      // Only players in the game can delete it
+      allow delete: if isSignedIn() && (
+        request.auth.uid == resource.data.player1Uid ||
+        request.auth.uid == resource.data.player2Uid
+      );
+    }
+
+    // Matchmaking queue
+    match /matchmaking/{queueId} {
+      // Anyone can read the matchmaking queue
+      allow read: if true;
+
+      // Authenticated users can create queue entries
+      allow create: if isSignedIn();
+
+      // Only the user who created the entry can update it
+      allow update: if isSignedIn() && isOwner(resource.data.uid);
+
+      // Only the user who created the entry can delete it
+      allow delete: if isSignedIn() && isOwner(resource.data.uid);
+    }
+
+    // Friend invitations/challenges
+    match /friendInvitations/{invitationId} {
+      // Users can read invitations where they are sender or recipient
+      allow read: if isSignedIn() && (
+        request.auth.uid == resource.data.fromUid ||
+        request.auth.uid == resource.data.toUid
+      );
+
+      // Authenticated users can create invitations
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.fromUid;
+
+      // Only sender or recipient can update the invitation
+      allow update: if isSignedIn() && (
+        request.auth.uid == resource.data.fromUid ||
+        request.auth.uid == resource.data.toUid
+      );
+
+      // Only sender or recipient can delete the invitation
+      allow delete: if isSignedIn() && (
+        request.auth.uid == resource.data.fromUid ||
+        request.auth.uid == resource.data.toUid
+      );
+    }
+
+    // Platform statistics
+    match /platformStats/{statsDoc} {
+      // Anyone can read platform stats (for displaying on homepage)
+      allow read: if true;
+
+      // Only authenticated users can update stats (this would typically be server-side)
+      allow write: if isSignedIn();
+    }
+  }
+}

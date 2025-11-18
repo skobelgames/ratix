@@ -1,0 +1,20 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow anyone to read files (for avatars, game assets, etc.)
+    match /{allPaths=**} {
+      allow read: if true;
+    }
+
+    // User avatars - users can upload their own avatars
+    match /avatars/{userId}/{fileName} {
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Game assets - authenticated users can upload
+    match /game-assets/{allPaths=**} {
+      allow write: if request.auth != null;
+    }
+  }
+}
