@@ -5110,9 +5110,10 @@
                     const matchData = matchDoc.data();
 
                     // Create game with both players
-                    await createOnlineGame(matchData.playerId, currentUser.uid, selectedMatchVariant);
+                    const gameId = await createOnlineGame(matchData.playerId, currentUser.uid, selectedMatchVariant);
 
-                    // Delete matchmaking entry
+                    // Delete the matchmaking entry to signal the waiting player
+                    // They will query for the game we just created
                     await db.collection('matchmaking').doc(matchId).delete();
                 } else {
                     // Create matchmaking entry
@@ -5127,12 +5128,50 @@
 
                     // Listen for match
                     matchmakingListener = db.collection('matchmaking').doc(matchRef.id)
-                        .onSnapshot(snapshot => {
+                        .onSnapshot(async snapshot => {
                             if (!snapshot.exists) {
                                 // Match found! The document was deleted after game creation
                                 if (matchmakingListener) {
                                     matchmakingListener();
                                     matchmakingListener = null;
+                                }
+
+                                console.log('Matchmaking document deleted, searching for game...');
+
+                                // Wait a moment for the game document to be written
+                                await new Promise(resolve => setTimeout(resolve, 500));
+
+                                // Query for the game that was just created for us
+                                // We are player1 (White) in this game
+                                try {
+                                    const gamesQuery = await db.collection('games')
+                                        .where('player1.uid', '==', currentUser.uid)
+                                        .where('status', '==', 'active')
+                                        .orderBy('createdAt', 'desc')
+                                        .limit(1)
+                                        .get();
+
+                                    if (!gamesQuery.empty) {
+                                        const gameDoc = gamesQuery.docs[0];
+                                        const gameId = gameDoc.id;
+
+                                        console.log('Found game! Joining:', gameId);
+
+                                        // Set player info and join the game
+                                        isOnlineGame = true;
+                                        myPlayerColor = 'W'; // Waiting player is always Player 1 (White)
+
+                                        // Join the game
+                                        startOnlineGame(gameId);
+                                    } else {
+                                        console.error('No game found after matchmaking document deleted');
+                                        cancelQuickMatch();
+                                        alert('Error: Could not find game. Please try again.');
+                                    }
+                                } catch (error) {
+                                    console.error('Error finding game:', error);
+                                    cancelQuickMatch();
+                                    alert('Error finding game: ' + error.message);
                                 }
                             }
                         });
@@ -5212,9 +5251,13 @@
 
                 // Start the game
                 startOnlineGame(gameRef.id);
+
+                // Return the game ID so the joining player can pass it to the waiting player
+                return gameRef.id;
             } catch (error) {
                 console.error('Error creating game:', error);
                 alert('Error creating game: ' + error.message);
+                throw error;
             }
         }
 
