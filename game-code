@@ -2699,6 +2699,7 @@
             <button class="menu-btn" onclick="showMatchmakingLobby()">🎯 Play Online</button>
             <button class="menu-btn secondary" onclick="showStatsProfile()">📊 Stats & Profile</button>
             <button class="menu-btn secondary" onclick="playOffline()">🤖 Play vs AI (Offline)</button>
+            <button class="menu-btn secondary" onclick="showDonationModal()" style="background-color: #FF69B4; color: white;">💝 Support Us - Donate</button>
         </div>
     </div>
 
@@ -2776,6 +2777,9 @@
                 <div class="user-stats-summary">Member since: <span id="member-since">-</span></div>
                 <div id="pro-status-display" style="margin-top: 10px; font-size: 16px; font-weight: bold; color: #4CAF50; display: none;">
                     <span class="pro-badge">⭐</span> Pro Member
+                </div>
+                <div id="donor-status-display" style="margin-top: 10px; font-size: 16px; font-weight: bold; color: #FF69B4; display: none;">
+                    <span class="donor-badge">💝</span> Supporter
                 </div>
                 <div id="upgrade-to-pro-section" style="margin-top: 10px;">
                     <button onclick="showUpgradeModal()" style="padding: 10px 20px; background-color: #FFD700; color: #333; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 14px;">
@@ -3191,6 +3195,44 @@
         </div>
     </div>
 
+    <!-- Donation Modal -->
+    <div id="donation-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
+        <div style="background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; text-align: center;">
+            <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
+                <span style="font-size: 24px; font-weight: bold;">💝 Support RATIX</span>
+                <button class="modal-close" onclick="closeDonationModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
+            </div>
+            <div style="margin: 20px 0;">
+                <h3 style="color: #333; margin-bottom: 15px;">Help Us Keep RATIX Running</h3>
+                <p style="color: #666; margin-bottom: 20px;">Your support helps us maintain servers, add new features, and keep the game free for everyone!</p>
+                <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0;">
+                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">💝 Get a heart badge on your profile (£1+ donations)</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">🙏 Support ongoing development</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">🎮 Help keep servers running</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">✨ Enable new features & improvements</li>
+                </ul>
+                <div style="margin: 20px 0;">
+                    <label for="donation-amount" style="display: block; margin-bottom: 10px; font-weight: bold; color: #333;">Choose your donation amount:</label>
+                    <select id="donation-amount" style="width: 100%; padding: 10px; font-size: 16px; border: 2px solid #FF69B4; border-radius: 5px; margin-bottom: 10px;">
+                        <option value="1.00">£1.00</option>
+                        <option value="2.00">£2.00</option>
+                        <option value="5.00" selected>£5.00</option>
+                        <option value="10.00">£10.00</option>
+                        <option value="20.00">£20.00</option>
+                        <option value="custom">Custom amount</option>
+                    </select>
+                    <input type="number" id="custom-donation-amount" placeholder="Enter custom amount (£)" min="1" step="0.01" style="width: 100%; padding: 10px; font-size: 16px; border: 2px solid #FF69B4; border-radius: 5px; display: none;">
+                </div>
+            </div>
+            <div style="margin-top: 25px;">
+                <div id="paypal-donation-button-container" style="margin: 10px 0; min-height: 50px;">
+                    <!-- PayPal donation button will render here -->
+                </div>
+            </div>
+            <p style="font-size: 12px; color: #999; margin-top: 20px;">Secure payment via PayPal • Thank you for your support!</p>
+        </div>
+    </div>
+
     <div id="endgame-overlay"></div>
     <div id="game-stats-modal">
         <div class="modal-header">
@@ -3528,6 +3570,16 @@
             if (data.isPro === undefined) {
                 updates.isPro = false;
             }
+            // Donor defaults
+            if (data.isDonor === undefined) {
+                updates.isDonor = false;
+            }
+            if (data.totalDonated === undefined) {
+                updates.totalDonated = 0;
+            }
+            if (!data.donations) {
+                updates.donations = [];
+            }
             if (!data.gamesPlayedToday) {
                 updates.gamesPlayedToday = {
                     count: 0,
@@ -3780,19 +3832,31 @@
         }
 
         function updatePlayerNamesWithProBadge() {
-            if (!currentUserProfile || !currentUserProfile.isPro) return;
+            if (!currentUserProfile) return;
 
             const username = currentUserProfile.username || 'Player';
-            const usernameWithBadge = '⭐ ' + username;
+            let badges = '';
+
+            // Add pro badge
+            if (currentUserProfile.isPro) {
+                badges += '⭐ ';
+            }
+
+            // Add donor badge
+            if (currentUserProfile.isDonor) {
+                badges += '💝 ';
+            }
+
+            const usernameWithBadge = badges + username;
 
             // Update all username displays
             const menuName = document.getElementById('menu-user-name');
             const profileName = document.getElementById('profile-user-name');
 
-            if (menuName && !menuName.textContent.includes('⭐')) {
+            if (menuName) {
                 menuName.textContent = usernameWithBadge;
             }
-            if (profileName && !profileName.textContent.includes('⭐')) {
+            if (profileName) {
                 profileName.textContent = usernameWithBadge;
             }
         }
@@ -3975,6 +4039,175 @@
             } catch (error) {
                 console.error('Error updating Pro status:', error);
                 alert('Error upgrading account. Please contact support.');
+            }
+        }
+
+        // ========== DONATION FUNCTIONS ==========
+        function showDonationModal() {
+            const modal = document.getElementById('donation-modal');
+            if (modal) {
+                modal.style.display = 'block';
+                // Set up custom amount handler
+                setupDonationAmountHandler();
+                // Initialize PayPal donation button when modal opens
+                initPayPalDonationButton();
+            }
+        }
+
+        function closeDonationModal() {
+            const modal = document.getElementById('donation-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function setupDonationAmountHandler() {
+            const select = document.getElementById('donation-amount');
+            const customInput = document.getElementById('custom-donation-amount');
+
+            if (select && customInput) {
+                select.addEventListener('change', function() {
+                    if (this.value === 'custom') {
+                        customInput.style.display = 'block';
+                        customInput.focus();
+                    } else {
+                        customInput.style.display = 'none';
+                    }
+                    // Re-initialize PayPal button with new amount
+                    initPayPalDonationButton();
+                });
+
+                customInput.addEventListener('input', function() {
+                    // Re-initialize PayPal button when custom amount changes
+                    const debounce = setTimeout(() => {
+                        initPayPalDonationButton();
+                    }, 500);
+                });
+            }
+        }
+
+        function getDonationAmount() {
+            const select = document.getElementById('donation-amount');
+            const customInput = document.getElementById('custom-donation-amount');
+
+            if (select.value === 'custom') {
+                const customAmount = parseFloat(customInput.value);
+                return customAmount >= 1 ? customAmount.toFixed(2) : '1.00';
+            }
+            return select.value;
+        }
+
+        function initPayPalDonationButton() {
+            if (typeof paypal === 'undefined') {
+                console.error('PayPal SDK not loaded');
+                return;
+            }
+
+            // Clear any existing buttons
+            const container = document.getElementById('paypal-donation-button-container');
+            if (container) {
+                container.innerHTML = '';
+            }
+
+            const donationAmount = getDonationAmount();
+
+            paypal.Buttons({
+                style: {
+                    layout: 'vertical',
+                    color: 'gold',
+                    shape: 'rect',
+                    label: 'donate'
+                },
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: donationAmount,
+                                currency_code: 'GBP'
+                            },
+                            description: 'RATIX Support Donation'
+                        }]
+                    });
+                },
+                onApprove: async function(data, actions) {
+                    try {
+                        const order = await actions.order.capture();
+                        console.log('PayPal donation captured:', order);
+
+                        // Update user donor status
+                        await handleSuccessfulDonation({
+                            provider: 'paypal',
+                            id: order.id,
+                            status: order.status,
+                            payer: order.payer,
+                            amount: parseFloat(donationAmount)
+                        });
+                    } catch (error) {
+                        console.error('Error processing PayPal donation:', error);
+                        alert('Error processing donation. Please contact support with order ID: ' + data.orderID);
+                    }
+                },
+                onError: function(err) {
+                    console.error('PayPal donation error:', err);
+                    alert('Donation error occurred. Please try again.');
+                },
+                onCancel: function(data) {
+                    console.log('PayPal donation cancelled:', data);
+                    alert('Donation cancelled. You can try again when ready.');
+                }
+            }).render('#paypal-donation-button-container');
+        }
+
+        async function handleSuccessfulDonation(donationData) {
+            try {
+                const isDonor = donationData.amount >= 1;
+
+                // Get current donation data or initialize
+                const userRef = db.collection('users').doc(currentUser.uid);
+                const userDoc = await userRef.get();
+                const currentData = userDoc.data();
+
+                const currentTotalDonated = (currentData.totalDonated || 0) + donationData.amount;
+
+                // Update user donor status
+                await userRef.update({
+                    isDonor: isDonor,
+                    totalDonated: currentTotalDonated,
+                    lastDonationDate: firebase.firestore.FieldValue.serverTimestamp(),
+                    donations: firebase.firestore.FieldValue.arrayUnion({
+                        provider: donationData.provider || 'paypal',
+                        transactionId: donationData.id,
+                        amount: donationData.amount,
+                        currency: 'GBP',
+                        timestamp: Date.now()
+                    })
+                });
+
+                await refreshCurrentUserProfile();
+                await checkAndUpdateDonorStatus();
+
+                closeDonationModal();
+
+                let thankYouMessage = '💝 Thank you so much for your support!\n\n';
+                if (isDonor) {
+                    thankYouMessage += '✨ You now have a heart badge on your profile!\n';
+                }
+                thankYouMessage += '\nYour donation of £' + donationData.amount.toFixed(2) + ' helps keep RATIX running and improving!';
+
+                alert(thankYouMessage);
+            } catch (error) {
+                console.error('Error updating donor status:', error);
+                alert('Error processing donation. Please contact support.');
+            }
+        }
+
+        async function checkAndUpdateDonorStatus() {
+            const isDonor = currentUserProfile.isDonor || false;
+            const donorDisplay = document.getElementById('donor-status-display');
+
+            if (isDonor) {
+                if (donorDisplay) donorDisplay.style.display = 'block';
+                updatePlayerNamesWithProBadge();
+            } else {
+                if (donorDisplay) donorDisplay.style.display = 'none';
             }
         }
 
@@ -4858,6 +5091,7 @@
             loadPlatformStats();
             loadFriendPanel();
             checkAndUpdateProStatus();
+            checkAndUpdateDonorStatus();
             updateFriendsOnlineCount();
         }
 
@@ -4867,6 +5101,7 @@
             document.getElementById('matchmaking-lobby').style.display = 'flex';
             loadLeaderboard();
             checkAndUpdateProStatus();
+            checkAndUpdateDonorStatus();
             updateFriendsOnlineCount();
         }
 
@@ -4876,6 +5111,7 @@
             document.getElementById('stats-profile-screen').style.display = 'flex';
             updateStatsUI();
             checkAndUpdateProStatus();
+            checkAndUpdateDonorStatus();
         }
 
         function backToMainMenu() {
