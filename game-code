@@ -5110,10 +5110,18 @@
                     const matchData = matchDoc.data();
 
                     // Create game with both players
-                    await createOnlineGame(matchData.playerId, currentUser.uid, selectedMatchVariant);
+                    const gameId = await createOnlineGame(matchData.playerId, currentUser.uid, selectedMatchVariant);
 
-                    // Delete matchmaking entry
-                    await db.collection('matchmaking').doc(matchId).delete();
+                    // Update matchmaking entry with game ID so waiting player can join
+                    await db.collection('matchmaking').doc(matchId).update({
+                        gameId: gameId,
+                        status: 'matched'
+                    });
+
+                    // Delete matchmaking entry after a short delay to ensure waiting player receives the update
+                    setTimeout(async () => {
+                        await db.collection('matchmaking').doc(matchId).delete();
+                    }, 1000);
                 } else {
                     // Create matchmaking entry
                     const matchRef = await db.collection('matchmaking').add({
@@ -5134,6 +5142,17 @@
                                     matchmakingListener();
                                     matchmakingListener = null;
                                 }
+                            } else if (snapshot.data().status === 'matched' && snapshot.data().gameId) {
+                                // Match found! Join the game
+                                const gameId = snapshot.data().gameId;
+                                if (matchmakingListener) {
+                                    matchmakingListener();
+                                    matchmakingListener = null;
+                                }
+                                // Set player info and join the game
+                                isOnlineGame = true;
+                                myPlayerColor = 'W'; // Waiting player is always Player 1 (White)
+                                startOnlineGame(gameId);
                             }
                         });
                 }
@@ -5212,9 +5231,13 @@
 
                 // Start the game
                 startOnlineGame(gameRef.id);
+
+                // Return the game ID so the joining player can pass it to the waiting player
+                return gameRef.id;
             } catch (error) {
                 console.error('Error creating game:', error);
                 alert('Error creating game: ' + error.message);
+                throw error;
             }
         }
 
