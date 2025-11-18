@@ -3628,6 +3628,75 @@
             measurementId: "G-5MYRC2SMRB"
         };
 
+        /* ========== REQUIRED FIREBASE SECURITY RULES ==========
+         *
+         * To fix permission errors, add these rules to your Firestore Security Rules
+         * in the Firebase Console (Firestore Database > Rules):
+         *
+         * rules_version = '2';
+         * service cloud.firestore {
+         *   match /databases/{database}/documents {
+         *
+         *     // Users collection - read own data, write own data when authenticated
+         *     match /users/{userId} {
+         *       allow read: if request.auth != null;
+         *       allow write: if request.auth != null && request.auth.uid == userId;
+         *     }
+         *
+         *     // Visitors collection - public read, authenticated write
+         *     match /visitors/{visitorId} {
+         *       allow read: if true;  // Public read for visitor count
+         *       allow create: if true; // Allow anonymous visitors to create session
+         *       allow update, delete: if request.auth == null; // Allow session updates
+         *     }
+         *
+         *     // Platform stats collection - public read, no public write
+         *     match /platformStats/{docId} {
+         *       allow read: if true;  // Public read for stats display
+         *       allow write: if false; // Managed by Cloud Functions or admin
+         *     }
+         *
+         *     // Friend invitations - authenticated users only
+         *     match /friendInvitations/{invitationId} {
+         *       allow read: if request.auth != null &&
+         *                     (request.auth.uid == resource.data.fromUid ||
+         *                      request.auth.uid == resource.data.toUid);
+         *       allow create: if request.auth != null &&
+         *                       request.auth.uid == request.resource.data.fromUid;
+         *       allow update: if request.auth != null &&
+         *                       (request.auth.uid == resource.data.fromUid ||
+         *                        request.auth.uid == resource.data.toUid);
+         *       allow delete: if request.auth != null &&
+         *                       (request.auth.uid == resource.data.fromUid ||
+         *                        request.auth.uid == resource.data.toUid);
+         *     }
+         *
+         *     // Games collection - authenticated users
+         *     match /games/{gameId} {
+         *       allow read: if request.auth != null;
+         *       allow create: if request.auth != null;
+         *       allow update: if request.auth != null &&
+         *                       (request.auth.uid == resource.data.whiteUid ||
+         *                        request.auth.uid == resource.data.blackUid);
+         *     }
+         *
+         *     // Matchmaking queue - authenticated users
+         *     match /matchmakingQueue/{queueId} {
+         *       allow read: if request.auth != null;
+         *       allow create: if request.auth != null &&
+         *                       request.auth.uid == request.resource.data.uid;
+         *       allow update, delete: if request.auth != null &&
+         *                               request.auth.uid == resource.data.uid;
+         *     }
+         *   }
+         * }
+         *
+         * NOTE: The app is designed to gracefully handle missing permissions by:
+         * - Showing 0 for visitor/stats counts if read access is denied
+         * - Disabling features that require write access
+         * - Logging errors to console for debugging
+         * ========================================================== */
+
         // Initialize Firebase
         let firebaseApp, auth, db, storage;
         let currentUser = null;
@@ -3663,6 +3732,7 @@
                 storage = firebase.storage();
 
                 console.log('Firebase initialized successfully');
+                console.log('📋 If you see permission errors, check the Firebase Security Rules documentation at the top of the script.');
 
                 // Check authentication state
                 auth.onAuthStateChanged(user => {
@@ -4059,6 +4129,7 @@
                         updateVisitorsDisplay(count);
                     }, error => {
                         console.error('Error listening to visitors:', error);
+                        console.log('💡 Fix: Add Firestore Security Rules for "visitors" collection (see rules documentation in code)');
                         // Fallback: show 0 if permissions denied
                         updateVisitorsDisplay(0);
                     });
@@ -4127,6 +4198,7 @@
                 if (friendsCount) friendsCount.textContent = onlineFriendsCount;
             } catch (error) {
                 console.error('Error loading friends online count:', error);
+                console.log('💡 Fix: Ensure Firestore Security Rules allow reading user documents (see rules documentation in code)');
             }
         }
 
@@ -4804,6 +4876,7 @@
                 loadOnlinePlayersCount();
             } catch (error) {
                 console.error('Error loading platform stats:', error);
+                console.log('💡 Fix: Add Firestore Security Rules for "platformStats" collection (see rules documentation in code)');
                 // Show zeros on error (likely permissions issue)
                 displayPlatformStats({
                     dailyGames: 0,
@@ -5977,7 +6050,8 @@
 
             } catch (error) {
                 console.error('Error sending challenge:', error);
-                alert('Error sending challenge: ' + error.message);
+                console.log('💡 Fix: Add Firestore Security Rules for "friendInvitations" collection (see rules documentation in code)');
+                alert('Error sending challenge: ' + error.message + '\n\nCheck console for setup instructions.');
             }
         }
 
