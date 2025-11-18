@@ -5113,15 +5113,11 @@
                     const gameId = await createOnlineGame(matchData.playerId, currentUser.uid, selectedMatchVariant);
 
                     // Update matchmaking entry with game ID so waiting player can join
+                    // The waiting player will delete it after they join
                     await db.collection('matchmaking').doc(matchId).update({
                         gameId: gameId,
                         status: 'matched'
                     });
-
-                    // Delete matchmaking entry after a short delay to ensure waiting player receives the update
-                    setTimeout(async () => {
-                        await db.collection('matchmaking').doc(matchId).delete();
-                    }, 1000);
                 } else {
                     // Create matchmaking entry
                     const matchRef = await db.collection('matchmaking').add({
@@ -5142,17 +5138,32 @@
                                     matchmakingListener();
                                     matchmakingListener = null;
                                 }
-                            } else if (snapshot.data().status === 'matched' && snapshot.data().gameId) {
-                                // Match found! Join the game
-                                const gameId = snapshot.data().gameId;
-                                if (matchmakingListener) {
-                                    matchmakingListener();
-                                    matchmakingListener = null;
+                            } else {
+                                const data = snapshot.data();
+                                if (data && data.status === 'matched' && data.gameId) {
+                                    // Match found! Join the game
+                                    const gameId = data.gameId;
+                                    const matchDocId = snapshot.id;
+
+                                    console.log('Match found! Joining game:', gameId);
+
+                                    if (matchmakingListener) {
+                                        matchmakingListener();
+                                        matchmakingListener = null;
+                                    }
+
+                                    // Set player info and join the game
+                                    isOnlineGame = true;
+                                    myPlayerColor = 'W'; // Waiting player is always Player 1 (White)
+
+                                    // Join the game
+                                    startOnlineGame(gameId);
+
+                                    // Delete the matchmaking entry now that we've joined
+                                    db.collection('matchmaking').doc(matchDocId).delete().catch(err => {
+                                        console.error('Error deleting matchmaking doc:', err);
+                                    });
                                 }
-                                // Set player info and join the game
-                                isOnlineGame = true;
-                                myPlayerColor = 'W'; // Waiting player is always Player 1 (White)
-                                startOnlineGame(gameId);
                             }
                         });
                 }
