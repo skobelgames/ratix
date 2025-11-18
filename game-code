@@ -15,7 +15,7 @@
     <script src="https://js.stripe.com/v3/"></script>
 
     <!-- PayPal SDK -->
-    <script src="https://www.paypal.com/sdk/js?client-id=Abp9YfrVSw6hHSsKYSw6t07TAu--_4jONzQqD-v1VSjKfM1k9qAVX8SYlQCy5yGwJCjclU0tUxuqLBaT&currency=GBP"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=skobelgames@gmail.com&currency=GBP"></script>
 
     <style>
         :root {
