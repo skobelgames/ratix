@@ -3164,8 +3164,8 @@
     </div>
 
     <!-- Upgrade to Pro Modal -->
-    <div id="upgrade-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7);">
-        <div style="background-color: #fff; margin: 10% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; text-align: center;">
+    <div id="upgrade-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
+        <div style="background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; text-align: center;">
             <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
                 <span style="font-size: 24px; font-weight: bold;">⭐ Upgrade to Pro</span>
                 <button class="modal-close" onclick="closeUpgradeModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
@@ -3183,12 +3183,6 @@
                 <p style="color: #666; font-size: 14px;">One-time payment • Lifetime access</p>
             </div>
             <div style="margin-top: 25px;">
-                <h4 style="margin-bottom: 15px;">Choose Payment Method:</h4>
-                <div id="stripe-button-container" style="margin: 10px 0;">
-                    <button onclick="initiateStripePayment()" style="width: 100%; padding: 15px; background-color: #6772E5; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin: 5px 0;">
-                        Pay with Stripe
-                    </button>
-                </div>
                 <div id="paypal-button-container" style="margin: 10px 0; min-height: 50px;">
                     <!-- PayPal button will render here -->
                 </div>
@@ -3898,31 +3892,6 @@
         function closeUpgradeModal() {
             const modal = document.getElementById('upgrade-modal');
             if (modal) modal.style.display = 'none';
-        }
-
-        async function initiateStripePayment() {
-            try {
-                // Create a checkout session on your server and redirect to Stripe
-                // This is a placeholder - you'll need to implement server-side logic
-                alert('Stripe payment integration requires server-side setup.\n\nPlease configure:\n1. Stripe publishable key\n2. Server endpoint to create checkout session\n3. Webhook to handle successful payments');
-
-                // Example implementation:
-                // const response = await fetch('/create-checkout-session', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({
-                //         userId: currentUser.uid,
-                //         amount: 300 // £3 in pence
-                //     })
-                // });
-                // const { sessionId } = await response.json();
-                // const { error } = await stripe.redirectToCheckout({ sessionId });
-                // if (error) console.error(error);
-
-            } catch (error) {
-                console.error('Stripe payment error:', error);
-                alert('Payment processing error. Please try again.');
-            }
         }
 
         function initPayPalButton() {
