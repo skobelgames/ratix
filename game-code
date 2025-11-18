@@ -2711,7 +2711,6 @@
 
         <div class="lobby-tabs">
             <button class="lobby-tab active" onclick="switchLobbyTab('quick-match')">Quick Match</button>
-            <button class="lobby-tab" onclick="switchLobbyTab('active-games')">My Games</button>
             <button class="lobby-tab" onclick="switchLobbyTab('leaderboard')">Leaderboard</button>
         </div>
 
@@ -2741,13 +2740,6 @@
                         <div class="spinner"></div>
                         <p>Searching for opponent...</p>
                     </div>
-                </div>
-            </div>
-
-            <div id="active-games-section" class="lobby-section">
-                <h3>Your Active Games</h3>
-                <div class="active-games-list" id="active-games-list">
-                    <p style="text-align:center; color:#666;">No active games</p>
                 </div>
             </div>
 
@@ -4653,6 +4645,11 @@
         async function startOnlineGame(gameId) {
             currentGameId = gameId;
 
+            // Get the game data to know the variant
+            const gameDoc = await db.collection('games').doc(gameId).get();
+            const gameData = gameDoc.data();
+            const variant = gameData.variant || '36s-elite';
+
             // Listen for game updates
             gameListener = db.collection('games').doc(gameId).onSnapshot(snapshot => {
                 if (snapshot.exists) {
@@ -4671,26 +4668,22 @@
             if (resetBtn) resetBtn.style.display = 'none';
             if (howToPlayBtn) howToPlayBtn.style.display = 'none';
 
-            // Start the actual game
-            handleVariantClick('24s');
+            // Start the actual game with the correct variant
+            startGame(variant);
+
+            // If we're player 1 (White), initialize and send the game state immediately
+            if (myPlayerColor === 'W') {
+                // Wait for board to be initialized, then capture and send state
+                setTimeout(async () => {
+                    const initialState = captureGameState();
+                    await db.collection('games').doc(currentGameId).update({
+                        gameState: initialState
+                    });
+                }, 500);
+            }
         }
 
         function handleGameUpdate(gameData) {
-            // Skip initial update if game hasn't started yet
-            if (!gameData.gameState) {
-                // Game just created, initialize it
-                if (gameData.currentTurn === myPlayerColor && !board) {
-                    // We're the starting player, initialize the game state
-                    setTimeout(() => {
-                        const initialState = captureGameState();
-                        db.collection('games').doc(currentGameId).update({
-                            gameState: initialState
-                        });
-                    }, 1000);
-                }
-                return;
-            }
-
             // If it's not our turn, show waiting overlay
             if (gameData.currentTurn !== myPlayerColor) {
                 document.getElementById('waiting-overlay').classList.add('active');
@@ -4698,11 +4691,12 @@
                 document.getElementById('waiting-overlay').classList.remove('active');
             }
 
-            // Update board if game state changed
+            // Update board if game state exists
             if (gameData.gameState) {
                 // Load game state (board, pieces, scores, etc.)
                 loadGameState(gameData.gameState);
             }
+            // If no game state yet, player 1 is still initializing - just wait
 
             // Check if game is completed
             if (gameData.status === 'completed') {
@@ -4853,6 +4847,7 @@
         }
 
         function showMainMenu() {
+            stopGame(); // Stop any running game before showing main menu
             hideAllScreens();
             document.getElementById('main-menu-screen').style.display = 'flex';
             updateMainMenuUI();
@@ -4864,15 +4859,16 @@
         }
 
         function showMatchmakingLobby() {
+            stopGame(); // Stop any running game before showing lobby
             hideAllScreens();
             document.getElementById('matchmaking-lobby').style.display = 'flex';
             loadLeaderboard();
-            loadActiveGames();
             checkAndUpdateProStatus();
             updateFriendsOnlineCount();
         }
 
         function showStatsProfile() {
+            stopGame(); // Stop any running game before showing stats
             hideAllScreens();
             document.getElementById('stats-profile-screen').style.display = 'flex';
             updateStatsUI();
@@ -4881,12 +4877,12 @@
 
         function backToMainMenu() {
             cancelQuickMatch();
+            stopGame(); // Stop any running game before going back
             showMainMenu();
         }
 
         function playOffline() {
-            isOnlineGame = false;
-            myPlayerColor = null;
+            stopGame(); // Stop any running game before starting offline
             hideAllScreens();
             document.getElementById('landing-header').style.display = 'flex';
             document.getElementById('start-menu').style.display = 'flex';
@@ -4992,57 +4988,6 @@
             } catch (error) {
                 console.error('Error loading leaderboard:', error);
             }
-        }
-
-        async function loadActiveGames() {
-            if (!currentUser) return;
-
-            try {
-                const snapshot = await db.collection('games')
-                    .where('status', '==', 'active')
-                    .get();
-
-                const myGames = snapshot.docs.filter(doc => {
-                    const data = doc.data();
-                    return data.player1.uid === currentUser.uid || data.player2.uid === currentUser.uid;
-                });
-
-                const listDiv = document.getElementById('active-games-list');
-                listDiv.innerHTML = '';
-
-                if (myGames.length === 0) {
-                    listDiv.innerHTML = '<p style="text-align:center; color:#666;">No active games</p>';
-                } else {
-                    myGames.forEach(doc => {
-                        const data = doc.data();
-                        const opponent = (data.player1.uid === currentUser.uid) ? data.player2 : data.player1;
-
-                        const gameItem = document.createElement('div');
-                        gameItem.className = 'game-item';
-                        gameItem.innerHTML = `
-                            <div>
-                                <strong>vs ${opponent.avatar} ${opponent.username}</strong><br>
-                                <span style="font-size:12px; color:#666;">Your turn: ${data.currentTurn === myPlayerColor ? 'Yes' : 'No'}</span>
-                            </div>
-                            <button onclick="resumeGame('${doc.id}')">Continue</button>
-                        `;
-                        listDiv.appendChild(gameItem);
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading active games:', error);
-            }
-        }
-
-        async function resumeGame(gameId) {
-            currentGameId = gameId;
-            const gameDoc = await db.collection('games').doc(gameId).get();
-            const gameData = gameDoc.data();
-
-            myPlayerColor = (gameData.player1.uid === currentUser.uid) ? 'W' : 'B';
-            isOnlineGame = true;
-
-            startOnlineGame(gameId);
         }
 
         // ========== ORIGINAL GAME CODE STARTS HERE ==========
@@ -5381,7 +5326,8 @@
             }
         }
 
-        function proceedToMainMenu() {
+        // Centralized function to completely stop and clean up the game
+        function stopGame() {
             // Stop all timers and intervals
             stopGameTimer();
             stopTurnTimer();
@@ -5396,7 +5342,14 @@
                 zombieAdvanceTimer = null;
             }
 
+            // Stop Firebase listener for online games
+            if (gameListener) {
+                gameListener();
+                gameListener = null;
+            }
+
             // Reset all game state variables
+            gameOver = false;
             currentPlayer = 'W';
             roundCount = 1;
             playerRoundNumber = 0;
@@ -5428,10 +5381,23 @@
             mercenaryBonusTurnUsed = { 'W': new Set(), 'B': new Set() };
             mercenaryBonusTurnCount = { 'W': 0, 'B': 0 };
 
+            // Reset online game state
+            isOnlineGame = false;
+            currentGameId = null;
+            myPlayerColor = null;
+
+            // Clear the board
+            board = [];
+
             // Close any open modals and clear pending special modes
             cancelSpecialModes();
             const reinforceModal = document.getElementById('reinforce-modal');
             if (reinforceModal) reinforceModal.style.display = 'none';
+        }
+
+        function proceedToMainMenu() {
+            // Stop the game completely
+            stopGame();
 
             // Show main menu
             document.getElementById('game-container').style.display = 'none';
@@ -6242,6 +6208,8 @@
         }
 
         function triggerAiTurn() {
+            // Don't trigger AI turn if board is not initialized
+            if (!board || board.length === 0 || !board[0]) return;
             if (gameOver || gamePaused || aiPending || reinforcementPending || currentPlayer !== 'W' || lichSoulBlastResolving) return;
             if (isBlockingActionPending()) return;
             if (isElephantrySpecialActive()) return;
@@ -6332,6 +6300,8 @@
         }
 
         function ensureAITurnIfNeeded() {
+            // Don't process if board is not initialized
+            if (!board || board.length === 0 || !board[0]) return;
             if (gamePaused || currentPlayer !== 'W' || reinforcementPending || aiPending) return;
             if (isBlockingActionPending()) return;
             // Don't end turn if pistolier or elephantry specials are waiting for targeting
@@ -6437,7 +6407,8 @@
                 showPieceInfo(null);
             } else if (selectedPiece) {
                 const { row, col } = selectedPiece;
-                if (board[row][col] && board[row][col].player === currentPlayer) {
+                // Check if board is initialized before accessing
+                if (board && board[row] && board[row][col] && board[row][col].player === currentPlayer) {
                     validMoves = getValidMoves(row, col);
                     showPieceInfo(board[row][col], currentPlayer);
                 } else {
@@ -6521,6 +6492,11 @@
         }
 
         function pruneFusilierShotTracking(player) {
+            // Don't process if board is not initialized
+            if (!board || board.length === 0 || !board[0]) {
+                return;
+            }
+
             const activeFusiliers = new Set();
             for (let r = 0; r < ROWS; r++) {
                 for (let c = 0; c < COLS; c++) {
@@ -10245,6 +10221,11 @@
         }
 
         function renderBoard() {
+            // Don't render if board is not properly initialized
+            if (!board || board.length === 0 || !board[0]) {
+                return;
+            }
+
             const boardDiv = document.getElementById('board');
             boardDiv.innerHTML = '';
             for (let r = 0; r < ROWS; r++) {
