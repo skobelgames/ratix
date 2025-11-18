@@ -3189,10 +3189,8 @@
                         Pay with Stripe
                     </button>
                 </div>
-                <div id="paypal-button-container" style="margin: 10px 0;">
-                    <button onclick="initiatePayPalPayment()" style="width: 100%; padding: 15px; background-color: #0070BA; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin: 5px 0;">
-                        Pay with PayPal
-                    </button>
+                <div id="paypal-button-container" style="margin: 10px 0; min-height: 50px;">
+                    <!-- PayPal button will render here -->
                 </div>
             </div>
             <p style="font-size: 12px; color: #999; margin-top: 20px;">Secure payment processing • Money-back guarantee</p>
@@ -3890,7 +3888,11 @@
         // ========== PAYMENT INTEGRATION FUNCTIONS ==========
         function showUpgradeModal() {
             const modal = document.getElementById('upgrade-modal');
-            if (modal) modal.style.display = 'block';
+            if (modal) {
+                modal.style.display = 'block';
+                // Initialize PayPal button when modal opens
+                initPayPalButton();
+            }
         }
 
         function closeUpgradeModal() {
@@ -3923,30 +3925,62 @@
             }
         }
 
-        async function initiatePayPalPayment() {
-            try {
-                // PayPal integration
-                alert('PayPal payment integration requires configuration.\n\nPlease set up:\n1. PayPal client ID in the script tag\n2. Server endpoint to create PayPal orders\n3. Webhook to handle successful payments');
-
-                // Example PayPal integration:
-                // paypal.Buttons({
-                //     createOrder: (data, actions) => {
-                //         return actions.order.create({
-                //             purchase_units: [{
-                //                 amount: { value: '3.00', currency_code: 'GBP' }
-                //             }]
-                //         });
-                //     },
-                //     onApprove: async (data, actions) => {
-                //         const order = await actions.order.capture();
-                //         await handleSuccessfulPayment(order);
-                //     }
-                // }).render('#paypal-button-container');
-
-            } catch (error) {
-                console.error('PayPal payment error:', error);
-                alert('Payment processing error. Please try again.');
+        function initPayPalButton() {
+            if (typeof paypal === 'undefined') {
+                console.error('PayPal SDK not loaded');
+                return;
             }
+
+            // Clear any existing buttons
+            const container = document.getElementById('paypal-button-container');
+            if (container) {
+                container.innerHTML = '';
+            }
+
+            paypal.Buttons({
+                style: {
+                    layout: 'vertical',
+                    color: 'blue',
+                    shape: 'rect',
+                    label: 'paypal'
+                },
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: '3.00',
+                                currency_code: 'GBP'
+                            },
+                            description: 'RATIX Pro Upgrade - Lifetime Access'
+                        }]
+                    });
+                },
+                onApprove: async function(data, actions) {
+                    try {
+                        const order = await actions.order.capture();
+                        console.log('PayPal order captured:', order);
+
+                        // Update user to Pro status
+                        await handleSuccessfulPayment({
+                            provider: 'paypal',
+                            id: order.id,
+                            status: order.status,
+                            payer: order.payer
+                        });
+                    } catch (error) {
+                        console.error('Error processing PayPal payment:', error);
+                        alert('Error processing payment. Please contact support with order ID: ' + data.orderID);
+                    }
+                },
+                onError: function(err) {
+                    console.error('PayPal error:', err);
+                    alert('Payment error occurred. Please try again.');
+                },
+                onCancel: function(data) {
+                    console.log('PayPal payment cancelled:', data);
+                    alert('Payment cancelled. You can try again when ready.');
+                }
+            }).render('#paypal-button-container');
         }
 
         async function handleSuccessfulPayment(paymentData) {
