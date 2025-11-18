@@ -5226,6 +5226,11 @@
             const gameData = gameDoc.data();
             const variant = gameData.variant || '36s-elite';
 
+            // Store opponent info for display
+            if (gameData) {
+                currentOnlineOpponent = (gameData.player1.uid === currentUser.uid) ? gameData.player2 : gameData.player1;
+            }
+
             // Listen for game updates
             gameListener = db.collection('games').doc(gameId).onSnapshot(snapshot => {
                 if (snapshot.exists) {
@@ -5380,6 +5385,7 @@
                 currentGameId = null;
                 isOnlineGame = false;
                 myPlayerColor = null;
+                currentOnlineOpponent = null;
             } catch (error) {
                 console.error('Error ending game:', error);
             }
@@ -5964,6 +5970,7 @@
             isOnlineGame = false;
             currentGameId = null;
             myPlayerColor = null;
+            currentOnlineOpponent = null;
 
             // Clear the board
             board = [];
@@ -8419,6 +8426,8 @@
 
         // Current AI profile (selected randomly at game start)
         let currentAiProfile = null;
+        // Current online opponent info (for online multiplayer games)
+        let currentOnlineOpponent = null;
         const LARGE_BOARD_VARIANTS = ['36s', '36s-expert', '36s-elite', '36s-supreme'];
         let aiSearchDeadline = 0;
         function aiTimeExpired() {
@@ -10049,6 +10058,11 @@
         }
 
         function getOpponentDisplayName() {
+            // For online games, show the opponent's username
+            if (isOnlineGame && currentOnlineOpponent) {
+                return currentOnlineOpponent.username;
+            }
+            // For offline games, show AI profile name
             return currentAiProfile ? currentAiProfile.displayName : 'AI';
         }
 
