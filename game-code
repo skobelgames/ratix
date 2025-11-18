@@ -2040,6 +2040,30 @@
             background-color: #e8f5e9;
             box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
         }
+        .avatar-option.locked {
+            opacity: 0.4;
+            cursor: not-allowed;
+            position: relative;
+            filter: grayscale(80%);
+        }
+        .avatar-option.locked:hover {
+            transform: none;
+            border-color: #ccc;
+        }
+        .avatar-option.locked::after {
+            content: '🔒';
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            font-size: 20px;
+            background: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         /* Main Menu with Multiplayer Options */
         #main-menu-screen {
@@ -2582,19 +2606,42 @@
 
             <div class="avatar-selector">
                 <h3>Choose Your Avatar</h3>
+                <p style="font-size: 12px; color: #666; margin-bottom: 10px;">More avatars unlock when you upgrade to Pro or become a Supporter!</p>
                 <div class="avatar-grid" id="avatar-grid">
-                    <div class="avatar-option selected" data-avatar="👑" onclick="selectAvatar('👑')">👑</div>
-                    <div class="avatar-option" data-avatar="⚔️" onclick="selectAvatar('⚔️')">⚔️</div>
-                    <div class="avatar-option" data-avatar="🛡️" onclick="selectAvatar('🛡️')">🛡️</div>
-                    <div class="avatar-option" data-avatar="🏹" onclick="selectAvatar('🏹')">🏹</div>
-                    <div class="avatar-option" data-avatar="🧙" onclick="selectAvatar('🧙')">🧙</div>
-                    <div class="avatar-option" data-avatar="🐉" onclick="selectAvatar('🐉')">🐉</div>
-                    <div class="avatar-option" data-avatar="🦁" onclick="selectAvatar('🦁')">🦁</div>
-                    <div class="avatar-option" data-avatar="🦅" onclick="selectAvatar('🦅')">🦅</div>
-                    <div class="avatar-option" data-avatar="🐺" onclick="selectAvatar('🐺')">🐺</div>
-                    <div class="avatar-option" data-avatar="🦈" onclick="selectAvatar('🦈')">🦈</div>
-                    <div class="avatar-option" data-avatar="🔥" onclick="selectAvatar('🔥')">🔥</div>
-                    <div class="avatar-option" data-avatar="⚡" onclick="selectAvatar('⚡')">⚡</div>
+                    <!-- Free avatars -->
+                    <div class="avatar-option selected" data-avatar="👑" data-unlock="free" onclick="selectAvatar('👑', event)">👑</div>
+                    <div class="avatar-option" data-avatar="⚔️" data-unlock="free" onclick="selectAvatar('⚔️', event)">⚔️</div>
+                    <div class="avatar-option" data-avatar="🛡️" data-unlock="free" onclick="selectAvatar('🛡️', event)">🛡️</div>
+                    <div class="avatar-option" data-avatar="🏹" data-unlock="free" onclick="selectAvatar('🏹', event)">🏹</div>
+                    <div class="avatar-option" data-avatar="🧙" data-unlock="free" onclick="selectAvatar('🧙', event)">🧙</div>
+                    <div class="avatar-option" data-avatar="🐉" data-unlock="free" onclick="selectAvatar('🐉', event)">🐉</div>
+                    <div class="avatar-option" data-avatar="🦁" data-unlock="free" onclick="selectAvatar('🦁', event)">🦁</div>
+                    <div class="avatar-option" data-avatar="🦅" data-unlock="free" onclick="selectAvatar('🦅', event)">🦅</div>
+                    <div class="avatar-option" data-avatar="🐺" data-unlock="free" onclick="selectAvatar('🐺', event)">🐺</div>
+                    <div class="avatar-option" data-avatar="🦈" data-unlock="free" onclick="selectAvatar('🦈', event)">🦈</div>
+                    <div class="avatar-option" data-avatar="🔥" data-unlock="free" onclick="selectAvatar('🔥', event)">🔥</div>
+                    <div class="avatar-option" data-avatar="⚡" data-unlock="free" onclick="selectAvatar('⚡', event)">⚡</div>
+                    <!-- Pro avatars -->
+                    <div class="avatar-option locked" data-avatar="💎" data-unlock="pro" onclick="selectAvatar('💎', event)">💎</div>
+                    <div class="avatar-option locked" data-avatar="🏆" data-unlock="pro" onclick="selectAvatar('🏆', event)">🏆</div>
+                    <div class="avatar-option locked" data-avatar="🎯" data-unlock="pro" onclick="selectAvatar('🎯', event)">🎯</div>
+                    <div class="avatar-option locked" data-avatar="🎖️" data-unlock="pro" onclick="selectAvatar('🎖️', event)">🎖️</div>
+                    <div class="avatar-option locked" data-avatar="🌟" data-unlock="pro" onclick="selectAvatar('🌟', event)">🌟</div>
+                    <div class="avatar-option locked" data-avatar="🔱" data-unlock="pro" onclick="selectAvatar('🔱', event)">🔱</div>
+                    <!-- Donor avatars -->
+                    <div class="avatar-option locked" data-avatar="💝" data-unlock="donor" onclick="selectAvatar('💝', event)">💝</div>
+                    <div class="avatar-option locked" data-avatar="🌹" data-unlock="donor" onclick="selectAvatar('🌹', event)">🌹</div>
+                    <div class="avatar-option locked" data-avatar="🦄" data-unlock="donor" onclick="selectAvatar('🦄', event)">🦄</div>
+                    <div class="avatar-option locked" data-avatar="🌈" data-unlock="donor" onclick="selectAvatar('🌈', event)">🌈</div>
+                    <div class="avatar-option locked" data-avatar="✨" data-unlock="donor" onclick="selectAvatar('✨', event)">✨</div>
+                    <div class="avatar-option locked" data-avatar="🎨" data-unlock="donor" onclick="selectAvatar('🎨', event)">🎨</div>
+                    <!-- Pro + Donor avatars -->
+                    <div class="avatar-option locked" data-avatar="🌠" data-unlock="both" onclick="selectAvatar('🌠', event)">🌠</div>
+                    <div class="avatar-option locked" data-avatar="👾" data-unlock="both" onclick="selectAvatar('👾', event)">👾</div>
+                    <div class="avatar-option locked" data-avatar="🎭" data-unlock="both" onclick="selectAvatar('🎭', event)">🎭</div>
+                    <div class="avatar-option locked" data-avatar="🦚" data-unlock="both" onclick="selectAvatar('🦚', event)">🦚</div>
+                    <div class="avatar-option locked" data-avatar="🐲" data-unlock="both" onclick="selectAvatar('🐲', event)">🐲</div>
+                    <div class="avatar-option locked" data-avatar="🧚" data-unlock="both" onclick="selectAvatar('🧚', event)">🧚</div>
                 </div>
             </div>
 
@@ -2771,9 +2818,15 @@
         </div>
 
         <div class="user-profile" style="margin-bottom:30px;">
-            <div class="user-avatar" id="profile-user-avatar" style="width:80px; height:80px; font-size:40px;">👑</div>
+            <div style="position: relative; display: inline-block;">
+                <div class="user-avatar" id="profile-user-avatar" style="width:80px; height:80px; font-size:40px;">👑</div>
+                <button onclick="showEditAvatarModal()" style="position: absolute; bottom: 0; right: 0; background: #4CAF50; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">✏️</button>
+            </div>
             <div class="user-details">
-                <div class="user-name" id="profile-user-name" style="font-size:24px;">Player</div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="user-name" id="profile-user-name" style="font-size:24px;">Player</div>
+                    <button onclick="showEditUsernameModal()" style="background: #2196F3; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; font-size: 12px;">Edit Name</button>
+                </div>
                 <div class="user-stats-summary">Member since: <span id="member-since">-</span></div>
                 <div id="pro-status-display" style="margin-top: 10px; font-size: 16px; font-weight: bold; color: #4CAF50; display: none;">
                     <span class="pro-badge">⭐</span> Pro Member
@@ -3233,6 +3286,39 @@
         </div>
     </div>
 
+    <!-- Edit Avatar Modal -->
+    <div id="edit-avatar-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
+        <div style="background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 650px; max-height: 90vh; overflow-y: auto; text-align: center;">
+            <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
+                <span style="font-size: 24px; font-weight: bold;">Change Your Avatar</span>
+                <button class="modal-close" onclick="closeEditAvatarModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
+            </div>
+            <div style="margin: 20px 0;">
+                <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Select your new avatar from the options below:</p>
+                <div class="avatar-grid" id="edit-avatar-grid" style="margin: 20px 0;">
+                    <!-- Avatars will be populated dynamically -->
+                </div>
+            </div>
+            <button onclick="saveAvatarChange()" style="padding: 12px 30px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 20px;">Save Avatar</button>
+        </div>
+    </div>
+
+    <!-- Edit Username Modal -->
+    <div id="edit-username-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
+        <div style="background-color: #fff; margin: 10% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; text-align: center;">
+            <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
+                <span style="font-size: 24px; font-weight: bold;">Change Your Username</span>
+                <button class="modal-close" onclick="closeEditUsernameModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
+            </div>
+            <div style="margin: 20px 0;">
+                <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Enter your new username (3-20 characters):</p>
+                <input type="text" id="new-username-input" placeholder="New username" minlength="3" maxlength="20" style="width: 100%; padding: 12px; font-size: 16px; border: 2px solid #2196F3; border-radius: 5px; box-sizing: border-box;">
+                <p id="username-validation-message" style="font-size: 12px; margin-top: 10px; min-height: 18px;"></p>
+            </div>
+            <button onclick="saveUsernameChange()" style="padding: 12px 30px; background-color: #2196F3; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px;">Save Username</button>
+        </div>
+    </div>
+
     <div id="endgame-overlay"></div>
     <div id="game-stats-modal">
         <div class="modal-header">
@@ -3474,11 +3560,36 @@
         }
 
         // ========== PROFILE MANAGEMENT ==========
-        function selectAvatar(avatar) {
-            document.querySelectorAll('.avatar-option').forEach(el => {
-                el.classList.remove('selected');
-            });
-            event.target.classList.add('selected');
+        function selectAvatar(avatar, event) {
+            const target = event ? event.target : document.querySelector(`[data-avatar="${avatar}"]`);
+
+            // Check if avatar is locked
+            if (target && target.classList.contains('locked')) {
+                const unlockType = target.getAttribute('data-unlock');
+                let message = 'This avatar is locked. ';
+
+                if (unlockType === 'pro') {
+                    message += 'Upgrade to Pro to unlock!';
+                } else if (unlockType === 'donor') {
+                    message += 'Become a Supporter to unlock!';
+                } else if (unlockType === 'both') {
+                    message += 'Upgrade to Pro AND become a Supporter to unlock!';
+                }
+
+                alert(message);
+                return;
+            }
+
+            // Select the avatar
+            const parentGrid = target.closest('.avatar-grid');
+            if (parentGrid) {
+                parentGrid.querySelectorAll('.avatar-option').forEach(el => {
+                    el.classList.remove('selected');
+                });
+            }
+            if (target) {
+                target.classList.add('selected');
+            }
             selectedAvatar = avatar;
         }
 
@@ -3488,10 +3599,17 @@
 
             if (!currentUser) return;
 
+            // Validate username
+            const validation = validateUsername(username);
+            if (!validation.valid) {
+                alert(validation.message);
+                return;
+            }
+
             try {
                 // Check if username is already taken
                 const usernameQuery = await db.collection('users')
-                    .where('username', '==', username)
+                    .where('usernameLowercase', '==', username.toLowerCase())
                     .get();
 
                 if (!usernameQuery.empty) {
@@ -4208,6 +4326,228 @@
                 updatePlayerNamesWithProBadge();
             } else {
                 if (donorDisplay) donorDisplay.style.display = 'none';
+            }
+        }
+
+        // ========== AVATAR & USERNAME EDITING FUNCTIONS ==========
+        const PROFANITY_LIST = [
+            'fuck', 'shit', 'ass', 'bitch', 'damn', 'crap', 'piss', 'dick', 'cock', 'pussy',
+            'fag', 'slut', 'whore', 'nigger', 'nigga', 'retard', 'cunt', 'twat', 'bastard',
+            'bollocks', 'wanker', 'bugger', 'arse', 'prick', 'tosser', 'git', 'sod', 'bloody',
+            'rape', 'nazi', 'hitler', 'kkk', 'racist', 'sexist', 'kill', 'die', 'hate'
+        ];
+
+        function containsProfanity(text) {
+            const lowerText = text.toLowerCase();
+            return PROFANITY_LIST.some(word => {
+                const pattern = new RegExp(`\\b${word}\\b|${word}`, 'i');
+                return pattern.test(lowerText);
+            });
+        }
+
+        function validateUsername(username) {
+            if (!username || username.length < 3) {
+                return { valid: false, message: 'Username must be at least 3 characters long' };
+            }
+            if (username.length > 20) {
+                return { valid: false, message: 'Username must be 20 characters or less' };
+            }
+            if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+                return { valid: false, message: 'Username can only contain letters, numbers, underscores, and hyphens' };
+            }
+            if (containsProfanity(username)) {
+                return { valid: false, message: 'Username contains inappropriate language' };
+            }
+            return { valid: true, message: '' };
+        }
+
+        function showEditAvatarModal() {
+            const modal = document.getElementById('edit-avatar-modal');
+            const grid = document.getElementById('edit-avatar-grid');
+
+            if (!modal || !grid) return;
+
+            // Clear and populate avatar grid
+            grid.innerHTML = '';
+
+            const avatars = [
+                // Free avatars
+                { emoji: '👑', unlock: 'free' },
+                { emoji: '⚔️', unlock: 'free' },
+                { emoji: '🛡️', unlock: 'free' },
+                { emoji: '🏹', unlock: 'free' },
+                { emoji: '🧙', unlock: 'free' },
+                { emoji: '🐉', unlock: 'free' },
+                { emoji: '🦁', unlock: 'free' },
+                { emoji: '🦅', unlock: 'free' },
+                { emoji: '🐺', unlock: 'free' },
+                { emoji: '🦈', unlock: 'free' },
+                { emoji: '🔥', unlock: 'free' },
+                { emoji: '⚡', unlock: 'free' },
+                // Pro avatars
+                { emoji: '💎', unlock: 'pro' },
+                { emoji: '🏆', unlock: 'pro' },
+                { emoji: '🎯', unlock: 'pro' },
+                { emoji: '🎖️', unlock: 'pro' },
+                { emoji: '🌟', unlock: 'pro' },
+                { emoji: '🔱', unlock: 'pro' },
+                // Donor avatars
+                { emoji: '💝', unlock: 'donor' },
+                { emoji: '🌹', unlock: 'donor' },
+                { emoji: '🦄', unlock: 'donor' },
+                { emoji: '🌈', unlock: 'donor' },
+                { emoji: '✨', unlock: 'donor' },
+                { emoji: '🎨', unlock: 'donor' },
+                // Both avatars
+                { emoji: '🌠', unlock: 'both' },
+                { emoji: '👾', unlock: 'both' },
+                { emoji: '🎭', unlock: 'both' },
+                { emoji: '🦚', unlock: 'both' },
+                { emoji: '🐲', unlock: 'both' },
+                { emoji: '🧚', unlock: 'both' }
+            ];
+
+            const isPro = currentUserProfile.isPro || false;
+            const isDonor = currentUserProfile.isDonor || false;
+
+            avatars.forEach(av => {
+                const div = document.createElement('div');
+                div.className = 'avatar-option';
+                div.setAttribute('data-avatar', av.emoji);
+                div.setAttribute('data-unlock', av.unlock);
+                div.textContent = av.emoji;
+                div.onclick = (e) => selectAvatar(av.emoji, e);
+
+                // Check if locked
+                let isLocked = false;
+                if (av.unlock === 'pro' && !isPro) {
+                    isLocked = true;
+                } else if (av.unlock === 'donor' && !isDonor) {
+                    isLocked = true;
+                } else if (av.unlock === 'both' && (!isPro || !isDonor)) {
+                    isLocked = true;
+                }
+
+                if (isLocked) {
+                    div.classList.add('locked');
+                }
+
+                // Select current avatar
+                if (av.emoji === currentUserProfile.avatar) {
+                    div.classList.add('selected');
+                    selectedAvatar = av.emoji;
+                }
+
+                grid.appendChild(div);
+            });
+
+            modal.style.display = 'block';
+        }
+
+        function closeEditAvatarModal() {
+            const modal = document.getElementById('edit-avatar-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function saveAvatarChange() {
+            if (!selectedAvatar || !currentUser) return;
+
+            try {
+                await db.collection('users').doc(currentUser.uid).update({
+                    avatar: selectedAvatar
+                });
+
+                await refreshCurrentUserProfile();
+
+                // Update avatar displays
+                const menuAvatar = document.getElementById('menu-user-avatar');
+                const profileAvatar = document.getElementById('profile-user-avatar');
+
+                if (menuAvatar) menuAvatar.textContent = selectedAvatar;
+                if (profileAvatar) profileAvatar.textContent = selectedAvatar;
+
+                closeEditAvatarModal();
+                alert('Avatar updated successfully!');
+            } catch (error) {
+                console.error('Error updating avatar:', error);
+                alert('Error updating avatar. Please try again.');
+            }
+        }
+
+        function showEditUsernameModal() {
+            const modal = document.getElementById('edit-username-modal');
+            const input = document.getElementById('new-username-input');
+            const message = document.getElementById('username-validation-message');
+
+            if (modal) modal.style.display = 'block';
+            if (input) {
+                input.value = '';
+                input.focus();
+            }
+            if (message) {
+                message.textContent = '';
+                message.style.color = '';
+            }
+        }
+
+        function closeEditUsernameModal() {
+            const modal = document.getElementById('edit-username-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function saveUsernameChange() {
+            const input = document.getElementById('new-username-input');
+            const message = document.getElementById('username-validation-message');
+            const newUsername = input.value.trim();
+
+            if (!currentUser || !newUsername) return;
+
+            // Validate username
+            const validation = validateUsername(newUsername);
+            if (!validation.valid) {
+                message.textContent = validation.message;
+                message.style.color = '#f44336';
+                return;
+            }
+
+            // Check if username is the same
+            if (newUsername === currentUserProfile.username) {
+                message.textContent = 'This is already your username';
+                message.style.color = '#ff9800';
+                return;
+            }
+
+            try {
+                // Check if username is already taken
+                const usernameQuery = await db.collection('users')
+                    .where('usernameLowercase', '==', newUsername.toLowerCase())
+                    .get();
+
+                if (!usernameQuery.empty) {
+                    // Check if it's the current user's username
+                    const existingDoc = usernameQuery.docs[0];
+                    if (existingDoc.id !== currentUser.uid) {
+                        message.textContent = 'Username already taken. Please choose another.';
+                        message.style.color = '#f44336';
+                        return;
+                    }
+                }
+
+                // Update username
+                await db.collection('users').doc(currentUser.uid).update({
+                    username: newUsername,
+                    usernameLowercase: newUsername.toLowerCase()
+                });
+
+                await refreshCurrentUserProfile();
+                updatePlayerNamesWithProBadge();
+
+                closeEditUsernameModal();
+                alert('Username updated successfully!');
+            } catch (error) {
+                console.error('Error updating username:', error);
+                message.textContent = 'Error updating username. Please try again.';
+                message.style.color = '#f44336';
             }
         }
 
