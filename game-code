@@ -2393,6 +2393,163 @@
         .searching-indicator.active {
             display: block;
         }
+        .friend-match-section {
+            padding: 20px;
+            text-align: center;
+        }
+        .friend-invitation-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .friend-invitation-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+        }
+        .friend-invitation-info .avatar {
+            font-size: 36px;
+        }
+        .friend-invitation-details h4 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .friend-invitation-details p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .friend-invitation-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .accept-btn, .decline-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .accept-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .accept-btn:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        .decline-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        .decline-btn:hover {
+            background-color: #da190b;
+            transform: scale(1.05);
+        }
+        .friend-list-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .friend-list-item:hover {
+            border-color: #4CAF50;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+        }
+        .friend-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+        }
+        .friend-info .avatar {
+            font-size: 36px;
+        }
+        .friend-details h4 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+        .friend-details p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            color: #666;
+        }
+        .friend-status-online {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .friend-status-offline {
+            color: #999;
+        }
+        .challenge-btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .challenge-btn:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        .challenge-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .outgoing-invitation-card {
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .outgoing-invitation-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+        }
+        .outgoing-invitation-info .avatar {
+            font-size: 36px;
+        }
+        .cancel-invitation-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .cancel-invitation-btn:hover {
+            background-color: #da190b;
+            transform: scale(1.05);
+        }
         .active-games-list {
             display: flex;
             flex-direction: column;
@@ -2759,6 +2916,7 @@
 
         <div class="lobby-tabs">
             <button class="lobby-tab active" onclick="switchLobbyTab('quick-match')">Quick Match</button>
+            <button class="lobby-tab" onclick="switchLobbyTab('play-with-friend')">Play with Friend</button>
             <button class="lobby-tab" onclick="switchLobbyTab('leaderboard')">Leaderboard</button>
         </div>
 
@@ -2787,6 +2945,52 @@
                     <div class="searching-indicator" id="searching-indicator">
                         <div class="spinner"></div>
                         <p>Searching for opponent...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="play-with-friend-section" class="lobby-section">
+                <div class="friend-match-section">
+                    <!-- Pending Invitations (Incoming) -->
+                    <div id="incoming-invitations-container" style="margin-bottom: 20px; display: none;">
+                        <h3 style="color: #4CAF50;">📨 Incoming Challenges</h3>
+                        <div id="incoming-invitations-list"></div>
+                    </div>
+
+                    <!-- Select Game Variant -->
+                    <h3>Select Game Variant</h3>
+                    <div style="margin: 20px 0; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                        <div class="variant-select-card">
+                            <button class="variant-select-btn selected-variant" id="friend-variant-elite-btn" onclick="selectFriendMatchVariant('36s-elite')">
+                                36s Elite
+                            </button>
+                            <p style="font-size: 13px; color: #666; margin-top: 8px;">Free for all players</p>
+                        </div>
+                        <div class="variant-select-card">
+                            <button class="variant-select-btn" id="friend-variant-supreme-btn" onclick="selectFriendMatchVariant('36s-supreme')">
+                                36s Supreme
+                            </button>
+                            <p id="friend-supreme-status" style="font-size: 13px; color: #ff9800; margin-top: 8px; font-weight: bold;">🔒 Pro Only</p>
+                        </div>
+                    </div>
+
+                    <!-- Online Friends List -->
+                    <h3>👥 Challenge a Friend</h3>
+                    <div id="friends-list-container">
+                        <div id="friends-loading" style="text-align: center; color: #666; padding: 20px;">
+                            Loading friends...
+                        </div>
+                        <div id="friends-list" style="display: none;"></div>
+                        <div id="no-friends-message" style="display: none; text-align: center; color: #666; padding: 20px;">
+                            <p>You don't have any friends yet.</p>
+                            <p style="font-size: 14px; margin-top: 10px;">Go to your Profile to add friends!</p>
+                        </div>
+                    </div>
+
+                    <!-- Sent Invitations (Outgoing) -->
+                    <div id="outgoing-invitations-container" style="margin-top: 20px; display: none;">
+                        <h3>⏳ Sent Challenges</h3>
+                        <div id="outgoing-invitations-list"></div>
                     </div>
                 </div>
             </div>
@@ -3437,8 +3641,11 @@
 
         // Pro User & Payment System
         let selectedMatchVariant = '36s-elite'; // Default variant
+        let selectedFriendMatchVariant = '36s-elite'; // Default variant for friend matches
         let onlinePlayersListener = null;
         let visitorsListener = null;
+        let friendInvitationsListener = null; // Listener for incoming friend challenges
+        let outgoingInvitationsListener = null; // Listener for sent challenges
         const NON_PRO_DAILY_GAME_LIMIT = 5;
         const stripe = Stripe('pk_test_YOUR_STRIPE_PUBLISHABLE_KEY'); // Replace with your Stripe key
 
@@ -5586,6 +5793,346 @@
                 section.classList.remove('active');
             });
             document.getElementById(tab + '-section').classList.add('active');
+
+            // Load data when switching to specific tabs
+            if (tab === 'play-with-friend') {
+                loadFriendsListForChallenge();
+                startFriendInvitationsListener();
+            } else if (tab === 'leaderboard') {
+                loadLeaderboard();
+            }
+        }
+
+        // Friend Match Variant Selection
+        function selectFriendMatchVariant(variant) {
+            // Check if pro variant and user is not pro
+            if (variant === '36s-supreme' && !currentUserProfile.isPro) {
+                showUpgradeModal();
+                return;
+            }
+
+            selectedFriendMatchVariant = variant;
+
+            // Update button styles
+            document.getElementById('friend-variant-elite-btn').classList.remove('selected-variant');
+            document.getElementById('friend-variant-supreme-btn').classList.remove('selected-variant');
+
+            if (variant === '36s-elite') {
+                document.getElementById('friend-variant-elite-btn').classList.add('selected-variant');
+            } else {
+                document.getElementById('friend-variant-supreme-btn').classList.add('selected-variant');
+            }
+
+            console.log('Friend match variant selected:', variant);
+        }
+
+        // Load Friends List for Challenge
+        async function loadFriendsListForChallenge() {
+            if (!currentUser || !currentUserProfile) return;
+
+            const friendsList = document.getElementById('friends-list');
+            const friendsLoading = document.getElementById('friends-loading');
+            const noFriendsMessage = document.getElementById('no-friends-message');
+
+            friendsLoading.style.display = 'block';
+            friendsList.style.display = 'none';
+            noFriendsMessage.style.display = 'none';
+
+            try {
+                const friends = currentUserProfile.friends || [];
+
+                if (friends.length === 0) {
+                    friendsLoading.style.display = 'none';
+                    noFriendsMessage.style.display = 'block';
+                    return;
+                }
+
+                // Load friend profiles
+                const friendProfiles = [];
+                for (const friendId of friends) {
+                    try {
+                        const friendDoc = await db.collection('users').doc(friendId).get();
+                        if (friendDoc.exists) {
+                            const friendData = friendDoc.data();
+                            const isOnline = friendData.lastActive &&
+                                (Date.now() - friendData.lastActive.toMillis() < 5 * 60 * 1000); // Online if active in last 5 minutes
+                            friendProfiles.push({
+                                uid: friendId,
+                                ...friendData,
+                                isOnline
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error loading friend:', error);
+                    }
+                }
+
+                // Sort by online status, then by username
+                friendProfiles.sort((a, b) => {
+                    if (a.isOnline && !b.isOnline) return -1;
+                    if (!a.isOnline && b.isOnline) return 1;
+                    return a.username.localeCompare(b.username);
+                });
+
+                // Render friends list
+                friendsList.innerHTML = '';
+                friendProfiles.forEach(friend => {
+                    const friendRecord = getFriendRecord(currentUserProfile.friendStats, friend.uid);
+                    const statusClass = friend.isOnline ? 'friend-status-online' : 'friend-status-offline';
+                    const statusText = friend.isOnline ? '🟢 Online' : '⚫ Offline';
+
+                    const friendItem = document.createElement('div');
+                    friendItem.className = 'friend-list-item';
+                    friendItem.innerHTML = `
+                        <div class="friend-info">
+                            <div class="avatar">${friend.avatar || '😊'}</div>
+                            <div class="friend-details">
+                                <h4>${friend.isPro ? '⭐ ' : ''}${friend.username}</h4>
+                                <p class="${statusClass}">${statusText}</p>
+                                <p style="font-size: 12px; color: #999;">Record: ${friendRecord.wins}W - ${friendRecord.losses}L - ${friendRecord.draws}D</p>
+                            </div>
+                        </div>
+                        <button class="challenge-btn" onclick="challengeFriend('${friend.uid}', '${friend.username}', '${friend.avatar || '😊'}')" ${!friend.isOnline ? 'disabled' : ''}>
+                            ${friend.isOnline ? '⚔️ Challenge' : 'Offline'}
+                        </button>
+                    `;
+                    friendsList.appendChild(friendItem);
+                });
+
+                friendsLoading.style.display = 'none';
+                friendsList.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error loading friends for challenge:', error);
+                friendsLoading.innerHTML = '<p style="color: red;">Error loading friends</p>';
+            }
+        }
+
+        // Challenge a Friend
+        async function challengeFriend(friendUid, friendUsername, friendAvatar) {
+            if (!currentUser || !currentUserProfile) return;
+
+            try {
+                // Check if user already has a pending invitation to this friend
+                const existingQuery = await db.collection('friendInvitations')
+                    .where('fromUid', '==', currentUser.uid)
+                    .where('toUid', '==', friendUid)
+                    .where('status', '==', 'pending')
+                    .get();
+
+                if (!existingQuery.empty) {
+                    alert('You already have a pending challenge to this friend!');
+                    return;
+                }
+
+                // Create invitation
+                await db.collection('friendInvitations').add({
+                    fromUid: currentUser.uid,
+                    fromUsername: currentUserProfile.username,
+                    fromAvatar: currentUserProfile.avatar,
+                    toUid: friendUid,
+                    toUsername: friendUsername,
+                    toAvatar: friendAvatar,
+                    variant: selectedFriendMatchVariant,
+                    status: 'pending',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert(`Challenge sent to ${friendUsername}! 🎮`);
+
+            } catch (error) {
+                console.error('Error sending challenge:', error);
+                alert('Error sending challenge: ' + error.message);
+            }
+        }
+
+        // Start Friend Invitations Listener
+        function startFriendInvitationsListener() {
+            if (!currentUser) return;
+
+            // Clean up existing listeners
+            if (friendInvitationsListener) {
+                friendInvitationsListener();
+                friendInvitationsListener = null;
+            }
+            if (outgoingInvitationsListener) {
+                outgoingInvitationsListener();
+                outgoingInvitationsListener = null;
+            }
+
+            // Listen for incoming invitations
+            friendInvitationsListener = db.collection('friendInvitations')
+                .where('toUid', '==', currentUser.uid)
+                .where('status', '==', 'pending')
+                .onSnapshot(snapshot => {
+                    const incomingList = document.getElementById('incoming-invitations-list');
+                    const incomingContainer = document.getElementById('incoming-invitations-container');
+
+                    if (snapshot.empty) {
+                        incomingContainer.style.display = 'none';
+                        return;
+                    }
+
+                    incomingList.innerHTML = '';
+                    snapshot.forEach(doc => {
+                        const invitation = doc.data();
+                        const invitationCard = document.createElement('div');
+                        invitationCard.className = 'friend-invitation-card';
+                        invitationCard.innerHTML = `
+                            <div class="friend-invitation-info">
+                                <div class="avatar">${invitation.fromAvatar || '😊'}</div>
+                                <div class="friend-invitation-details">
+                                    <h4>${invitation.fromUsername} challenges you!</h4>
+                                    <p>Game mode: ${invitation.variant === '36s-elite' ? '36s Elite' : '36s Supreme'}</p>
+                                </div>
+                            </div>
+                            <div class="friend-invitation-actions">
+                                <button class="accept-btn" onclick="acceptChallenge('${doc.id}', '${invitation.fromUid}')">✓ Accept</button>
+                                <button class="decline-btn" onclick="declineChallenge('${doc.id}')">✗ Decline</button>
+                            </div>
+                        `;
+                        incomingList.appendChild(invitationCard);
+                    });
+
+                    incomingContainer.style.display = 'block';
+                });
+
+            // Listen for outgoing invitations
+            outgoingInvitationsListener = db.collection('friendInvitations')
+                .where('fromUid', '==', currentUser.uid)
+                .where('status', '==', 'pending')
+                .onSnapshot(snapshot => {
+                    const outgoingList = document.getElementById('outgoing-invitations-list');
+                    const outgoingContainer = document.getElementById('outgoing-invitations-container');
+
+                    if (snapshot.empty) {
+                        outgoingContainer.style.display = 'none';
+                        return;
+                    }
+
+                    outgoingList.innerHTML = '';
+                    snapshot.forEach(doc => {
+                        const invitation = doc.data();
+                        const invitationCard = document.createElement('div');
+                        invitationCard.className = 'outgoing-invitation-card';
+                        invitationCard.innerHTML = `
+                            <div class="outgoing-invitation-info">
+                                <div class="avatar">${invitation.toAvatar || '😊'}</div>
+                                <div>
+                                    <h4 style="margin: 0; color: #333;">Challenging ${invitation.toUsername}</h4>
+                                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">
+                                        ${invitation.variant === '36s-elite' ? '36s Elite' : '36s Supreme'} • Waiting for response...
+                                    </p>
+                                </div>
+                            </div>
+                            <button class="cancel-invitation-btn" onclick="cancelChallenge('${doc.id}')">Cancel</button>
+                        `;
+                        outgoingList.appendChild(invitationCard);
+                    });
+
+                    outgoingContainer.style.display = 'block';
+                });
+        }
+
+        // Accept Challenge
+        async function acceptChallenge(invitationId, opponentUid) {
+            if (!currentUser) return;
+
+            try {
+                // Get invitation data
+                const invitationDoc = await db.collection('friendInvitations').doc(invitationId).get();
+                if (!invitationDoc.exists) {
+                    alert('Invitation not found!');
+                    return;
+                }
+
+                const invitation = invitationDoc.data();
+
+                // Create game with friend
+                await createFriendGame(opponentUid, currentUser.uid, invitation.variant);
+
+                // Delete invitation
+                await db.collection('friendInvitations').doc(invitationId).delete();
+
+            } catch (error) {
+                console.error('Error accepting challenge:', error);
+                alert('Error accepting challenge: ' + error.message);
+            }
+        }
+
+        // Decline Challenge
+        async function declineChallenge(invitationId) {
+            try {
+                // Delete invitation
+                await db.collection('friendInvitations').doc(invitationId).delete();
+            } catch (error) {
+                console.error('Error declining challenge:', error);
+                alert('Error declining challenge: ' + error.message);
+            }
+        }
+
+        // Cancel Challenge
+        async function cancelChallenge(invitationId) {
+            try {
+                // Delete invitation
+                await db.collection('friendInvitations').doc(invitationId).delete();
+            } catch (error) {
+                console.error('Error canceling challenge:', error);
+                alert('Error canceling challenge: ' + error.message);
+            }
+        }
+
+        // Create Friend Game (similar to createOnlineGame but for friends)
+        async function createFriendGame(player1Id, player2Id, variant = '36s-elite') {
+            try {
+                // Get both player profiles
+                const p1Doc = await db.collection('users').doc(player1Id).get();
+                const p2Doc = await db.collection('users').doc(player2Id).get();
+                const p1Data = p1Doc.data();
+                const p2Data = p2Doc.data();
+
+                // Add pro badge to usernames if applicable
+                const p1Username = (p1Data.isPro ? '⭐ ' : '') + p1Data.username;
+                const p2Username = (p2Data.isPro ? '⭐ ' : '') + p2Data.username;
+
+                // Create game document
+                const gameRef = await db.collection('games').add({
+                    player1: {
+                        uid: player1Id,
+                        username: p1Username,
+                        avatar: p1Data.avatar,
+                        color: 'W',
+                        isPro: p1Data.isPro || false
+                    },
+                    player2: {
+                        uid: player2Id,
+                        username: p2Username,
+                        avatar: p2Data.avatar,
+                        color: 'B',
+                        isPro: p2Data.isPro || false
+                    },
+                    currentTurn: 'W',
+                    status: 'active',
+                    variant: variant,
+                    isFriendMatch: true, // Mark as friend match (not ranked)
+                    gameState: null,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastMove: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                currentGameId = gameRef.id;
+                myPlayerColor = (currentUser.uid === player1Id) ? 'W' : 'B';
+                isOnlineGame = true;
+
+                // Start the game
+                startOnlineGame(gameRef.id);
+
+                return gameRef.id;
+            } catch (error) {
+                console.error('Error creating friend game:', error);
+                alert('Error creating game: ' + error.message);
+                throw error;
+            }
         }
 
         async function loadLeaderboard() {
