@@ -14,6 +14,10 @@
     <!-- PayPal SDK -->
     <script src="https://www.paypal.com/sdk/js?client-id=AS-crdm1p33Vus5Q0EDfvZAzxoP0gehr7DD_IQwXVQFgKPTc5pUQ7G1-dLmdpwzrThCxOdEjFMB9mhpz&currency=GBP&intent=capture"></script>
 
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+
     <style>
         :root {
             --fixed-app-width: 1320px;
@@ -2936,7 +2940,7 @@
                             <button class="variant-select-btn" id="variant-supreme-btn" onclick="selectMatchVariant('36s-supreme')">
                                 36s Supreme
                             </button>
-                            <p id="supreme-status" style="font-size: 13px; color: #ff9800; margin-top: 8px; font-weight: bold;">🔒 Pro Only</p>
+                            <p id="supreme-status" style="font-size: 13px; color: #666; margin-top: 8px;">Available to all players</p>
                         </div>
                     </div>
                     <div style="margin: 20px 0;">
@@ -2971,7 +2975,7 @@
                             <button class="variant-select-btn" id="friend-variant-supreme-btn" onclick="selectFriendMatchVariant('36s-supreme')">
                                 36s Supreme
                             </button>
-                            <p id="friend-supreme-status" style="font-size: 13px; color: #ff9800; margin-top: 8px; font-weight: bold;">🔒 Pro Only</p>
+                            <p id="friend-supreme-status" style="font-size: 13px; color: #666; margin-top: 8px;">Available to all players</p>
                         </div>
                     </div>
 
@@ -3033,17 +3037,8 @@
                     <button onclick="showEditUsernameModal()" style="background: #2196F3; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; font-size: 12px;">Edit Name</button>
                 </div>
                 <div class="user-stats-summary">Member since: <span id="member-since">-</span></div>
-                <div id="pro-status-display" style="margin-top: 10px; font-size: 16px; font-weight: bold; color: #4CAF50; display: none;">
-                    <span class="pro-badge">⭐</span> Pro Member
-                </div>
                 <div id="donor-status-display" style="margin-top: 10px; font-size: 16px; font-weight: bold; color: #FF69B4; display: none;">
                     <span class="donor-badge">💝</span> Supporter
-                </div>
-                <div id="upgrade-to-pro-section" style="margin-top: 10px;">
-                    <button onclick="showUpgradeModal()" style="padding: 10px 20px; background-color: #FFD700; color: #333; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 14px;">
-                        ⭐ Upgrade to Pro - £3
-                    </button>
-                    <p style="font-size: 12px; color: #666; margin-top: 5px;">Unlock 36s Supreme & unlimited ranked games</p>
                 </div>
                 <div id="games-remaining-display" style="margin-top: 10px; font-size: 14px; color: #ff9800; font-weight: bold; display: none;">
                     Ranked games remaining today: <span id="games-remaining-count">5</span>/5
@@ -3425,34 +3420,6 @@
         <p id="coin-flip-popup-message"></p>
     </div>
 
-    <!-- Upgrade to Pro Modal -->
-    <div id="upgrade-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
-        <div style="background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; text-align: center;">
-            <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
-                <span style="font-size: 24px; font-weight: bold;">⭐ Upgrade to Pro</span>
-                <button class="modal-close" onclick="closeUpgradeModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
-            </div>
-            <div style="margin: 20px 0;">
-                <h3 style="color: #333; margin-bottom: 15px;">Unlock Premium Features</h3>
-                <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0;">
-                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Access to 36s Supreme variant</li>
-                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Unlimited ranked games (no daily limits)</li>
-                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Star badge next to your name</li>
-                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Priority matchmaking</li>
-                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Future tournament & league access</li>
-                </ul>
-                <div style="font-size: 32px; font-weight: bold; color: #4CAF50; margin: 20px 0;">£3.00</div>
-                <p style="color: #666; font-size: 14px;">One-time payment • Lifetime access</p>
-            </div>
-            <div style="margin-top: 25px;">
-                <div id="paypal-button-container" style="margin: 10px 0; min-height: 50px;">
-                    <!-- PayPal button will render here -->
-                </div>
-            </div>
-            <p style="font-size: 12px; color: #999; margin-top: 20px;">Secure payment processing • Money-back guarantee</p>
-        </div>
-    </div>
-
     <!-- Donation Modal -->
     <div id="donation-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
         <div style="background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; text-align: center;">
@@ -3464,30 +3431,32 @@
                 <h3 style="color: #333; margin-bottom: 15px;">Help Us Keep RATIX Running</h3>
                 <p style="color: #666; margin-bottom: 20px;">Your support helps us maintain servers, add new features, and keep the game free for everyone!</p>
                 <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0;">
-                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">💝 Get a heart badge on your profile (£1+ donations)</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">💝 Get a heart badge on your profile</li>
                     <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">🙏 Support ongoing development</li>
                     <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">🎮 Help keep servers running</li>
                     <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">✨ Enable new features & improvements</li>
                 </ul>
-                <div style="margin: 20px 0;">
-                    <label for="donation-amount" style="display: block; margin-bottom: 10px; font-weight: bold; color: #333;">Choose your donation amount:</label>
-                    <select id="donation-amount" style="width: 100%; padding: 10px; font-size: 16px; border: 2px solid #FF69B4; border-radius: 5px; margin-bottom: 10px;">
-                        <option value="1.00">£1.00</option>
-                        <option value="2.00">£2.00</option>
-                        <option value="5.00" selected>£5.00</option>
-                        <option value="10.00">£10.00</option>
-                        <option value="20.00">£20.00</option>
-                        <option value="custom">Custom amount</option>
-                    </select>
-                    <input type="number" id="custom-donation-amount" placeholder="Enter custom amount (£)" min="1" step="0.01" style="width: 100%; padding: 10px; font-size: 16px; border: 2px solid #FF69B4; border-radius: 5px; display: none;">
-                </div>
             </div>
             <div style="margin-top: 25px;">
+                <!-- PASTE YOUR PAYPAL DONATION BUTTON HTML CODE BELOW -->
                 <div id="paypal-donation-button-container" style="margin: 10px 0; min-height: 50px;">
-                    <!-- PayPal donation button will render here -->
+                    <!-- To get your PayPal donation button:
+                         1. Log into your PayPal account
+                         2. Go to your PayPal account settings
+                         3. Navigate to "PayPal Buttons" or "Donate Button"
+                         4. Create/customize your donation button
+                         5. Copy the generated HTML code
+                         6. Paste it here to replace this comment
+
+                         Note: After adding your button, you'll need to manually verify donations
+                         and update user profiles in Firebase to award the heart badge.
+                    -->
+                    <p style="color: #999; font-size: 14px; padding: 20px; background: #f5f5f5; border-radius: 5px;">
+                        PayPal donation button will appear here once configured.
+                    </p>
                 </div>
             </div>
-            <p style="font-size: 12px; color: #999; margin-top: 20px;">Secure payment via PayPal • Thank you for your support!</p>
+            <p style="font-size: 12px; color: #999; margin-top: 20px;">Thank you for your support!</p>
         </div>
     </div>
 
@@ -3856,12 +3825,8 @@
                 const unlockType = target.getAttribute('data-unlock');
                 let message = 'This avatar is locked. ';
 
-                if (unlockType === 'pro') {
-                    message += 'Upgrade to Pro to unlock!';
-                } else if (unlockType === 'donor') {
+                if (unlockType === 'pro' || unlockType === 'donor' || unlockType === 'both') {
                     message += 'Become a Supporter to unlock!';
-                } else if (unlockType === 'both') {
-                    message += 'Upgrade to Pro AND become a Supporter to unlock!';
                 }
 
                 alert(message);
@@ -4317,64 +4282,13 @@
         }
 
         // ========== PRO USER SYSTEM FUNCTIONS ==========
-        async function checkAndUpdateProStatus() {
-            if (!currentUser || !currentUserProfile) return;
-
-            const isPro = currentUserProfile.isPro || false;
-            const proDisplay = document.getElementById('pro-status-display');
-            const upgradeSection = document.getElementById('upgrade-to-pro-section');
-            const supremeBtn = document.getElementById('variant-supreme-btn');
-            const supremeStatus = document.getElementById('supreme-status');
-
-            if (isPro) {
-                // Show pro badge
-                if (proDisplay) proDisplay.style.display = 'block';
-                if (upgradeSection) upgradeSection.style.display = 'none';
-
-                // Unlock Supreme variant
-                if (supremeBtn) {
-                    supremeBtn.classList.remove('locked');
-                    supremeBtn.disabled = false;
-                }
-                if (supremeStatus) {
-                    supremeStatus.textContent = '⭐ Pro Unlocked';
-                    supremeStatus.style.color = '#4CAF50';
-                }
-
-                // Update player names with star emoji
-                updatePlayerNamesWithProBadge();
-            } else {
-                // Hide pro badge
-                if (proDisplay) proDisplay.style.display = 'none';
-                if (upgradeSection) upgradeSection.style.display = 'block';
-
-                // Lock Supreme variant
-                if (supremeBtn) {
-                    supremeBtn.classList.add('locked');
-                    supremeBtn.disabled = true;
-                }
-                if (supremeStatus) {
-                    supremeStatus.textContent = '🔒 Pro Only';
-                    supremeStatus.style.color = '#ff9800';
-                }
-
-                // Check and display game limits
-                await checkGameLimits();
-            }
-        }
-
-        function updatePlayerNamesWithProBadge() {
+        function updatePlayerNamesWithBadges() {
             if (!currentUserProfile) return;
 
             const username = currentUserProfile.username || 'Player';
             let badges = '';
 
-            // Add pro badge
-            if (currentUserProfile.isPro) {
-                badges += '⭐ ';
-            }
-
-            // Add donor badge
+            // Add donor badge only
             if (currentUserProfile.isDonor) {
                 badges += '💝 ';
             }
@@ -4416,13 +4330,6 @@
 
         // ========== VARIANT SELECTION FUNCTIONS ==========
         function selectMatchVariant(variant) {
-            // Check if Supreme is locked for non-pro users
-            if (variant === '36s-supreme' && !currentUserProfile?.isPro) {
-                alert('36s Supreme is only available for Pro users. Upgrade to Pro to unlock this variant!');
-                showUpgradeModal();
-                return;
-            }
-
             selectedMatchVariant = variant;
 
             // Update button states
@@ -4447,119 +4354,11 @@
         }
 
         // ========== PAYMENT INTEGRATION FUNCTIONS ==========
-        function showUpgradeModal() {
-            const modal = document.getElementById('upgrade-modal');
-            if (modal) {
-                modal.style.display = 'block';
-                // Initialize PayPal button when modal opens
-                initPayPalButton();
-            }
-        }
-
-        function closeUpgradeModal() {
-            const modal = document.getElementById('upgrade-modal');
-            if (modal) modal.style.display = 'none';
-        }
-
-        function initPayPalButton() {
-            if (typeof paypal === 'undefined') {
-                console.error('PayPal SDK not loaded');
-                return;
-            }
-
-            // Clear any existing buttons
-            const container = document.getElementById('paypal-button-container');
-            if (container) {
-                container.innerHTML = '';
-            }
-
-            paypal.Buttons({
-                style: {
-                    layout: 'vertical',
-                    color: 'blue',
-                    shape: 'rect',
-                    label: 'paypal'
-                },
-                onInit: function(data, actions) {
-                    console.log('PayPal buttons initialized', data, actions);
-                },
-                onClick: function(data, actions) {
-                    console.log('PayPal button clicked', data, actions);
-                },
-                createOrder: function(data, actions) {
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                value: '3.00',
-                                currency_code: 'GBP'
-                            },
-                            description: 'RATIX Pro Upgrade - Lifetime Access'
-                        }]
-                    });
-                },
-                onApprove: async function(data, actions) {
-                    try {
-                        const order = await actions.order.capture();
-                        console.log('PayPal order captured:', order);
-
-                        // Update user to Pro status
-                        await handleSuccessfulPayment({
-                            provider: 'paypal',
-                            id: order.id,
-                            status: order.status,
-                            payer: order.payer
-                        });
-                    } catch (error) {
-                        console.error('Error processing PayPal payment:', error);
-                        alert('Error processing payment. Please contact support with order ID: ' + data.orderID);
-                    }
-                },
-                onError: function(err) {
-                    console.error('PayPal error:', err);
-                    alert('Payment error occurred. Please try again.');
-                },
-                onCancel: function(data) {
-                    console.log('PayPal payment cancelled:', data);
-                    alert('Payment cancelled. You can try again when ready.');
-                }
-            }).render('#paypal-button-container');
-        }
-
-        async function handleSuccessfulPayment(paymentData) {
-            try {
-                // Update user to Pro status
-                await db.collection('users').doc(currentUser.uid).update({
-                    isPro: true,
-                    proUpgradeDate: firebase.firestore.FieldValue.serverTimestamp(),
-                    paymentData: {
-                        provider: paymentData.provider || 'paypal',
-                        transactionId: paymentData.id,
-                        amount: 3.00,
-                        currency: 'GBP',
-                        timestamp: Date.now()
-                    }
-                });
-
-                await refreshCurrentUserProfile();
-                await checkAndUpdateProStatus();
-
-                closeUpgradeModal();
-                alert('🎉 Congratulations! You are now a Pro user!\n\nYou now have access to:\n✓ 36s Supreme variant\n✓ Unlimited ranked games\n✓ Pro badge');
-            } catch (error) {
-                console.error('Error updating Pro status:', error);
-                alert('Error upgrading account. Please contact support.');
-            }
-        }
-
         // ========== DONATION FUNCTIONS ==========
         function showDonationModal() {
             const modal = document.getElementById('donation-modal');
             if (modal) {
                 modal.style.display = 'block';
-                // Set up custom amount handler
-                setupDonationAmountHandler();
-                // Initialize PayPal donation button when modal opens
-                initPayPalDonationButton();
             }
         }
 
@@ -4568,103 +4367,9 @@
             if (modal) modal.style.display = 'none';
         }
 
-        function setupDonationAmountHandler() {
-            const select = document.getElementById('donation-amount');
-            const customInput = document.getElementById('custom-donation-amount');
-
-            if (select && customInput) {
-                select.addEventListener('change', function() {
-                    if (this.value === 'custom') {
-                        customInput.style.display = 'block';
-                        customInput.focus();
-                    } else {
-                        customInput.style.display = 'none';
-                    }
-                    // Re-initialize PayPal button with new amount
-                    initPayPalDonationButton();
-                });
-
-                customInput.addEventListener('input', function() {
-                    // Re-initialize PayPal button when custom amount changes
-                    const debounce = setTimeout(() => {
-                        initPayPalDonationButton();
-                    }, 500);
-                });
-            }
-        }
-
-        function getDonationAmount() {
-            const select = document.getElementById('donation-amount');
-            const customInput = document.getElementById('custom-donation-amount');
-
-            if (select.value === 'custom') {
-                const customAmount = parseFloat(customInput.value);
-                return customAmount >= 1 ? customAmount.toFixed(2) : '1.00';
-            }
-            return select.value;
-        }
-
-        function initPayPalDonationButton() {
-            if (typeof paypal === 'undefined') {
-                console.error('PayPal SDK not loaded');
-                return;
-            }
-
-            // Clear any existing buttons
-            const container = document.getElementById('paypal-donation-button-container');
-            if (container) {
-                container.innerHTML = '';
-            }
-
-            const donationAmount = getDonationAmount();
-
-            paypal.Buttons({
-                style: {
-                    layout: 'vertical',
-                    color: 'gold',
-                    shape: 'rect',
-                    label: 'donate'
-                },
-                createOrder: function(data, actions) {
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                value: donationAmount,
-                                currency_code: 'GBP'
-                            },
-                            description: 'RATIX Support Donation'
-                        }]
-                    });
-                },
-                onApprove: async function(data, actions) {
-                    try {
-                        const order = await actions.order.capture();
-                        console.log('PayPal donation captured:', order);
-
-                        // Update user donor status
-                        await handleSuccessfulDonation({
-                            provider: 'paypal',
-                            id: order.id,
-                            status: order.status,
-                            payer: order.payer,
-                            amount: parseFloat(donationAmount)
-                        });
-                    } catch (error) {
-                        console.error('Error processing PayPal donation:', error);
-                        alert('Error processing donation. Please contact support with order ID: ' + data.orderID);
-                    }
-                },
-                onError: function(err) {
-                    console.error('PayPal donation error:', err);
-                    alert('Donation error occurred. Please try again.');
-                },
-                onCancel: function(data) {
-                    console.log('PayPal donation cancelled:', data);
-                    alert('Donation cancelled. You can try again when ready.');
-                }
-            }).render('#paypal-donation-button-container');
-        }
-
+        // Manual donation verification function
+        // After receiving a PayPal donation notification, call this function manually via console:
+        // handleSuccessfulDonation({ provider: 'paypal', id: 'TRANSACTION_ID', amount: 5.00 })
         async function handleSuccessfulDonation(donationData) {
             try {
                 const isDonor = donationData.amount >= 1;
@@ -4714,7 +4419,7 @@
 
             if (isDonor) {
                 if (donorDisplay) donorDisplay.style.display = 'block';
-                updatePlayerNamesWithProBadge();
+                updatePlayerNamesWithBadges();
             } else {
                 if (donorDisplay) donorDisplay.style.display = 'none';
             }
@@ -4931,7 +4636,7 @@
                 });
 
                 await refreshCurrentUserProfile();
-                updatePlayerNamesWithProBadge();
+                updatePlayerNamesWithBadges();
 
                 closeEditUsernameModal();
                 alert('Username updated successfully!');
@@ -5488,19 +5193,6 @@
 
                     // Check game limits for non-pro users
 
-                    const canPlay = await checkGameLimits();
-
-                    if (!canPlay) {
-
-                        alert('You have reached your daily game limit!\n\nUpgrade to Pro for unlimited ranked games.');
-
-                        showUpgradeModal();
-
-                        return;
-
-                    }
-
-        
 
                     try {
 
@@ -5683,9 +5375,9 @@
                 const p1Data = p1Doc.data();
                 const p2Data = p2Doc.data();
 
-                // Add pro badge to usernames if applicable
-                const p1Username = (p1Data.isPro ? '⭐ ' : '') + (p1Data.isDonor ? '💝 ' : '') + p1Data.username;
-                const p2Username = (p2Data.isPro ? '⭐ ' : '') + (p2Data.isDonor ? '💝 ' : '') + p2Data.username;
+                // Add donor badge to usernames if applicable
+                const p1Username = (p1Data.isDonor ? '💝 ' : '') + p1Data.username;
+                const p2Username = (p2Data.isDonor ? '💝 ' : '') + p2Data.username;
 
                 // Create game document
                 const gameRef = await db.collection('games').add({
@@ -5972,7 +5664,6 @@
             refreshPresence();
             loadPlatformStats();
             loadFriendPanel();
-            checkAndUpdateProStatus();
             checkAndUpdateDonorStatus();
             updateFriendsOnlineCount();
         }
@@ -5982,7 +5673,6 @@
             hideAllScreens();
             document.getElementById('matchmaking-lobby').style.display = 'flex';
             loadLeaderboard();
-            checkAndUpdateProStatus();
             checkAndUpdateDonorStatus();
             updateFriendsOnlineCount();
         }
@@ -5992,7 +5682,6 @@
             hideAllScreens();
             document.getElementById('stats-profile-screen').style.display = 'flex';
             updateStatsUI();
-            checkAndUpdateProStatus();
             checkAndUpdateDonorStatus();
         }
 
@@ -6101,12 +5790,6 @@
 
         // Friend Match Variant Selection
         function selectFriendMatchVariant(variant) {
-            // Check if pro variant and user is not pro
-            if (variant === '36s-supreme' && !currentUserProfile.isPro) {
-                showUpgradeModal();
-                return;
-            }
-
             selectedFriendMatchVariant = variant;
 
             // Update button styles
@@ -6183,7 +5866,7 @@
                         <div class="friend-info">
                             <div class="avatar">${friend.avatar || '😊'}</div>
                             <div class="friend-details">
-                                <h4>${friend.isPro ? '⭐ ' : ''}${friend.username}</h4>
+                                <h4>${friend.isDonor ? '💝 ' : ''}${friend.username}</h4>
                                 <p class="${statusClass}">${statusText}</p>
                                 <p style="font-size: 12px; color: #999;">Record: ${friendRecord.wins}W - ${friendRecord.losses}L - ${friendRecord.draws}D</p>
                             </div>
@@ -6429,9 +6112,9 @@
                 const p1Data = p1Doc.data();
                 const p2Data = p2Doc.data();
 
-                // Add pro badge to usernames if applicable
-                const p1Username = (p1Data.isPro ? '⭐ ' : '') + p1Data.username;
-                const p2Username = (p2Data.isPro ? '⭐ ' : '') + p2Data.username;
+                // Add donor badge to usernames if applicable
+                const p1Username = (p1Data.isDonor ? '💝 ' : '') + p1Data.username;
+                const p2Username = (p2Data.isDonor ? '💝 ' : '') + p2Data.username;
 
                 // Create game document
                 const gameRef = await db.collection('games').add({
