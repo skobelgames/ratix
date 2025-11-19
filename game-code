@@ -2731,7 +2731,7 @@
 <body>
     <!-- Authentication Screen -->
     <div id="auth-screen">
-        <h1>🎮 RATIX Online 🎮</h1>
+        <h1>🎮 RATIX 🎮</h1>
         <div class="auth-tabs">
             <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
             <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
@@ -2824,7 +2824,7 @@
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
-        <h2>RATIX Online</h2>
+        <h2>RATIX</h2>
 
         <div class="platform-stats-wrapper">
             <div class="platform-stats-header">
@@ -9216,14 +9216,29 @@
             });
         }
 
+        // Throttle function to limit event handler execution frequency
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
+
         function initializeBoardAnchoredModals() {
             const boardElement = document.getElementById('board');
             if (typeof ResizeObserver !== 'undefined' && boardElement) {
                 boardResizeObserver = new ResizeObserver(() => scheduleBoardAnchorUpdate());
                 boardResizeObserver.observe(boardElement);
             }
-            window.addEventListener('scroll', () => scheduleBoardAnchorUpdate());
-            window.addEventListener('resize', () => scheduleBoardAnchorUpdate());
+            // Throttle scroll and resize events to prevent page unresponsiveness
+            window.addEventListener('scroll', throttle(() => scheduleBoardAnchorUpdate(), 100));
+            window.addEventListener('resize', throttle(() => scheduleBoardAnchorUpdate(), 100));
             if (typeof MutationObserver !== 'undefined') {
                 BOARD_ANCHORED_MODAL_IDS.forEach(id => {
                     const el = document.getElementById(id);
