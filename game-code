@@ -11,11 +11,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
-    <!-- Stripe SDK -->
-    <script src="https://js.stripe.com/v3/"></script>
-
     <!-- PayPal SDK -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AexBRyQT6E3OG_yKASNJsj9H_JuxFyZutH0gZjGe_nKQqRYCASKEV380pmDdAKsTb-_YaSfds93SOsZE&currency=GBP"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AS-crdm1p33Vus5Q0EDfvZAzxoP0gehr7DD_IQwXVQFgKPTc5pUQ7G1-dLmdpwzrThCxOdEjFMB9mhpz&currency=GBP&intent=capture"></script>
 
     <style>
         :root {
@@ -2750,6 +2747,10 @@
             <button type="submit">Create Account</button>
             <div id="signup-error" class="auth-error"></div>
         </form>
+
+        <div class="auth-divider">or</div>
+
+        <button class="menu-btn secondary" onclick="playAsGuest()">🤖 Play as Guest (vs AI)</button>
     </div>
 
     <!-- Profile Setup Screen -->
@@ -3682,11 +3683,11 @@
          *
          *     // Matchmaking queue - authenticated users
          *     match /matchmakingQueue/{queueId} {
-         *       allow read: if request.auth != null;
+         *       allow read: if request.auth != null; // Allow any authenticated user to read the queue
          *       allow create: if request.auth != null &&
          *                       request.auth.uid == request.resource.data.uid;
          *       allow update, delete: if request.auth != null &&
-         *                               request.auth.uid == resource.data.uid;
+         *                               request.auth.uid == resource.data.uid; // Only the creator can update/delete
          *     }
          *   }
          * }
@@ -3709,16 +3710,22 @@
         const FRIEND_LIMIT = 50;
         const PLATFORM_STATS_COLLECTION = 'platformStats';
         const PLATFORM_STATS_DOC = 'aggregates';
+        const GAME_DOC_READY_RETRY_DELAY_MS = 250;
+        const GAME_DOC_READY_MAX_RETRIES = 12;
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
 
         // Pro User & Payment System
         let selectedMatchVariant = '36s-elite'; // Default variant
         let selectedFriendMatchVariant = '36s-elite'; // Default variant for friend matches
         let onlinePlayersListener = null;
         let visitorsListener = null;
+        let onlineStatsRefreshIntervalId = null;
         let friendInvitationsListener = null; // Listener for incoming friend challenges
         let outgoingInvitationsListener = null; // Listener for sent challenges
         const NON_PRO_DAILY_GAME_LIMIT = 5;
-        const stripe = Stripe('pk_test_YOUR_STRIPE_PUBLISHABLE_KEY'); // Replace with your Stripe key
 
         // Session tracking for visitors
         let sessionId = null;
@@ -3748,6 +3755,7 @@
                         // Track as visitor
                         trackVisitorSession();
                     }
+                    setupRealtimeOnlineStats();
                 });
 
                 // Initialize real-time listeners for online stats
@@ -3820,6 +3828,7 @@
                 if (currentGameId && gameListener) {
                     gameListener(); // Unsubscribe from game updates
                 }
+                isOnlineGame = false;
                 await auth.signOut();
                 showAuthScreen();
             } catch (error) {
@@ -4093,6 +4102,7 @@
                             console.error('Error cleaning up visitor session:', error);
                         }
                     }
+                    cleanupRealtimeOnlineStats();
                 });
             } catch (error) {
                 console.error('Error tracking visitor:', error);
@@ -4105,52 +4115,156 @@
             setInterval(() => refreshPresence(), 30000);
         }
 
-        function setupRealtimeOnlineStats() {
+        function refreshRealtimeOnlineStats() {
+
             if (!db) return;
 
-            // Listen to online players (logged in users active in last 5 minutes)
-            const threshold = new Date(Date.now() - 5 * 60 * 1000);
-            onlinePlayersListener = db.collection('users')
-                .where('lastActive', '>=', threshold)
-                .onSnapshot(snapshot => {
-                    const count = snapshot.size;
-                    updateOnlinePlayersDisplay(count);
-                }, error => {
-                    console.error('Error listening to online players:', error);
-                });
 
-            // Listen to visitors (active in last 5 minutes)
-            // Note: Requires read permissions on 'visitors' collection
-            try {
-                visitorsListener = db.collection('visitors')
-                    .where('lastActive', '>=', firebase.firestore.Timestamp.fromDate(threshold))
-                    .onSnapshot(snapshot => {
-                        const count = snapshot.size;
-                        updateVisitorsDisplay(count);
-                    }, error => {
-                        console.error('Error listening to visitors:', error);
-                        console.log('💡 Fix: Add Firestore Security Rules for "visitors" collection (see rules documentation in code)');
-                        // Fallback: show 0 if permissions denied
-                        updateVisitorsDisplay(0);
-                    });
-            } catch (error) {
-                console.error('Error setting up visitors listener:', error);
-                updateVisitorsDisplay(0);
+
+            const threshold = new Date(Date.now() - 5 * 60 * 1000);
+
+
+
+            if (onlinePlayersListener) {
+
+                onlinePlayersListener();
+
+                onlinePlayersListener = null;
+
             }
 
-            // Refresh listeners every minute to update threshold
-            setInterval(() => {
-                if (onlinePlayersListener) onlinePlayersListener();
-                if (visitorsListener) visitorsListener();
-                setupRealtimeOnlineStats();
-            }, 60000);
+
+
+            if (currentUser) {
+
+                onlinePlayersListener = db.collection('users')
+
+                    .where('lastActive', '>=', threshold)
+
+                    .onSnapshot(snapshot => {
+
+                        const count = snapshot.size;
+
+                        updateOnlinePlayersDisplay(count);
+
+                    }, error => {
+
+                        console.error('Error listening to online players:', error);
+
+                    });
+
+            } else {
+
+                updateOnlinePlayersDisplay(0);
+
+            }
+
+
+
+            if (visitorsListener) {
+
+                visitorsListener();
+
+                visitorsListener = null;
+
+            }
+
+
+
+            try {
+
+                visitorsListener = db.collection('visitors')
+
+                    .where('lastActive', '>=', firebase.firestore.Timestamp.fromDate(threshold))
+
+                    .onSnapshot(snapshot => {
+
+                        const count = snapshot.size;
+
+                        updateVisitorsDisplay(count);
+
+                    }, error => {
+
+                        console.error('Error listening to visitors:', error);
+
+                        console.log('Fix: Add Firestore Security Rules for "visitors" collection (see rules documentation in code)');
+
+                        updateVisitorsDisplay(0);
+
+                    });
+
+            } catch (error) {
+
+                console.error('Error setting up visitors listener:', error);
+
+                updateVisitorsDisplay(0);
+
+            }
+
         }
 
+
+
+        function cleanupRealtimeOnlineStats() {
+
+            if (onlinePlayersListener) {
+
+                onlinePlayersListener();
+
+                onlinePlayersListener = null;
+
+            }
+
+            if (visitorsListener) {
+
+                visitorsListener();
+
+                visitorsListener = null;
+
+            }
+
+            if (onlineStatsRefreshIntervalId) {
+
+                clearInterval(onlineStatsRefreshIntervalId);
+
+                onlineStatsRefreshIntervalId = null;
+
+            }
+
+        }
+
+
+
+        function setupRealtimeOnlineStats() {
+
+            if (!db) return;
+
+
+
+            refreshRealtimeOnlineStats();
+
+
+
+            if (!onlineStatsRefreshIntervalId) {
+
+                onlineStatsRefreshIntervalId = setInterval(refreshRealtimeOnlineStats, 60000);
+
+            }
+
+        }
+
+
+
         function updateOnlinePlayersDisplay(count) {
+
             const mainCount = document.getElementById('platform-online-count');
+
             const inGameCount = document.getElementById('in-game-players-count');
+
             if (mainCount) mainCount.textContent = count;
+
             if (inGameCount) inGameCount.textContent = count;
+
         }
 
         function updateVisitorsDisplay(count) {
@@ -4280,39 +4394,10 @@
         }
 
         async function checkGameLimits() {
-            if (!currentUser || !currentUserProfile) return true;
-
-            // Pro users have unlimited games
-            if (currentUserProfile.isPro) {
-                const gamesDisplay = document.getElementById('games-remaining-display');
-                if (gamesDisplay) gamesDisplay.style.display = 'none';
-                return true;
-            }
-
-            // Check if we need to reset daily counter
-            const gamesData = currentUserProfile.gamesPlayedToday || { count: 0, lastReset: Date.now() };
-            const lastReset = gamesData.lastReset;
-            const now = Date.now();
-            const oneDayMs = 24 * 60 * 60 * 1000;
-
-            if (now - lastReset > oneDayMs) {
-                // Reset counter
-                await db.collection('users').doc(currentUser.uid).update({
-                    'gamesPlayedToday.count': 0,
-                    'gamesPlayedToday.lastReset': now
-                });
-                gamesData.count = 0;
-                gamesData.lastReset = now;
-            }
-
-            const gamesRemaining = NON_PRO_DAILY_GAME_LIMIT - gamesData.count;
+            // All game limits removed.
             const gamesDisplay = document.getElementById('games-remaining-display');
-            const gamesCountEl = document.getElementById('games-remaining-count');
-
-            if (gamesDisplay) gamesDisplay.style.display = 'block';
-            if (gamesCountEl) gamesCountEl.textContent = Math.max(0, gamesRemaining);
-
-            return gamesRemaining > 0;
+            if (gamesDisplay) gamesDisplay.style.display = 'none';
+            return true;
         }
 
         async function incrementGameCount() {
@@ -4395,6 +4480,12 @@
                     shape: 'rect',
                     label: 'paypal'
                 },
+                onInit: function(data, actions) {
+                    console.log('PayPal buttons initialized', data, actions);
+                },
+                onClick: function(data, actions) {
+                    console.log('PayPal button clicked', data, actions);
+                },
                 createOrder: function(data, actions) {
                     return actions.order.create({
                         purchase_units: [{
@@ -4441,7 +4532,7 @@
                     isPro: true,
                     proUpgradeDate: firebase.firestore.FieldValue.serverTimestamp(),
                     paymentData: {
-                        provider: paymentData.provider || 'stripe',
+                        provider: paymentData.provider || 'paypal',
                         transactionId: paymentData.id,
                         amount: 3.00,
                         currency: 'GBP',
@@ -5387,116 +5478,183 @@
 
         // ========== MATCHMAKING FUNCTIONS ==========
         let matchmakingListener = null;
+        let currentMatchmakingRef = null;
 
         async function startQuickMatch() {
-            if (!currentUser || !currentUserProfile) return;
 
-            // Check game limits for non-pro users
-            const canPlay = await checkGameLimits();
-            if (!canPlay) {
-                alert('You have reached your daily game limit!\n\nUpgrade to Pro for unlimited ranked games.');
-                showUpgradeModal();
-                return;
-            }
+                    if (!currentUser || !currentUserProfile) return;
 
-            try {
-                // Show searching UI
-                document.getElementById('quick-match-btn').style.display = 'none';
-                document.getElementById('cancel-match-btn').style.display = 'block';
-                document.getElementById('searching-indicator').classList.add('active');
+        
 
-                // Check for waiting opponents with same variant
-                const waitingQuery = await db.collection('matchmaking')
-                    .where('status', '==', 'waiting')
-                    .where('variant', '==', selectedMatchVariant)
-                    .limit(1)
-                    .get();
+                    // Check game limits for non-pro users
 
-                if (!waitingQuery.empty) {
-                    // Join existing game
-                    const matchDoc = waitingQuery.docs[0];
-                    const matchId = matchDoc.id;
-                    const matchData = matchDoc.data();
+                    const canPlay = await checkGameLimits();
 
-                    // Create game with both players
-                    const gameId = await createOnlineGame(matchData.playerId, currentUser.uid, selectedMatchVariant);
+                    if (!canPlay) {
 
-                    // Delete the matchmaking entry to signal the waiting player
-                    // They will query for the game we just created
-                    await db.collection('matchmaking').doc(matchId).delete();
-                } else {
-                    // Create matchmaking entry
-                    const matchRef = await db.collection('matchmaking').add({
-                        playerId: currentUser.uid,
-                        playerName: currentUserProfile.username,
-                        playerAvatar: currentUserProfile.avatar,
-                        variant: selectedMatchVariant,
-                        status: 'waiting',
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                        alert('You have reached your daily game limit!\n\nUpgrade to Pro for unlimited ranked games.');
 
-                    // Listen for match
-                    matchmakingListener = db.collection('matchmaking').doc(matchRef.id)
-                        .onSnapshot(async snapshot => {
-                            if (!snapshot.exists) {
-                                // Match found! The document was deleted after game creation
-                                if (matchmakingListener) {
-                                    matchmakingListener();
-                                    matchmakingListener = null;
-                                }
+                        showUpgradeModal();
 
-                                console.log('Matchmaking document deleted, searching for game...');
+                        return;
 
-                                // Wait a moment for the game document to be written
-                                await new Promise(resolve => setTimeout(resolve, 500));
+                    }
 
-                                // Query for the game that was just created for us
-                                // We are player1 (White) in this game
-                                try {
-                                    // Modified query to avoid composite index requirement
-                                    // Fetch recent active games and filter in memory
-                                    const gamesQuery = await db.collection('games')
-                                        .where('status', '==', 'active')
-                                        .orderBy('createdAt', 'desc')
-                                        .limit(20)
-                                        .get();
+        
 
-                                    // Filter for games where we are player1
-                                    const matchingGames = gamesQuery.docs.filter(doc =>
-                                        doc.data().player1?.uid === currentUser.uid
-                                    );
+                    try {
 
-                                    if (matchingGames.length > 0) {
-                                        const gameDoc = matchingGames[0];
-                                        const gameId = gameDoc.id;
+                        // Show searching UI
 
-                                        console.log('Found game! Joining:', gameId);
+                        document.getElementById('quick-match-btn').style.display = 'none';
 
-                                        // Set player info and join the game
-                                        isOnlineGame = true;
-                                        myPlayerColor = 'W'; // Waiting player is always Player 1 (White)
+                        document.getElementById('cancel-match-btn').style.display = 'block';
 
-                                        // Join the game
-                                        startOnlineGame(gameId);
-                                    } else {
-                                        console.error('No game found after matchmaking document deleted');
-                                        cancelQuickMatch();
-                                        alert('Error: Could not find game. Please try again.');
+                        document.getElementById('searching-indicator').classList.add('active');
+
+        
+
+                        // Check for waiting opponents with same variant
+
+                        const waitingQuery = await db.collection('matchmakingQueue')
+
+                            .where('status', '==', 'waiting')
+
+                            .where('variant', '==', selectedMatchVariant)
+
+                            .limit(1)
+
+                            .get();
+
+        
+
+                        if (!waitingQuery.empty) {
+
+                            // Join existing game
+
+                            const matchDoc = waitingQuery.docs[0];
+
+                            const matchId = matchDoc.id;
+
+                            const matchData = matchDoc.data();
+
+        
+
+                            // Create game with both players
+
+                            const gameId = await createOnlineGame(matchData.playerId, currentUser.uid, selectedMatchVariant);
+
+        
+
+                            // Update the matchmaking entry with the gameId to signal the waiting player
+
+                            await db.collection('matchmakingQueue').doc(matchId).update({
+
+                                status: 'matched',
+
+                                gameId: gameId
+
+                            });
+
+        
+
+                            // Player 2 (the joiner) starts the game here.
+
+                            await startOnlineGame(gameId);
+
+                        } else {
+
+                            // Create matchmaking entry
+
+                            const matchRef = await db.collection('matchmakingQueue').add({
+
+                                playerId: currentUser.uid,
+
+                                uid: currentUser.uid,
+
+                                playerName: currentUserProfile.username,
+
+                                playerAvatar: currentUserProfile.avatar,
+
+                                variant: selectedMatchVariant,
+
+                                status: 'waiting',
+
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+
+                            });
+
+                            currentMatchmakingRef = matchRef;
+
+        
+
+                            matchmakingListener = db.collection('matchmakingQueue').doc(matchRef.id)
+
+                                .onSnapshot(async snapshot => {
+
+                                    if (snapshot.exists && snapshot.data().status === 'matched') {
+
+                                        const gameId = snapshot.data().gameId;
+
+                                        if (gameId) {
+
+                                            if (matchmakingListener) {
+
+                                                matchmakingListener();
+
+                                                matchmakingListener = null;
+
+                                            }
+
+                                            
+
+                                            if (currentMatchmakingRef) {
+
+                                                await currentMatchmakingRef.delete();
+
+                                                currentMatchmakingRef = null;
+
+                                            } else {
+
+                                                // Fallback to delete by ID if ref is lost
+
+                                                const matchmakingDocRef = db.collection('matchmakingQueue').doc(snapshot.id);
+
+                                                await matchmakingDocRef.delete();
+
+                                            }
+
+        
+
+                                            console.log('Found game! Joining:', gameId);
+
+        
+
+                                            isOnlineGame = true;
+
+                                            myPlayerColor = 'W'; // Waiting player is always Player 1 (White)
+
+                                            startOnlineGame(gameId);
+
+                                        }
+
                                     }
-                                } catch (error) {
-                                    console.error('Error finding game:', error);
-                                    cancelQuickMatch();
-                                    alert('Error finding game: ' + error.message);
-                                }
-                            }
-                        });
+
+                                });
+
+                        }
+
+                    } catch (error) {
+
+                        console.error('Matchmaking error:', error);
+
+                        cancelQuickMatch();
+
+                        alert('Error finding match: ' + error.message);
+
+                    }
+
                 }
-            } catch (error) {
-                console.error('Matchmaking error:', error);
-                cancelQuickMatch();
-                alert('Error finding match: ' + error.message);
-            }
-        }
 
         async function cancelQuickMatch() {
             // Remove matchmaking entry
@@ -5504,16 +5662,12 @@
                 matchmakingListener();
                 matchmakingListener = null;
             }
-
-            try {
-                const matchQuery = await db.collection('matchmaking')
-                    .where('playerId', '==', currentUser.uid)
-                    .get();
-
-                matchQuery.forEach(doc => doc.ref.delete());
-            } catch (error) {
-                console.error('Error canceling match:', error);
+            if (currentMatchmakingRef) {
+                await currentMatchmakingRef.delete();
+                currentMatchmakingRef = null;
             }
+
+            isOnlineGame = false;
 
             // Reset UI
             document.getElementById('quick-match-btn').style.display = 'block';
@@ -5530,8 +5684,8 @@
                 const p2Data = p2Doc.data();
 
                 // Add pro badge to usernames if applicable
-                const p1Username = (p1Data.isPro ? '⭐ ' : '') + p1Data.username;
-                const p2Username = (p2Data.isPro ? '⭐ ' : '') + p2Data.username;
+                const p1Username = (p1Data.isPro ? '⭐ ' : '') + (p1Data.isDonor ? '💝 ' : '') + p1Data.username;
+                const p2Username = (p2Data.isPro ? '⭐ ' : '') + (p2Data.isDonor ? '💝 ' : '') + p2Data.username;
 
                 // Create game document
                 const gameRef = await db.collection('games').add({
@@ -5559,13 +5713,9 @@
 
                 currentGameId = gameRef.id;
                 myPlayerColor = (currentUser.uid === player1Id) ? 'W' : 'B';
-                isOnlineGame = true;
 
                 // Increment game count for non-pro users
                 await incrementGameCount();
-
-                // Start the game
-                startOnlineGame(gameRef.id);
 
                 // Return the game ID so the joining player can pass it to the waiting player
                 return gameRef.id;
@@ -5578,21 +5728,37 @@
 
         async function startOnlineGame(gameId) {
             currentGameId = gameId;
+            isOnlineGame = true; // Ensure this is set at the start
 
             // Get the game data to know the variant
-            const gameDoc = await db.collection('games').doc(gameId).get();
-            const gameData = gameDoc.data();
-            const variant = gameData.variant || '36s-elite';
-
-            // Store opponent info for display
-            if (gameData) {
-                currentOnlineOpponent = (gameData.player1.uid === currentUser.uid) ? gameData.player2 : gameData.player1;
+            const gameRef = db.collection('games').doc(gameId);
+            let gameDoc = await gameRef.get();
+            let attempts = 0;
+            while (!gameDoc.exists && attempts < GAME_DOC_READY_MAX_RETRIES) {
+                await delay(GAME_DOC_READY_RETRY_DELAY_MS);
+                gameDoc = await gameRef.get();
+                attempts++;
             }
+
+            if (!gameDoc.exists) {
+                console.error('Unable to load online match', gameId);
+                alert('Unable to load online match. Please try again.');
+                return;
+            }
+
+            const gameData = gameDoc.data();
+            if (!gameData) {
+                console.error('Online match document missing data', gameId);
+                alert('Unable to load online match. Please try again.');
+                return;
+            }
+
+            const variant = gameData.variant || '36s-elite';
 
             // Listen for game updates
             gameListener = db.collection('games').doc(gameId).onSnapshot(snapshot => {
                 if (snapshot.exists) {
-                    handleGameUpdate(snapshot.data());
+                    handleGameUpdate(snapshot.data(), gameId);
                 }
             });
 
@@ -5607,8 +5773,18 @@
             if (resetBtn) resetBtn.style.display = 'none';
             if (howToPlayBtn) howToPlayBtn.style.display = 'none';
 
-            // Start the actual game with the correct variant
+            // Start the actual game with the correct variant. This calls resetGame().
             startGame(variant);
+
+            // NOW, set all the online-specific variables, AFTER resetGame() has run.
+            isOnlineGame = true;
+            if (gameData.player1 && gameData.player2) {
+                myPlayerColor = (gameData.player1.uid === currentUser.uid) ? 'W' : 'B';
+                currentOnlineOpponent = (myPlayerColor === 'W') ? gameData.player2 : gameData.player1;
+            }
+            
+            // Update UI with opponent name
+            updateScoreDisplay();
 
             // If we're player 1 (White), initialize and send the game state immediately
             if (myPlayerColor === 'W') {
@@ -5622,7 +5798,7 @@
             }
         }
 
-        function handleGameUpdate(gameData) {
+        function handleGameUpdate(gameData, gameId) {
             // If it's not our turn, show waiting overlay
             if (gameData.currentTurn !== myPlayerColor) {
                 document.getElementById('waiting-overlay').classList.add('active');
@@ -5633,7 +5809,7 @@
             // Update board if game state exists
             if (gameData.gameState) {
                 // Load game state (board, pieces, scores, etc.)
-                loadGameState(gameData.gameState);
+                loadGameState(gameData.gameState, gameId);
             }
             // If no game state yet, player 1 is still initializing - just wait
 
@@ -5643,6 +5819,7 @@
                     gameListener();
                     gameListener = null;
                 }
+                isOnlineGame = false; // Game is over, no more moves
             }
         }
 
@@ -5672,21 +5849,21 @@
                 movesLeft: movesLeft,
                 capturedPieces: capturedPieces,
                 gameLog: gameLog,
-                roundNumber: roundNumber || 1
+                roundCount: roundCount || 1
             };
         }
 
-        function loadGameState(state) {
+        function loadGameState(state, gameId) {
             board = state.board;
             currentPlayer = state.currentPlayer;
             scores = state.scores;
             movesLeft = state.movesLeft;
             capturedPieces = state.capturedPieces;
             gameLog = state.gameLog || [];
-            roundNumber = state.roundNumber || 1;
+            roundCount = state.roundCount || 1;
 
             renderBoard();
-            updateUI();
+            updateUI(gameId);
         }
 
         async function endOnlineGame(result) {
@@ -5741,7 +5918,6 @@
                 }
 
                 currentGameId = null;
-                isOnlineGame = false;
                 myPlayerColor = null;
                 currentOnlineOpponent = null;
             } catch (error) {
@@ -5769,6 +5945,7 @@
 
                 // Clean up game state
                 gameOver = true;
+                isOnlineGame = false;
 
             } catch (error) {
                 console.error('Error forfeiting game:', error);
@@ -5788,6 +5965,7 @@
 
         function showMainMenu() {
             stopGame(); // Stop any running game before showing main menu
+            isOnlineGame = false;
             hideAllScreens();
             document.getElementById('main-menu-screen').style.display = 'flex';
             updateMainMenuUI();
@@ -5821,11 +5999,21 @@
         function backToMainMenu() {
             cancelQuickMatch();
             stopGame(); // Stop any running game before going back
+            isOnlineGame = false;
             showMainMenu();
         }
 
         function playOffline() {
             stopGame(); // Stop any running game before starting offline
+            isOnlineGame = false;
+            hideAllScreens();
+            document.getElementById('landing-header').style.display = 'flex';
+            document.getElementById('start-menu').style.display = 'flex';
+        }
+
+        function playAsGuest() {
+            stopGame();
+            isOnlineGame = false;
             hideAllScreens();
             document.getElementById('landing-header').style.display = 'flex';
             document.getElementById('start-menu').style.display = 'flex';
@@ -6068,6 +6256,10 @@
                 outgoingInvitationsListener();
                 outgoingInvitationsListener = null;
             }
+            if (window.acceptedChallengeListener) {
+                window.acceptedChallengeListener();
+                window.acceptedChallengeListener = null;
+            }
 
             // Listen for incoming invitations
             friendInvitationsListener = db.collection('friendInvitations')
@@ -6141,6 +6333,33 @@
 
                     outgoingContainer.style.display = 'block';
                 });
+
+            // NEW: Listen for challenges that WE sent that have been accepted
+            window.acceptedChallengeListener = db.collection('friendInvitations')
+                .where('fromUid', '==', currentUser.uid)
+                .where('status', '==', 'accepted')
+                .onSnapshot(snapshot => {
+                    snapshot.docChanges().forEach(async (change) => {
+                        if (change.type === 'added' || change.type === 'modified') {
+                            const invitation = change.doc.data();
+                            if (invitation.gameId) {
+                                // My challenge was accepted!
+                                console.log(`Challenge accepted! Joining game: ${invitation.gameId}`);
+                                
+                                // Clean up all lobby listeners
+                                if (friendInvitationsListener) friendInvitationsListener();
+                                if (outgoingInvitationsListener) outgoingInvitationsListener();
+                                if (window.acceptedChallengeListener) window.acceptedChallengeListener();
+
+                                // Join the game
+                                await startOnlineGame(invitation.gameId);
+
+                                // Clean up the invitation document
+                                await db.collection('friendInvitations').doc(change.doc.id).delete();
+                            }
+                        }
+                    });
+                });
         }
 
         // Accept Challenge
@@ -6157,11 +6376,21 @@
 
                 const invitation = invitationDoc.data();
 
-                // Create game with friend
-                await createFriendGame(opponentUid, currentUser.uid, invitation.variant);
+                const gameId = await createFriendGame(opponentUid, currentUser.uid, invitation.variant);
 
-                // Delete invitation
-                await db.collection('friendInvitations').doc(invitationId).delete();
+                if (gameId) {
+                    // Update invitation with gameId to notify the challenger
+                    await db.collection('friendInvitations').doc(invitationId).update({
+                        status: 'accepted',
+                        gameId: gameId
+                    });
+                    // Now, the acceptor can start the game
+                    await startOnlineGame(gameId);
+                } else {
+                    // If game creation failed, delete invitation to prevent it from getting stuck
+                    await db.collection('friendInvitations').doc(invitationId).delete();
+                    throw new Error("Game creation failed.");
+                }
 
             } catch (error) {
                 console.error('Error accepting challenge:', error);
@@ -6228,13 +6457,6 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     lastMove: firebase.firestore.FieldValue.serverTimestamp()
                 });
-
-                currentGameId = gameRef.id;
-                myPlayerColor = (currentUser.uid === player1Id) ? 'W' : 'B';
-                isOnlineGame = true;
-
-                // Start the game
-                startOnlineGame(gameRef.id);
 
                 return gameRef.id;
             } catch (error) {
