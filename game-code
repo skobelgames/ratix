@@ -11,12 +11,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
-    <!-- PayPal SDK -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AS-crdm1p33Vus5Q0EDfvZAzxoP0gehr7DD_IQwXVQFgKPTc5pUQ7G1-dLmdpwzrThCxOdEjFMB9mhpz&currency=GBP&intent=capture"></script>
-
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
-     crossorigin="anonymous"></script>
+    <!-- PayPal SDK is loaded dynamically after fetching client config -->
 
     <style>
         :root {
@@ -2731,7 +2726,7 @@
 <body>
     <!-- Authentication Screen -->
     <div id="auth-screen">
-        <h1>🎮 RATIX 🎮</h1>
+        <h1>🎮 RATIX Online 🎮</h1>
         <div class="auth-tabs">
             <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
             <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
@@ -2751,10 +2746,6 @@
             <button type="submit">Create Account</button>
             <div id="signup-error" class="auth-error"></div>
         </form>
-
-        <div class="auth-divider">or</div>
-
-        <button class="menu-btn secondary" onclick="playAsGuest()">🤖 Play as Guest (vs AI)</button>
     </div>
 
     <!-- Profile Setup Screen -->
@@ -2824,7 +2815,7 @@
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
-        <h2>RATIX</h2>
+        <h2>RATIX Online</h2>
 
         <div class="platform-stats-wrapper">
             <div class="platform-stats-header">
@@ -2940,7 +2931,7 @@
                             <button class="variant-select-btn" id="variant-supreme-btn" onclick="selectMatchVariant('36s-supreme')">
                                 36s Supreme
                             </button>
-                            <p id="supreme-status" style="font-size: 13px; color: #666; margin-top: 8px;">Available to all players</p>
+                            <p id="supreme-status" style="font-size: 13px; color: #ff9800; margin-top: 8px; font-weight: bold;">🔒 Pro Only</p>
                         </div>
                     </div>
                     <div style="margin: 20px 0;">
@@ -2975,7 +2966,7 @@
                             <button class="variant-select-btn" id="friend-variant-supreme-btn" onclick="selectFriendMatchVariant('36s-supreme')">
                                 36s Supreme
                             </button>
-                            <p id="friend-supreme-status" style="font-size: 13px; color: #666; margin-top: 8px;">Available to all players</p>
+                            <p id="friend-supreme-status" style="font-size: 13px; color: #ff9800; margin-top: 8px; font-weight: bold;">🔒 Pro Only</p>
                         </div>
                     </div>
 
@@ -3037,8 +3028,17 @@
                     <button onclick="showEditUsernameModal()" style="background: #2196F3; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; font-size: 12px;">Edit Name</button>
                 </div>
                 <div class="user-stats-summary">Member since: <span id="member-since">-</span></div>
+                <div id="pro-status-display" style="margin-top: 10px; font-size: 16px; font-weight: bold; color: #4CAF50; display: none;">
+                    <span class="pro-badge">⭐</span> Pro Member
+                </div>
                 <div id="donor-status-display" style="margin-top: 10px; font-size: 16px; font-weight: bold; color: #FF69B4; display: none;">
                     <span class="donor-badge">💝</span> Supporter
+                </div>
+                <div id="upgrade-to-pro-section" style="margin-top: 10px;">
+                    <button onclick="showUpgradeModal()" style="padding: 10px 20px; background-color: #FFD700; color: #333; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 14px;">
+                        ⭐ Upgrade to Pro - £3
+                    </button>
+                    <p style="font-size: 12px; color: #666; margin-top: 5px;">Unlock 36s Supreme & unlimited ranked games</p>
                 </div>
                 <div id="games-remaining-display" style="margin-top: 10px; font-size: 14px; color: #ff9800; font-weight: bold; display: none;">
                     Ranked games remaining today: <span id="games-remaining-count">5</span>/5
@@ -3420,6 +3420,34 @@
         <p id="coin-flip-popup-message"></p>
     </div>
 
+    <!-- Upgrade to Pro Modal -->
+    <div id="upgrade-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
+        <div style="background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; text-align: center;">
+            <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
+                <span style="font-size: 24px; font-weight: bold;">⭐ Upgrade to Pro</span>
+                <button class="modal-close" onclick="closeUpgradeModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
+            </div>
+            <div style="margin: 20px 0;">
+                <h3 style="color: #333; margin-bottom: 15px;">Unlock Premium Features</h3>
+                <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0;">
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Access to 36s Supreme variant</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Unlimited ranked games (no daily limits)</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Star badge next to your name</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Priority matchmaking</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Future tournament & league access</li>
+                </ul>
+                <div style="font-size: 32px; font-weight: bold; color: #4CAF50; margin: 20px 0;">£1.00</div>
+                <p style="color: #666; font-size: 14px;">One-time payment • Lifetime access</p>
+            </div>
+            <div style="margin-top: 25px;">
+                <div id="paypal-button-container" style="margin: 10px 0; min-height: 50px;">
+                    <!-- PayPal button will render here -->
+                </div>
+            </div>
+            <p style="font-size: 12px; color: #999; margin-top: 20px;">Secure payment processing • Money-back guarantee</p>
+        </div>
+    </div>
+
     <!-- Donation Modal -->
     <div id="donation-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
         <div style="background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; text-align: center;">
@@ -3431,32 +3459,30 @@
                 <h3 style="color: #333; margin-bottom: 15px;">Help Us Keep RATIX Running</h3>
                 <p style="color: #666; margin-bottom: 20px;">Your support helps us maintain servers, add new features, and keep the game free for everyone!</p>
                 <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0;">
-                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">💝 Get a heart badge on your profile</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">💝 Get a heart badge on your profile (£1+ donations)</li>
                     <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">🙏 Support ongoing development</li>
                     <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">🎮 Help keep servers running</li>
                     <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">✨ Enable new features & improvements</li>
                 </ul>
-            </div>
-            <div style="margin-top: 25px;">
-                <!-- PASTE YOUR PAYPAL DONATION BUTTON HTML CODE BELOW -->
-                <div id="paypal-donation-button-container" style="margin: 10px 0; min-height: 50px;">
-                    <!-- To get your PayPal donation button:
-                         1. Log into your PayPal account
-                         2. Go to your PayPal account settings
-                         3. Navigate to "PayPal Buttons" or "Donate Button"
-                         4. Create/customize your donation button
-                         5. Copy the generated HTML code
-                         6. Paste it here to replace this comment
-
-                         Note: After adding your button, you'll need to manually verify donations
-                         and update user profiles in Firebase to award the heart badge.
-                    -->
-                    <p style="color: #999; font-size: 14px; padding: 20px; background: #f5f5f5; border-radius: 5px;">
-                        PayPal donation button will appear here once configured.
-                    </p>
+                <div style="margin: 20px 0;">
+                    <label for="donation-amount" style="display: block; margin-bottom: 10px; font-weight: bold; color: #333;">Choose your donation amount:</label>
+                    <select id="donation-amount" style="width: 100%; padding: 10px; font-size: 16px; border: 2px solid #FF69B4; border-radius: 5px; margin-bottom: 10px;">
+                        <option value="1.00">£1.00</option>
+                        <option value="2.00">£2.00</option>
+                        <option value="5.00" selected>£5.00</option>
+                        <option value="10.00">£10.00</option>
+                        <option value="20.00">£20.00</option>
+                        <option value="custom">Custom amount</option>
+                    </select>
+                    <input type="number" id="custom-donation-amount" placeholder="Enter custom amount (£)" min="1" step="0.01" style="width: 100%; padding: 10px; font-size: 16px; border: 2px solid #FF69B4; border-radius: 5px; display: none;">
                 </div>
             </div>
-            <p style="font-size: 12px; color: #999; margin-top: 20px;">Thank you for your support!</p>
+            <div style="margin-top: 25px;">
+                <div id="paypal-donation-button-container" style="margin: 10px 0; min-height: 50px;">
+                    <!-- PayPal donation button will render here -->
+                </div>
+            </div>
+            <p style="font-size: 12px; color: #999; margin-top: 20px;">Secure payment via PayPal • Thank you for your support!</p>
         </div>
     </div>
 
@@ -3676,6 +3702,8 @@
         let gameListener = null;
         let isOnlineGame = false;
         let myPlayerColor = null; // 'W' or 'B' for online games
+        let onlineStartingTurn = 'W';
+        let currentOnlinePlayers = { W: null, B: null };
         const FRIEND_LIMIT = 50;
         const PLATFORM_STATS_COLLECTION = 'platformStats';
         const PLATFORM_STATS_DOC = 'aggregates';
@@ -3825,8 +3853,12 @@
                 const unlockType = target.getAttribute('data-unlock');
                 let message = 'This avatar is locked. ';
 
-                if (unlockType === 'pro' || unlockType === 'donor' || unlockType === 'both') {
+                if (unlockType === 'pro') {
+                    message += 'Upgrade to Pro to unlock!';
+                } else if (unlockType === 'donor') {
                     message += 'Become a Supporter to unlock!';
+                } else if (unlockType === 'both') {
+                    message += 'Upgrade to Pro AND become a Supporter to unlock!';
                 }
 
                 alert(message);
@@ -4282,13 +4314,64 @@
         }
 
         // ========== PRO USER SYSTEM FUNCTIONS ==========
-        function updatePlayerNamesWithBadges() {
+        async function checkAndUpdateProStatus() {
+            if (!currentUser || !currentUserProfile) return;
+
+            const isPro = currentUserProfile.isPro || false;
+            const proDisplay = document.getElementById('pro-status-display');
+            const upgradeSection = document.getElementById('upgrade-to-pro-section');
+            const supremeBtn = document.getElementById('variant-supreme-btn');
+            const supremeStatus = document.getElementById('supreme-status');
+
+            if (isPro) {
+                // Show pro badge
+                if (proDisplay) proDisplay.style.display = 'block';
+                if (upgradeSection) upgradeSection.style.display = 'none';
+
+                // Unlock Supreme variant
+                if (supremeBtn) {
+                    supremeBtn.classList.remove('locked');
+                    supremeBtn.disabled = false;
+                }
+                if (supremeStatus) {
+                    supremeStatus.textContent = '⭐ Pro Unlocked';
+                    supremeStatus.style.color = '#4CAF50';
+                }
+
+                // Update player names with star emoji
+                updatePlayerNamesWithProBadge();
+            } else {
+                // Hide pro badge
+                if (proDisplay) proDisplay.style.display = 'none';
+                if (upgradeSection) upgradeSection.style.display = 'block';
+
+                // Lock Supreme variant
+                if (supremeBtn) {
+                    supremeBtn.classList.add('locked');
+                    supremeBtn.disabled = true;
+                }
+                if (supremeStatus) {
+                    supremeStatus.textContent = '🔒 Pro Only';
+                    supremeStatus.style.color = '#ff9800';
+                }
+
+                // Check and display game limits
+                await checkGameLimits();
+            }
+        }
+
+        function updatePlayerNamesWithProBadge() {
             if (!currentUserProfile) return;
 
             const username = currentUserProfile.username || 'Player';
             let badges = '';
 
-            // Add donor badge only
+            // Add pro badge
+            if (currentUserProfile.isPro) {
+                badges += '⭐ ';
+            }
+
+            // Add donor badge
             if (currentUserProfile.isDonor) {
                 badges += '💝 ';
             }
@@ -4308,10 +4391,39 @@
         }
 
         async function checkGameLimits() {
-            // All game limits removed.
+            if (!currentUser || !currentUserProfile) return true;
+
+            // Pro users have unlimited games
+            if (currentUserProfile.isPro) {
+                const gamesDisplay = document.getElementById('games-remaining-display');
+                if (gamesDisplay) gamesDisplay.style.display = 'none';
+                return true;
+            }
+
+            // Check if we need to reset daily counter
+            const gamesData = currentUserProfile.gamesPlayedToday || { count: 0, lastReset: Date.now() };
+            const lastReset = gamesData.lastReset;
+            const now = Date.now();
+            const oneDayMs = 24 * 60 * 60 * 1000;
+
+            if (now - lastReset > oneDayMs) {
+                // Reset counter
+                await db.collection('users').doc(currentUser.uid).update({
+                    'gamesPlayedToday.count': 0,
+                    'gamesPlayedToday.lastReset': now
+                });
+                gamesData.count = 0;
+                gamesData.lastReset = now;
+            }
+
+            const gamesRemaining = NON_PRO_DAILY_GAME_LIMIT - gamesData.count;
             const gamesDisplay = document.getElementById('games-remaining-display');
-            if (gamesDisplay) gamesDisplay.style.display = 'none';
-            return true;
+            const gamesCountEl = document.getElementById('games-remaining-count');
+
+            if (gamesDisplay) gamesDisplay.style.display = 'block';
+            if (gamesCountEl) gamesCountEl.textContent = Math.max(0, gamesRemaining);
+
+            return gamesRemaining > 0;
         }
 
         async function incrementGameCount() {
@@ -4330,6 +4442,13 @@
 
         // ========== VARIANT SELECTION FUNCTIONS ==========
         function selectMatchVariant(variant) {
+            // Check if Supreme is locked for non-pro users
+            if (variant === '36s-supreme' && !currentUserProfile?.isPro) {
+                alert('36s Supreme is only available for Pro users. Upgrade to Pro to unlock this variant!');
+                showUpgradeModal();
+                return;
+            }
+
             selectedMatchVariant = variant;
 
             // Update button states
@@ -4354,11 +4473,174 @@
         }
 
         // ========== PAYMENT INTEGRATION FUNCTIONS ==========
+        let paypalSdkPromise = null;
+
+        function loadPayPalSdk() {
+            if (paypalSdkPromise) return paypalSdkPromise;
+
+            paypalSdkPromise = fetch('/api/config')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Unable to load PayPal config');
+                    }
+                    return response.json();
+                })
+                .then(config => {
+                    if (!config.clientId) {
+                        throw new Error('PayPal client ID missing from server response');
+                    }
+
+                    return new Promise((resolve, reject) => {
+                        if (typeof paypal !== 'undefined') {
+                            return resolve(paypal);
+                        }
+
+                        const existingScript = document.querySelector('script[data-paypal-sdk]');
+                        if (existingScript) {
+                            existingScript.addEventListener('load', () => resolve(paypal));
+                            existingScript.addEventListener('error', () => reject(new Error('PayPal SDK failed to load')));
+                            return;
+                        }
+
+                        const script = document.createElement('script');
+                        script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(config.clientId)}&currency=${config.currency || 'GBP'}&intent=capture&enable-funding=card,credit`;
+                        script.dataset.paypalSdk = 'true';
+                        script.onload = () => resolve(paypal);
+                        script.onerror = () => reject(new Error('PayPal SDK failed to load'));
+                        document.head.appendChild(script);
+                    });
+                })
+                .catch(err => {
+                    console.error('Failed to load PayPal SDK:', err);
+                    alert('Payments are unavailable right now. Please try again in a moment.');
+                    throw err;
+                });
+
+            return paypalSdkPromise;
+        }
+
+        async function showUpgradeModal() {
+            const modal = document.getElementById('upgrade-modal');
+            if (modal) {
+                modal.style.display = 'block';
+                try {
+                    await loadPayPalSdk();
+                    initPayPalButton();
+                } catch (err) {
+                    console.error('Unable to initialize PayPal upgrade button', err);
+                }
+            }
+        }
+
+        function closeUpgradeModal() {
+            const modal = document.getElementById('upgrade-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function initPayPalButton() {
+            if (typeof paypal === 'undefined') {
+                console.error('PayPal SDK not loaded');
+                return;
+            }
+
+            // Clear any existing buttons
+            const container = document.getElementById('paypal-button-container');
+            if (container) {
+                container.innerHTML = '';
+            }
+
+            paypal.Buttons({
+                style: {
+                    layout: 'vertical',
+                    color: 'blue',
+                    shape: 'rect',
+                    label: 'paypal'
+                },
+                onInit: function(data, actions) {
+                    console.log('PayPal buttons initialized', data, actions);
+                },
+                onClick: function(data, actions) {
+                    console.log('PayPal button clicked', data, actions);
+                },
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: '1.00',
+                                currency_code: 'GBP'
+                            },
+                            description: 'RATIX Pro Upgrade - Lifetime Access'
+                        }]
+                    });
+                },
+                onApprove: async function(data, actions) {
+                    try {
+                        const order = await actions.order.capture();
+                        console.log('PayPal order captured:', order);
+
+                        // Update user to Pro status
+                        await handleSuccessfulPayment({
+                            provider: 'paypal',
+                            id: order.id,
+                            status: order.status,
+                            payer: order.payer
+                        });
+                    } catch (error) {
+                        console.error('Error processing PayPal payment:', error);
+                        alert('Error processing payment. Please contact support with order ID: ' + data.orderID);
+                    }
+                },
+                onError: function(err) {
+                    console.error('PayPal error:', err);
+                    alert('Payment error occurred. Please try again.');
+                },
+                onCancel: function(data) {
+                    console.log('PayPal payment cancelled:', data);
+                    alert('Payment cancelled. You can try again when ready.');
+                }
+            }).render('#paypal-button-container');
+        }
+
+        async function handleSuccessfulPayment(paymentData) {
+            try {
+                // Update user to Pro status
+                await db.collection('users').doc(currentUser.uid).update({
+                    isPro: true,
+                    proUpgradeDate: firebase.firestore.FieldValue.serverTimestamp(),
+                    paymentData: {
+                        provider: paymentData.provider || 'paypal',
+                        transactionId: paymentData.id,
+                        amount: 3.00,
+                        currency: 'GBP',
+                        timestamp: Date.now()
+                    }
+                });
+
+                await refreshCurrentUserProfile();
+                await checkAndUpdateProStatus();
+
+                closeUpgradeModal();
+                alert('🎉 Congratulations! You are now a Pro user!\n\nYou now have access to:\n✓ 36s Supreme variant\n✓ Unlimited ranked games\n✓ Pro badge');
+            } catch (error) {
+                console.error('Error updating Pro status:', error);
+                alert('Error upgrading account. Please contact support.');
+            }
+        }
+
         // ========== DONATION FUNCTIONS ==========
-        function showDonationModal() {
+        async function showDonationModal() {
             const modal = document.getElementById('donation-modal');
             if (modal) {
                 modal.style.display = 'block';
+                // Set up custom amount handler
+                setupDonationAmountHandler();
+                // Initialize PayPal donation button when modal opens
+                try {
+                    await loadPayPalSdk();
+                    initPayPalDonationButton();
+                } catch (err) {
+                    console.error('Unable to initialize PayPal donation button', err);
+                }
             }
         }
 
@@ -4367,9 +4649,103 @@
             if (modal) modal.style.display = 'none';
         }
 
-        // Manual donation verification function
-        // After receiving a PayPal donation notification, call this function manually via console:
-        // handleSuccessfulDonation({ provider: 'paypal', id: 'TRANSACTION_ID', amount: 5.00 })
+        function setupDonationAmountHandler() {
+            const select = document.getElementById('donation-amount');
+            const customInput = document.getElementById('custom-donation-amount');
+
+            if (select && customInput) {
+                select.addEventListener('change', function() {
+                    if (this.value === 'custom') {
+                        customInput.style.display = 'block';
+                        customInput.focus();
+                    } else {
+                        customInput.style.display = 'none';
+                    }
+                    // Re-initialize PayPal button with new amount
+                    initPayPalDonationButton();
+                });
+
+                customInput.addEventListener('input', function() {
+                    // Re-initialize PayPal button when custom amount changes
+                    const debounce = setTimeout(() => {
+                        initPayPalDonationButton();
+                    }, 500);
+                });
+            }
+        }
+
+        function getDonationAmount() {
+            const select = document.getElementById('donation-amount');
+            const customInput = document.getElementById('custom-donation-amount');
+
+            if (select.value === 'custom') {
+                const customAmount = parseFloat(customInput.value);
+                return customAmount >= 1 ? customAmount.toFixed(2) : '1.00';
+            }
+            return select.value;
+        }
+
+        function initPayPalDonationButton() {
+            if (typeof paypal === 'undefined') {
+                console.error('PayPal SDK not loaded');
+                return;
+            }
+
+            // Clear any existing buttons
+            const container = document.getElementById('paypal-donation-button-container');
+            if (container) {
+                container.innerHTML = '';
+            }
+
+            const donationAmount = getDonationAmount();
+
+            paypal.Buttons({
+                style: {
+                    layout: 'vertical',
+                    color: 'gold',
+                    shape: 'rect',
+                    label: 'donate'
+                },
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: donationAmount,
+                                currency_code: 'GBP'
+                            },
+                            description: 'RATIX Support Donation'
+                        }]
+                    });
+                },
+                onApprove: async function(data, actions) {
+                    try {
+                        const order = await actions.order.capture();
+                        console.log('PayPal donation captured:', order);
+
+                        // Update user donor status
+                        await handleSuccessfulDonation({
+                            provider: 'paypal',
+                            id: order.id,
+                            status: order.status,
+                            payer: order.payer,
+                            amount: parseFloat(donationAmount)
+                        });
+                    } catch (error) {
+                        console.error('Error processing PayPal donation:', error);
+                        alert('Error processing donation. Please contact support with order ID: ' + data.orderID);
+                    }
+                },
+                onError: function(err) {
+                    console.error('PayPal donation error:', err);
+                    alert('Donation error occurred. Please try again.');
+                },
+                onCancel: function(data) {
+                    console.log('PayPal donation cancelled:', data);
+                    alert('Donation cancelled. You can try again when ready.');
+                }
+            }).render('#paypal-donation-button-container');
+        }
+
         async function handleSuccessfulDonation(donationData) {
             try {
                 const isDonor = donationData.amount >= 1;
@@ -4419,7 +4795,7 @@
 
             if (isDonor) {
                 if (donorDisplay) donorDisplay.style.display = 'block';
-                updatePlayerNamesWithBadges();
+                updatePlayerNamesWithProBadge();
             } else {
                 if (donorDisplay) donorDisplay.style.display = 'none';
             }
@@ -4636,7 +5012,7 @@
                 });
 
                 await refreshCurrentUserProfile();
-                updatePlayerNamesWithBadges();
+                updatePlayerNamesWithProBadge();
 
                 closeEditUsernameModal();
                 alert('Username updated successfully!');
@@ -5193,6 +5569,19 @@
 
                     // Check game limits for non-pro users
 
+                    const canPlay = await checkGameLimits();
+
+                    if (!canPlay) {
+
+                        alert('You have reached your daily game limit!\n\nUpgrade to Pro for unlimited ranked games.');
+
+                        showUpgradeModal();
+
+                        return;
+
+                    }
+
+        
 
                     try {
 
@@ -5375,9 +5764,9 @@
                 const p1Data = p1Doc.data();
                 const p2Data = p2Doc.data();
 
-                // Add donor badge to usernames if applicable
-                const p1Username = (p1Data.isDonor ? '💝 ' : '') + p1Data.username;
-                const p2Username = (p2Data.isDonor ? '💝 ' : '') + p2Data.username;
+                // Add pro badge to usernames if applicable
+                const p1Username = (p1Data.isPro ? '⭐ ' : '') + (p1Data.isDonor ? '💝 ' : '') + p1Data.username;
+                const p2Username = (p2Data.isPro ? '⭐ ' : '') + (p2Data.isDonor ? '💝 ' : '') + p2Data.username;
 
                 // Create game document
                 const gameRef = await db.collection('games').add({
@@ -5445,6 +5834,9 @@
                 return;
             }
 
+            ensureOnlinePlayerIdentity(gameData);
+            onlineStartingTurn = gameData.currentTurn || 'W';
+
             const variant = gameData.variant || '36s-elite';
 
             // Listen for game updates
@@ -5470,10 +5862,6 @@
 
             // NOW, set all the online-specific variables, AFTER resetGame() has run.
             isOnlineGame = true;
-            if (gameData.player1 && gameData.player2) {
-                myPlayerColor = (gameData.player1.uid === currentUser.uid) ? 'W' : 'B';
-                currentOnlineOpponent = (myPlayerColor === 'W') ? gameData.player2 : gameData.player1;
-            }
             
             // Update UI with opponent name
             updateScoreDisplay();
@@ -5484,24 +5872,54 @@
                 setTimeout(async () => {
                     const initialState = captureGameState();
                     await db.collection('games').doc(currentGameId).update({
-                        gameState: initialState
+                        gameState: initialState,
+                        currentTurn: initialState.currentPlayer
                     });
                 }, 500);
             }
         }
 
         function handleGameUpdate(gameData, gameId) {
+            // Ensure local color/opponent are set (snapshot may arrive before init or after reconnect)
+            ensureOnlinePlayerIdentity(gameData);
+
+            const incomingTurn = gameData.currentTurn || (gameData.gameState && gameData.gameState.currentPlayer) || currentPlayer;
+            const turnChanged = incomingTurn && incomingTurn !== lastSyncedTurn;
+
             // If it's not our turn, show waiting overlay
-            if (gameData.currentTurn !== myPlayerColor) {
+            const myTurn = isMyTurn(gameData);
+            if (!myTurn) {
                 document.getElementById('waiting-overlay').classList.add('active');
             } else {
                 document.getElementById('waiting-overlay').classList.remove('active');
             }
 
-            // Update board if game state exists
+            // Update board if game state exists. Preserve the local state while it's our turn
+            // so that in-progress moves aren't overwritten by a slightly stale snapshot.
             if (gameData.gameState) {
-                // Load game state (board, pieces, scores, etc.)
+                // Always load the latest state so turn, moves, and board stay in sync
                 loadGameState(gameData.gameState, gameId);
+            }
+
+            // If the turn switched, rehydrate turn start so moves/captures work online
+            if (isOnlineGame && turnChanged && incomingTurn) {
+                const baseMoves = calculateBaseMoves ? calculateBaseMoves(incomingTurn) : 0;
+                const isMyTurnNow = isMyTurn({ currentTurn: incomingTurn });
+                applyStartTurnModifiers(incomingTurn, baseMoves, {
+                    skipStopTimer: true,
+                    skipTurnTimer: !isMyTurnNow,
+                    resetTurnTimer: true
+                });
+                lastSyncedTurn = incomingTurn;
+            }
+
+            // Manage turn timer based on whose turn it is
+            if (isOnlineGame && myPlayerColor) {
+                if (gameData.currentTurn === myPlayerColor) {
+                    startTurnTimer(currentPlayer);
+                } else {
+                    stopTurnTimer();
+                }
             }
             // If no game state yet, player 1 is still initializing - just wait
 
@@ -5515,16 +5933,19 @@
             }
         }
 
-        async function sendMove(moveData) {
+        async function sendMove(moveData, nextTurnOverride = null) {
             if (!currentGameId || !isOnlineGame) return;
 
             try {
                 // Update game with new state
+                const nextTurn = nextTurnOverride || (currentPlayer === 'W' ? 'B' : 'W');
                 const gameState = captureGameState();
+                // Ensure the persisted state reflects the incoming player's turn
+                gameState.currentPlayer = nextTurn;
 
                 await db.collection('games').doc(currentGameId).update({
                     gameState: gameState,
-                    currentTurn: currentPlayer === 'W' ? 'B' : 'W',
+                    currentTurn: nextTurn,
                     lastMove: firebase.firestore.FieldValue.serverTimestamp(),
                     moveHistory: firebase.firestore.FieldValue.arrayUnion(moveData)
                 });
@@ -5533,9 +5954,38 @@
             }
         }
 
+        function serializeBoardForNetwork() {
+            const cells = {};
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const cell = board[r][c];
+                    if (cell) {
+                        cells[`${r},${c}`] = cell;
+                    }
+                }
+            }
+            return { cells, rows: ROWS, cols: COLS };
+        }
+
+        function deserializeBoardFromNetwork(serialized) {
+            if (!serialized || !serialized.cells) return board;
+            const rows = serialized.rows || ROWS;
+            const cols = serialized.cols || COLS;
+            const newBoard = Array(rows).fill().map(() => Array(cols).fill(null));
+            Object.entries(serialized.cells).forEach(([key, cell]) => {
+                const [rStr, cStr] = key.split(',');
+                const r = parseInt(rStr, 10);
+                const c = parseInt(cStr, 10);
+                if (!Number.isNaN(r) && !Number.isNaN(c) && r < rows && c < cols) {
+                    newBoard[r][c] = cell;
+                }
+            });
+            return newBoard;
+        }
+
         function captureGameState() {
             return {
-                board: board,
+                board: isOnlineGame ? serializeBoardForNetwork() : board,
                 currentPlayer: currentPlayer,
                 scores: scores,
                 movesLeft: movesLeft,
@@ -5546,16 +5996,63 @@
         }
 
         function loadGameState(state, gameId) {
-            board = state.board;
-            currentPlayer = state.currentPlayer;
+            if (state.board && state.board.cells) {
+                board = deserializeBoardFromNetwork(state.board);
+            } else {
+                board = state.board;
+            }
+            const nextTurn = state.currentPlayer || state.currentTurn || currentPlayer || 'W';
+            currentPlayer = nextTurn;
             scores = state.scores;
-            movesLeft = state.movesLeft;
-            capturedPieces = state.capturedPieces;
+            const fallbackMoves = calculateBaseMoves ? calculateBaseMoves(nextTurn) : 0;
+            movesLeft = (typeof state.movesLeft === 'number') ? state.movesLeft : fallbackMoves;
+            // Use a safe default if captured pieces are missing or malformed
+            const savedCaptured = state.capturedPieces || {};
+            capturedPieces = {
+                'W': Array.isArray(savedCaptured['W']) ? savedCaptured['W'] : [],
+                'B': Array.isArray(savedCaptured['B']) ? savedCaptured['B'] : []
+            };
             gameLog = state.gameLog || [];
             roundCount = state.roundCount || 1;
 
+            // Reset transient turn state when syncing from network to allow moves/captures
+            selectedPiece = null;
+            validMoves = [];
+            movedPieces.clear();
+            highlightSquares = [];
+            lastAction = null;
+
+            // Online: if the snapshot arrives with 0/undefined moves for the active turn, rehydrate the turn start locally
+            if (isOnlineGame) {
+                const hasMoves = typeof state.movesLeft === 'number' && state.movesLeft > 0;
+                if (!hasMoves) {
+                    const baseMoves = calculateBaseMoves ? calculateBaseMoves(nextTurn) : 0;
+                    const isMyTurnNow = isMyTurn({ currentTurn: nextTurn });
+                    applyStartTurnModifiers(nextTurn, baseMoves, {
+                        skipStopTimer: true,
+                        skipTurnTimer: !isMyTurnNow,
+                        resetTurnTimer: true
+                    });
+                }
+            }
+
             renderBoard();
-            updateUI(gameId);
+            updateStatus();
+            updateScoreDisplay();
+            updateCapturedPiecesDisplay();
+            updateGameLog();
+            updateEndTurnButton();
+            updateTimerDisplay();
+        }
+
+        // Fallback UI updater used by older calls; keeps turn/status panels refreshed.
+        function updateUI(gameId = null) {
+            updateStatus();
+            updateScoreDisplay();
+            updateCapturedPiecesDisplay();
+            updateGameLog();
+            updateEndTurnButton();
+            updateTimerDisplay();
         }
 
         async function endOnlineGame(result) {
@@ -5664,6 +6161,7 @@
             refreshPresence();
             loadPlatformStats();
             loadFriendPanel();
+            checkAndUpdateProStatus();
             checkAndUpdateDonorStatus();
             updateFriendsOnlineCount();
         }
@@ -5673,6 +6171,7 @@
             hideAllScreens();
             document.getElementById('matchmaking-lobby').style.display = 'flex';
             loadLeaderboard();
+            checkAndUpdateProStatus();
             checkAndUpdateDonorStatus();
             updateFriendsOnlineCount();
         }
@@ -5682,6 +6181,7 @@
             hideAllScreens();
             document.getElementById('stats-profile-screen').style.display = 'flex';
             updateStatsUI();
+            checkAndUpdateProStatus();
             checkAndUpdateDonorStatus();
         }
 
@@ -5694,14 +6194,6 @@
 
         function playOffline() {
             stopGame(); // Stop any running game before starting offline
-            isOnlineGame = false;
-            hideAllScreens();
-            document.getElementById('landing-header').style.display = 'flex';
-            document.getElementById('start-menu').style.display = 'flex';
-        }
-
-        function playAsGuest() {
-            stopGame();
             isOnlineGame = false;
             hideAllScreens();
             document.getElementById('landing-header').style.display = 'flex';
@@ -5790,6 +6282,12 @@
 
         // Friend Match Variant Selection
         function selectFriendMatchVariant(variant) {
+            // Check if pro variant and user is not pro
+            if (variant === '36s-supreme' && !currentUserProfile.isPro) {
+                showUpgradeModal();
+                return;
+            }
+
             selectedFriendMatchVariant = variant;
 
             // Update button styles
@@ -5866,7 +6364,7 @@
                         <div class="friend-info">
                             <div class="avatar">${friend.avatar || '😊'}</div>
                             <div class="friend-details">
-                                <h4>${friend.isDonor ? '💝 ' : ''}${friend.username}</h4>
+                                <h4>${friend.isPro ? '⭐ ' : ''}${friend.username}</h4>
                                 <p class="${statusClass}">${statusText}</p>
                                 <p style="font-size: 12px; color: #999;">Record: ${friendRecord.wins}W - ${friendRecord.losses}L - ${friendRecord.draws}D</p>
                             </div>
@@ -6112,9 +6610,9 @@
                 const p1Data = p1Doc.data();
                 const p2Data = p2Doc.data();
 
-                // Add donor badge to usernames if applicable
-                const p1Username = (p1Data.isDonor ? '💝 ' : '') + p1Data.username;
-                const p2Username = (p2Data.isDonor ? '💝 ' : '') + p2Data.username;
+                // Add pro badge to usernames if applicable
+                const p1Username = (p1Data.isPro ? '⭐ ' : '') + p1Data.username;
+                const p2Username = (p2Data.isPro ? '⭐ ' : '') + p2Data.username;
 
                 // Create game document
                 const gameRef = await db.collection('games').add({
@@ -7400,9 +7898,58 @@
         function triggerAiTurn() {
             // Don't trigger AI turn if board is not initialized
             if (!board || board.length === 0 || !board[0]) return;
-            if (gameOver || gamePaused || aiPending || reinforcementPending || currentPlayer !== 'W' || lichSoulBlastResolving) return;
+            if (gameOver || gamePaused || reinforcementPending || lichSoulBlastResolving) return;
             if (isBlockingActionPending()) return;
             if (isElephantrySpecialActive()) return;
+            if (aiPending) return;
+
+            if (isOnlineGame) {
+                // Only the active player should push the turn online
+                if (!myPlayerColor || currentPlayer !== myPlayerColor) return;
+
+                stopTurnTimer();
+                removeWarcryActiveBackground();
+                applyEndTurnEffects(currentPlayer);
+                updateRoundStats(currentPlayer);
+
+                // Complete a full round only when the second mover finishes
+                if (firstPlayer && currentPlayer !== firstPlayer) {
+                    roundCount++;
+                    gameRound++;
+                }
+
+                const endingPlayer = currentPlayer;
+                const nextPlayer = endingPlayer === 'W' ? 'B' : 'W';
+
+                // Prep next player's turn state before syncing
+                ballistaRangeBoostActive[nextPlayer] = false;
+                ballistaRangeBoostUsedThisTurn[nextPlayer] = false;
+                wizardSummonedThisTurn[nextPlayer] = false;
+                wizardCannotMoveNextTurn[nextPlayer].clear();
+
+                currentPlayer = nextPlayer;
+                const baseMoves = calculateBaseMoves(nextPlayer);
+                applyStartTurnModifiers(nextPlayer, baseMoves, { skipStopTimer: true, skipTurnTimer: true });
+
+                movedPieces.clear();
+                renderBoard();
+                updateStatus();
+                updateEndTurnButton();
+                updateCapturedPiecesDisplay();
+                updateGameLog();
+
+                const moveData = {
+                    type: 'turn_end',
+                    player: endingPlayer,
+                    timestamp: Date.now()
+                };
+                sendMove(moveData, nextPlayer);
+                // Show waiting overlay for opponent
+                document.getElementById('waiting-overlay').classList.add('active');
+                return;
+            }
+
+            if (aiPending || !isLocalPlayersTurn()) return;
             stopTurnTimer();
             // Remove warcry active background when switching to AI turn
             removeWarcryActiveBackground();
@@ -7413,20 +7960,8 @@
             // Increment round when second player finishes their round
             if (firstPlayer === 'B') {
                 // AI went first, so player finishing means round is complete
+                roundCount++;
                 gameRound++;
-            }
-
-            // Handle online multiplayer - send move to Firebase instead of AI
-            if (isOnlineGame) {
-                const moveData = {
-                    type: 'turn_end',
-                    player: currentPlayer,
-                    timestamp: Date.now()
-                };
-                sendMove(moveData);
-                // Show waiting overlay for opponent
-                document.getElementById('waiting-overlay').classList.add('active');
-                return;
             }
 
             aiPending = true;
@@ -7454,11 +7989,9 @@
             stopTurnTimer();
             highlightSquares = [];
             currentPlayer = 'W';
-            roundCount++; // Increment round counter when AI finishes and control returns to player
-
-            // Increment round when second player finishes their round
+            // Increment round only when the second player finishes their turn
             if (firstPlayer === 'W') {
-                // Player went first, so AI finishing means round is complete
+                roundCount++;
                 gameRound++;
             }
             ballistaRangeBoostActive['W'] = false;
@@ -7492,7 +8025,8 @@
         function ensureAITurnIfNeeded() {
             // Don't process if board is not initialized
             if (!board || board.length === 0 || !board[0]) return;
-            if (gamePaused || currentPlayer !== 'W' || reinforcementPending || aiPending) return;
+            if (isOnlineGame) return;
+            if (gamePaused || !isLocalPlayersTurn() || reinforcementPending || aiPending) return;
             if (isBlockingActionPending()) return;
             // Don't end turn if pistolier or elephantry specials are waiting for targeting
             if (pistolierMoveShootMode || isElephantrySpecialActive()) return;
@@ -7730,7 +8264,7 @@
         }
 
         function applyStartTurnModifiers(player, baseMoves, options = {}) {
-            const { skipStopTimer = false } = options;
+            const { skipStopTimer = false, skipTurnTimer = false, resetTurnTimer = true } = options;
             if (!skipStopTimer) {
                 stopTurnTimer();
             }
@@ -7778,7 +8312,19 @@
                     return;
                 }
 
-                startTurnTimer(player);
+                if (skipTurnTimer) {
+                    if (resetTurnTimer) {
+                        const duration = TURN_TIME_OPTIONS[selectedTurnTimerKey];
+                        if (player === 'W') {
+                            playerTurnTimeRemaining = duration;
+                        } else {
+                            aiTurnTimeRemaining = duration;
+                        }
+                        updateTimerDisplay();
+                    }
+                } else {
+                    startTurnTimer(player, { reset: resetTurnTimer });
+                }
 
                 // Check for truce at start of player's round
                 if (player === 'W' && truceDeclinedTurns > 0) {
@@ -7888,6 +8434,10 @@
 
         function recordGraveyardCapture(player, piece) {
             if (!player || !piece) return;
+            // Ensure the graveyard buckets exist to avoid capture crashes
+            if (!capturedPieces[player]) {
+                capturedPieces[player] = [];
+            }
             capturedPieces[player].push(piece);
         }
 
@@ -9216,29 +9766,14 @@
             });
         }
 
-        // Throttle function to limit event handler execution frequency
-        function throttle(func, limit) {
-            let inThrottle;
-            return function() {
-                const args = arguments;
-                const context = this;
-                if (!inThrottle) {
-                    func.apply(context, args);
-                    inThrottle = true;
-                    setTimeout(() => inThrottle = false, limit);
-                }
-            };
-        }
-
         function initializeBoardAnchoredModals() {
             const boardElement = document.getElementById('board');
             if (typeof ResizeObserver !== 'undefined' && boardElement) {
                 boardResizeObserver = new ResizeObserver(() => scheduleBoardAnchorUpdate());
                 boardResizeObserver.observe(boardElement);
             }
-            // Throttle scroll and resize events to prevent page unresponsiveness
-            window.addEventListener('scroll', throttle(() => scheduleBoardAnchorUpdate(), 100));
-            window.addEventListener('resize', throttle(() => scheduleBoardAnchorUpdate(), 100));
+            window.addEventListener('scroll', () => scheduleBoardAnchorUpdate());
+            window.addEventListener('resize', () => scheduleBoardAnchorUpdate());
             if (typeof MutationObserver !== 'undefined') {
                 BOARD_ANCHORED_MODAL_IDS.forEach(id => {
                     const el = document.getElementById(id);
@@ -9506,6 +10041,20 @@
             const roundDisplay = document.getElementById('round-number-display');
             const board = document.getElementById('board');
             const opponentLabel = getOpponentDisplayName();
+            const isOnline = isOnlineGame;
+            const iAmBlack = isOnline && myPlayerColor === 'B';
+            const myLabel = isOnline ? 'Your' : 'Player';
+            const oppLabel = isOnline ? (opponentLabel || 'Opponent') : opponentLabel;
+            const myTime = iAmBlack ? aiTurnTimeRemaining : playerTurnTimeRemaining;
+            const oppTime = iAmBlack ? playerTurnTimeRemaining : aiTurnTimeRemaining;
+            const uid = getMyUid();
+            const myTimerIsActive =
+                (currentTurnTimerPlayer && myPlayerColor && currentTurnTimerPlayer === myPlayerColor) ||
+                (uid && currentTurnTimerPlayer && currentOnlinePlayers[currentTurnTimerPlayer] === uid);
+            const oppTimerIsActive =
+                currentTurnTimerPlayer &&
+                ((myPlayerColor && currentTurnTimerPlayer !== myPlayerColor) ||
+                    (uid && currentOnlinePlayers[currentTurnTimerPlayer] && currentOnlinePlayers[currentTurnTimerPlayer] !== uid));
 
             if (gameTimerRow) {
                 gameTimerRow.textContent = `Game Time: ${formatTime(Math.max(0, gameTimeRemaining))}`;
@@ -9516,8 +10065,8 @@
 
             // Update player timer with warning color
             if (playerTimerRow) {
-                playerTimerRow.textContent = `Player Time: ${formatTime(Math.max(0, playerTurnTimeRemaining))}`;
-                if (playerTurnTimeRemaining <= 10 && playerTurnTimeRemaining > 0 && currentTurnTimerPlayer === 'W') {
+                playerTimerRow.textContent = `${myLabel} Time: ${formatTime(Math.max(0, myTime))}`;
+                if (myTime <= 10 && myTime > 0 && myTimerIsActive) {
                     playerTimerRow.classList.add('low-time');
                 } else {
                     playerTimerRow.classList.remove('low-time');
@@ -9526,8 +10075,8 @@
 
             // Update AI timer with warning color
             if (aiTimerRow) {
-                aiTimerRow.textContent = `${opponentLabel} Time: ${formatTime(Math.max(0, aiTurnTimeRemaining))}`;
-                if (aiTurnTimeRemaining <= 10 && aiTurnTimeRemaining > 0 && currentTurnTimerPlayer === 'B') {
+                aiTimerRow.textContent = `${oppLabel} Time: ${formatTime(Math.max(0, oppTime))}`;
+                if (oppTime <= 10 && oppTime > 0 && oppTimerIsActive) {
                     aiTimerRow.classList.add('low-time');
                 } else {
                     aiTimerRow.classList.remove('low-time');
@@ -9536,8 +10085,8 @@
 
             // Update board border color based on active timer
             if (board) {
-                const isPlayerTimerLow = playerTurnTimeRemaining <= 10 && playerTurnTimeRemaining > 0 && currentTurnTimerPlayer === 'W';
-                const isAiTimerLow = aiTurnTimeRemaining <= 10 && aiTurnTimeRemaining > 0 && currentTurnTimerPlayer === 'B';
+                const isPlayerTimerLow = myTime <= 10 && myTime > 0 && myTimerIsActive;
+                const isAiTimerLow = oppTime <= 10 && oppTime > 0 && oppTimerIsActive;
 
                 if (isPlayerTimerLow || isAiTimerLow) {
                     board.classList.add('low-time');
@@ -9636,6 +10185,22 @@
         }
 
         function handleTurnTimeout(player) {
+            if (isOnlineGame) {
+                if (player === myPlayerColor) {
+                    gameLog.push('Turn timer expired. Turn forfeited.');
+                    movesLeft = 0;
+                    updateGameLog();
+                    updateStatus();
+                    triggerAiTurn(); // Online path will package and send state
+                } else {
+                    // Opponent timed out; wait for their update
+                    gameLog.push('Opponent turn timer expired.');
+                    updateGameLog();
+                    document.getElementById('waiting-overlay').classList.add('active');
+                }
+                return;
+            }
+
             if (player === 'W') {
                 playerTurnTimeRemaining = 0;
             } else {
@@ -10630,6 +11195,7 @@
 
         let board = [];
         let currentPlayer = 'W';
+        let lastSyncedTurn = null; // Track last turn color synced from server
         let selectedPiece = null;
         let validMoves = [];
         let movesLeft = 3;
@@ -10685,6 +11251,48 @@
             return currentAiProfile ? currentAiProfile.displayName : 'AI';
         }
 
+        function getMyUid() {
+            if (currentUser && currentUser.uid) return currentUser.uid;
+            if (auth && auth.currentUser && auth.currentUser.uid) return auth.currentUser.uid;
+            return null;
+        }
+
+        function getLocalPlayerColor() {
+            return isOnlineGame ? myPlayerColor : 'W';
+        }
+
+        function isLocalPlayersTurn() {
+            return isMyTurn();
+        }
+
+        function ensureOnlinePlayerIdentity(gameData) {
+            if (!isOnlineGame || !gameData || !gameData.player1 || !gameData.player2) return;
+            const uid = getMyUid();
+            if (!uid) return;
+            currentOnlinePlayers = {
+                W: gameData.player1.uid,
+                B: gameData.player2.uid
+            };
+            const newColor = (gameData.player1.uid === uid) ? 'W' : (gameData.player2.uid === uid) ? 'B' : myPlayerColor;
+            if (newColor) {
+                myPlayerColor = newColor;
+                currentOnlineOpponent = (newColor === 'W') ? gameData.player2 : gameData.player1;
+            }
+            if (gameData.currentTurn) {
+                onlineStartingTurn = gameData.currentTurn;
+            }
+        }
+
+        function isMyTurn(gameData = null) {
+            const turnColor = gameData?.currentTurn || currentPlayer;
+            if (!turnColor) return false;
+            if (!isOnlineGame) return turnColor === 'W';
+            const uid = getMyUid();
+            if (myPlayerColor && turnColor === myPlayerColor) return true;
+            if (uid && currentOnlinePlayers[turnColor] === uid) return true;
+            return false;
+        }
+
         function applyAiDepthForVariant() {
             // Apply difficulty-based depth limits that scale with selected difficulty level
             // Caps are now proportional to allow difficulty settings to apply properly
@@ -10704,15 +11312,19 @@
         function startGame(variant) {
             gameVariant = variant;
 
-            // Select AI profile based on player's choice
-            if (selectedOpponent === 'Random') {
-                const profileNames = Object.keys(AI_PROFILES);
-                const randomIndex = Math.floor(Math.random() * profileNames.length);
-                currentAiProfile = AI_PROFILES[profileNames[randomIndex]];
+            // Select AI profile based on player's choice (offline only)
+            if (!isOnlineGame) {
+                if (selectedOpponent === 'Random') {
+                    const profileNames = Object.keys(AI_PROFILES);
+                    const randomIndex = Math.floor(Math.random() * profileNames.length);
+                    currentAiProfile = AI_PROFILES[profileNames[randomIndex]];
+                } else {
+                    currentAiProfile = AI_PROFILES[selectedOpponent];
+                }
+                console.log(`AI Profile: ${currentAiProfile.name} - ${currentAiProfile.description}`);
             } else {
-                currentAiProfile = AI_PROFILES[selectedOpponent];
+                currentAiProfile = null;
             }
-            console.log(`AI Profile: ${currentAiProfile.name} - ${currentAiProfile.description}`);
 
             if (variant === '24s') {
                 ROWS = 10;
@@ -10752,7 +11364,7 @@
             boardDiv.style.gridTemplateColumns = `repeat(${COLS}, 50px)`;
             boardDiv.style.gridTemplateRows = `repeat(${ROWS}, 50px)`;
             // Start aggressive watchdog to ensure AI turn always triggers when needed (especially for 36s variants)
-            if (!window.aiTurnWatch) {
+            if (!isOnlineGame && !window.aiTurnWatch) {
                 window.aiTurnWatch = setInterval(() => {
                     try {
                         // Don't trigger AI turn if game is paused
@@ -11440,8 +12052,11 @@
 
             const boardDiv = document.getElementById('board');
             boardDiv.innerHTML = '';
-            for (let r = 0; r < ROWS; r++) {
-                for (let c = 0; c < COLS; c++) {
+            const { rowOrder, colOrder } = getRenderOrders();
+            for (let rIdx = 0; rIdx < rowOrder.length; rIdx++) {
+                const r = rowOrder[rIdx];
+                for (let cIdx = 0; cIdx < colOrder.length; cIdx++) {
+                    const c = colOrder[cIdx];
                     const square = document.createElement('div');
                     square.className = `square ${(r + c) % 2 === 0 ? 'light' : 'dark'}`;
                     square.dataset.row = r;
@@ -11494,6 +12109,17 @@
             capturedSquares = [];
             // Extra safety: ensure AI begins if needed (e.g., 36's edge cases)
             ensureAITurnIfNeeded();
+        }
+
+        function getRenderOrders() {
+            const isBlackPerspective = isOnlineGame && myPlayerColor === 'B';
+            const rowOrder = Array.from({ length: ROWS }, (_, i) => i);
+            const colOrder = Array.from({ length: COLS }, (_, i) => i);
+            if (isBlackPerspective) {
+                rowOrder.reverse();
+                colOrder.reverse();
+            }
+            return { rowOrder, colOrder };
         }
 
         function opponentHasWizards(player) {
@@ -13208,7 +13834,7 @@
         }
 
         function activateGuardOfHonour(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'King' && !kingSpecialUsed[currentPlayer]) {
                 guardOfHonourMode = true;
@@ -13252,7 +13878,7 @@
         }
 
         function activateVoidBlast(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (!piece || piece.type !== 'UndeadChampion') return;
             const cooldown = undeadChampionRangedCooldown.get(piece) || 0;
@@ -13280,7 +13906,7 @@
         }
 
         function activateTeleport(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (!piece) return;
             let canTeleport = false;
@@ -13327,7 +13953,7 @@
         }
 
         function activateTeleportSwap(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2 || wizardTeleportSwapUsed[currentPlayer]) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2 || wizardTeleportSwapUsed[currentPlayer]) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Wizard' && opponentHasWizards(currentPlayer)) {
                 setActiveControlButton(button || document.getElementById('teleport-swap-button'));
@@ -13338,7 +13964,7 @@
         }
 
         function activateCharge(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2 || cavalryChargeUsed[currentPlayer]) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2 || cavalryChargeUsed[currentPlayer]) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Cavalry') {
                 setActiveControlButton(button || document.getElementById('charge-button'));
@@ -13349,7 +13975,7 @@
         }
 
         function activateOgreRage(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2 || ogreRageUsed[currentPlayer]) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2 || ogreRageUsed[currentPlayer]) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Ogre') {
                 setActiveControlButton(button || document.getElementById('ogre-rage-button'));
@@ -13360,7 +13986,7 @@
         }
 
         function activateInferno(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2 || dragonInfernoUsed[currentPlayer]) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2 || dragonInfernoUsed[currentPlayer]) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Dragon') {
                 setActiveControlButton(button || document.getElementById('inferno-button'));
@@ -13371,7 +13997,7 @@
         }
 
         function activateElephantryCharge(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Elephantry' && !elephantryChargeUsed.has(piece)) {
                 setActiveControlButton(button || document.getElementById('elephantry-charge-button'));
@@ -13382,7 +14008,7 @@
         }
 
         function activateElephantryExtendedRange(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             const pieceKey = `${selectedPiece.row},${selectedPiece.col},${currentPlayer}`;
             if (piece.type === 'Elephantry') {
@@ -13443,7 +14069,7 @@
         }
 
         function activateElephantryMoveShoot(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Elephantry') {
                 // Filter valid moves to only show move+shoot positions
@@ -13454,7 +14080,7 @@
         }
 
         function activatePistolierMoveShoot(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Pistolier') {
                 // Filter valid moves to only show move+shoot positions
@@ -13465,7 +14091,7 @@
         }
 
         function activateFusilierCrackShot(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             const pieceKey = `${selectedPiece.row},${selectedPiece.col},${currentPlayer}`;
             if (piece.type === 'Fusilier' && fusilierCrackShotCount[pieceKey] > 0) {
@@ -13493,7 +14119,7 @@
         }
 
         function activateFusilierStrafe(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             const pieceKey = `${selectedPiece.row},${selectedPiece.col},${currentPlayer}`;
             if (piece.type === 'Fusilier' && fusilierStrafeCount[pieceKey] > 0) {
@@ -13531,7 +14157,7 @@
         }
 
         function activateEnergyBlast(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move) return;
             if (!isSpellVariant()) return;
             const row = selectedPiece.row;
             const col = selectedPiece.col;
@@ -13769,7 +14395,7 @@
         }
 
         function activateSacrifice(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move) return;
             if (!isSpellVariant()) return;
             const row = selectedPiece.row;
             const col = selectedPiece.col;
@@ -13893,7 +14519,7 @@
         }
 
         function activateHuntsmanBurst(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move) return;
             const row = selectedPiece.row;
             const col = selectedPiece.col;
             const piece = board[row]?.[col];
@@ -14402,7 +15028,7 @@
                 updateEndTurnButton();
                 updateGameLog();
                 checkGameOver();
-                if (movesLeft === 0 && !reinforcementPending && currentPlayer === 'W') {
+                if (movesLeft === 0 && !reinforcementPending && isLocalPlayersTurn()) {
                     triggerAiTurn();
                 }
             };
@@ -14456,7 +15082,7 @@
 
         function handleClick(row, col) {
             const huntsmanSelectionActive = !!(huntsmanBurstMode && selectedPiece && selectedPiece.row === huntsmanBurstMode.row && selectedPiece.col === huntsmanBurstMode.col);
-            if (gameOver || currentPlayer !== 'W' || reinforcementPending || zombieAutoAdvanceInProgress) return;
+            if (gameOver || !isLocalPlayersTurn() || reinforcementPending || zombieAutoAdvanceInProgress) return;
             if ((gamePaused || lichSoulBlastResolving) && !huntsmanSelectionActive && !lichSoulBlastMode) return;
             const piece = board[row][col];
 
@@ -14485,7 +15111,8 @@
             // Handle Inferno Mode
             if (infernoMode && selectedPiece) {
                 const move = validMoves.find(m => m.pos[0] === row && m.pos[1] === col && m.special === 'inferno');
-                if (move && movesLeft >= move.cost) {
+                const moveCost = move?.cost ?? 0;
+                if (move && movesLeft >= moveCost) {
                     const fromRow = selectedPiece.row;
                     const fromCol = selectedPiece.col;
                     const toRow = move.pos[0];
@@ -14528,11 +15155,12 @@
             // Handle Archer Turn+Shoot mode (after confirming turn)
             if (turnAndShootMode && selectedPiece) {
                 const move = validMoves.find(m => m.pos[0] === row && m.pos[1] === col && m.type === 'shoot');
-                if (move && movesLeft >= move.cost) {
+                const moveCost = move?.cost ?? 0;
+                if (move && movesLeft >= moveCost) {
                     const fromRow = selectedPiece.row;
                     const fromCol = selectedPiece.col;
                     shootPiece(fromRow, fromCol, row, col);
-                    movesLeft -= move.cost; // spend second point
+                    movesLeft -= moveCost; // spend second point
                     lastAction = { move: true };
                     movedPieces.add(`${fromRow},${fromCol}`);
                     selectedPiece = null;
@@ -14556,7 +15184,8 @@
             // Handle Archer Move + Diagonal (1) Shoot special
             if (archerMoveDiagMode && selectedPiece) {
                 const move = validMoves.find(m => m.pos[0] === row && m.pos[1] === col && m.type === 'move');
-                if (move && movesLeft >= 1) {
+                const moveCost = move?.cost ?? 0;
+                if (move && movesLeft >= Math.max(1, moveCost)) {
                     const fromRow = selectedPiece.row;
                     const fromCol = selectedPiece.col;
                     // Perform the 1-point move first
@@ -15447,7 +16076,7 @@
                 return;
             }
 
-            if (!selectedPiece && piece && piece.player === 'W' && !movedPieces.has(`${row},${col}`)) {
+            if (!selectedPiece && piece && piece.player === currentPlayer && !movedPieces.has(`${row},${col}`)) {
                 // During mercenary bonus turn, only allow selecting the specific mercenary
                 if (mercenaryBonusTurnActive &&
                     (row !== mercenaryBonusTurnPiece.row || col !== mercenaryBonusTurnPiece.col)) {
@@ -15462,7 +16091,8 @@
                 updateEndTurnButton();
             } else if (selectedPiece) {
                 const move = validMoves.find(m => m.pos[0] === row && m.pos[1] === col);
-                if (move && movesLeft >= move.cost) {
+                const moveCost = move?.cost ?? 0;
+                if (move && movesLeft >= moveCost) {
                     if (move.type === 'move') {
                         // Handle Pistolier capturing by landing - requires coin flip
                         if (move.special === 'pistolierCapture') {
@@ -15472,7 +16102,7 @@
                             const toCol = col;
 
                             // Deduct points immediately
-                            movesLeft -= move.cost;
+                            movesLeft -= moveCost;
 
                             // Trigger coin toss for capture
                             performCoinToss(
@@ -15519,7 +16149,7 @@
                             const fromCol = selectedPiece.col;
                             // Move to the position first
                             movePiece(fromRow, fromCol, row, col, null);
-                            movesLeft -= move.cost;
+                            movesLeft -= moveCost;
                             movedPieces.add(`${fromRow},${fromCol}`);
                             movedPieces.add(`${row},${col}`);
                             lastAction = { move: true };
@@ -15985,7 +16615,7 @@
         }
 
         function openTurnModal(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (turnablePieces.includes(piece.type) && movesLeft >= turnCosts[piece.type]) {
                 setActiveControlButton(button || document.getElementById('turn-button'));
@@ -15997,7 +16627,7 @@
         }
 
         function activateBallistaRange(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2 || ballistaRangeBoostUsedThisTurn[currentPlayer]) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2 || ballistaRangeBoostUsedThisTurn[currentPlayer]) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Ballista') {
                 const controlButton = button || document.getElementById('ballista-range-button');
@@ -16037,7 +16667,7 @@
         }
 
         function activateBallistaDoubleTime(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2 || ballistaDoubleTimeUsed[currentPlayer] >= 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2 || ballistaDoubleTimeUsed[currentPlayer] >= 2) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Ballista') {
                 setActiveControlButton(button || document.getElementById('ballista-double-button'));
@@ -16047,7 +16677,7 @@
             }
         }
         function activateArcherMoveDiagShoot(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             if (archerMoveDiagMode || archerDiagShootSelectMode) {
                 cancelSpecialModes({ resetSelection: false });
                 return;
@@ -16065,7 +16695,7 @@
         }
 
         function activateArcherDiag2Shoot(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             if (archerDiag2ShootMode) {
                 cancelSpecialModes({ resetSelection: false });
                 return;
@@ -16104,7 +16734,7 @@
         }
 
         function activateStrafe(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             if (turnAndMoveMode) return;
             if (strafeMode) {
                 cancelSpecialModes({ resetSelection: false });
@@ -16132,7 +16762,7 @@
         }
 
         function activateSummonSpectre(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             if (summonSpectreMode) {
                 cancelSpecialModes({ resetSelection: false });
                 return;
@@ -16211,7 +16841,7 @@
         }
 
         function activateDarkVoid(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < DARK_VOID_COST) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < DARK_VOID_COST) return;
             if (darkVoidUses[currentPlayer] >= DARK_VOID_USE_LIMIT) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (!piece || (piece.type !== 'Necromancer' && piece.type !== 'Lich')) return;
@@ -16229,7 +16859,7 @@
         }
 
         function activateChampionSummon(type, button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             if (championSummonMode) {
                 cancelSpecialModes({ resetSelection: false });
                 return;
@@ -16284,7 +16914,7 @@
         }
 
         function activateNecromancerSummon(type, button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             if (necromancerSummonMode) {
                 cancelSpecialModes({ resetSelection: false });
                 return;
@@ -16589,7 +17219,7 @@
         }
 
         function openTurnAndMoveModal(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Infantry' && movesLeft >= 2) {
                 setActiveControlButton(button || document.getElementById('turn-move-button'));
@@ -16675,7 +17305,7 @@
         }
 
         function getKingSummonAvailability(unitType) {
-            if (!selectedPiece || currentPlayer !== 'W') return { allowed: false };
+            if (!selectedPiece || !isLocalPlayersTurn()) return { allowed: false };
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (!piece || piece.type !== 'King') return { allowed: false };
             if (reinforcementPending) {
@@ -16715,7 +17345,7 @@
         }
 
         function confirmKingSummon(unitType) {
-            if (!selectedPiece || currentPlayer !== 'W' || !unitType) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || !unitType) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type !== 'King') return;
 
@@ -16918,7 +17548,7 @@
         }
 
         function activateLichSoulBlast(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move) return;
             if (isAnySpecialModeActive()) return;
             if (pendingLichSoulBlast || lichSoulBlastMode) return;
             const row = selectedPiece.row;
@@ -17296,9 +17926,22 @@
                 handleReinforcementPlacementClick(row, col);
                 return;
             }
-            if (gameOver || currentPlayer !== 'W' || (reinforcementPending && reinforcementPending.stage === 'selectPiece') || zombieAutoAdvanceInProgress) return;
+            if (gameOver || !isMyTurn() || (reinforcementPending && reinforcementPending.stage === 'selectPiece') || zombieAutoAdvanceInProgress) return;
             if (gamePaused && !huntsmanSelectionActive && !lichSoulBlastMode) return;
             const piece = board[row][col];
+            if (isOnlineGame && piece) {
+                const uid = getMyUid();
+            const matchesColor = myPlayerColor && piece.player === myPlayerColor;
+            const matchesUid = uid && currentOnlinePlayers[piece.player] === uid;
+            if (!matchesColor && !matchesUid) {
+                return;
+            }
+            } else if (!isOnlineGame) {
+                const localColor = getLocalPlayerColor();
+                if (!huntsmanSelectionActive && !selectedPiece && piece && localColor && piece.player !== localColor) {
+                    return;
+                }
+            }
 
             if (isAnySpecialModeActive() && !huntsmanSelectionActive) {
                 if (selectedPiece && selectedPiece.row === row && selectedPiece.col === col) {
@@ -18281,7 +18924,7 @@
                         updateEndTurnButton();
                         updateGameLog();
                         checkGameOver();
-                        if (movesLeft === 0 && !reinforcementPending && currentPlayer === 'W') {
+                        if (movesLeft === 0 && !reinforcementPending && isLocalPlayersTurn()) {
                             triggerAiTurn();
                         }
                     };
@@ -18337,7 +18980,7 @@
                 return;
             }
 
-            if (!selectedPiece && piece && piece.player === 'W' && !movedPieces.has(`${row},${col}`)) {
+            if (!selectedPiece && piece && piece.player === currentPlayer && !movedPieces.has(`${row},${col}`)) {
                 // During mercenary bonus turn, only allow selecting the specific mercenary
                 if (mercenaryBonusTurnActive &&
                     (row !== mercenaryBonusTurnPiece.row || col !== mercenaryBonusTurnPiece.col)) {
@@ -18813,7 +19456,7 @@
         }
 
         function openTurnModal() {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (turnablePieces.includes(piece.type) && movesLeft >= turnCosts[piece.type]) {
                 const validDirections = getValidTurnDirections(piece.facing);
@@ -18824,7 +19467,7 @@
         }
 
         function activateBallistaRange() {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2 || ballistaRangeBoostUsedThisTurn[currentPlayer]) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2 || ballistaRangeBoostUsedThisTurn[currentPlayer]) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Ballista') {
                 ballistaRangeBoostActive[currentPlayer] = true;
@@ -18861,7 +19504,7 @@
         }
 
         function activateBallistaDoubleTime() {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2 || ballistaDoubleTimeUsed[currentPlayer] >= 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2 || ballistaDoubleTimeUsed[currentPlayer] >= 2) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Ballista') {
                 const options = getBallistaDoubleTimeMoves(selectedPiece.row, selectedPiece.col);
@@ -18870,7 +19513,7 @@
             }
         }
         function activateArcherMoveDiagShoot() {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             if (archerMoveDiagMode || archerDiagShootSelectMode) {
                 cancelSpecialModes({ resetSelection: false });
                 return;
@@ -18887,7 +19530,7 @@
         }
 
         function activateArcherDiag2Shoot() {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             if (archerDiag2ShootMode) {
                 cancelSpecialModes({ resetSelection: false });
                 return;
@@ -18925,7 +19568,7 @@
         }
 
         function activateStrafe() {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             if (strafeMode) {
                 cancelSpecialModes({ resetSelection: false });
                 return;
@@ -18951,7 +19594,7 @@
         }
 
         function activateSummonSpectre() {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             if (summonSpectreMode) {
                 cancelSpecialModes({ resetSelection: false });
                 return;
@@ -18977,7 +19620,7 @@
         }
 
         function activateChampionSummon(type) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move || movesLeft < 2) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move || movesLeft < 2) return;
             if (championSummonMode) {
                 cancelSpecialModes({ resetSelection: false });
                 return;
@@ -19051,7 +19694,7 @@
         }
 
         function openTurnAndMoveModal() {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Infantry' && movesLeft >= 2) {
                 const validDirections = getValidTurnDirections(piece.facing);
@@ -19099,7 +19742,7 @@
         }
 
         function openTurnAndShootModal(button = null) {
-            if (!selectedPiece || currentPlayer !== 'W' || reinforcementPending || lastAction?.move) return;
+            if (!selectedPiece || !isLocalPlayersTurn() || reinforcementPending || lastAction?.move) return;
             const piece = board[selectedPiece.row][selectedPiece.col];
             if (piece.type === 'Archer' && movesLeft >= 2) {
                 setActiveControlButton(button || document.getElementById('turn-shoot-button'));
@@ -19322,7 +19965,9 @@
             }
             // Note: Dragon Inferno is *not* added here because it's activated by a button, not as a passive option.
             // The logic above handles showing Inferno moves *only when infernoMode is true*.
-            
+
+            // Ensure every move has a defined cost so click handling cannot fail silently
+            valid = valid.map(move => (move.cost === undefined ? { ...move, cost: 1 } : move));
             return valid;
         }
 
@@ -19579,6 +20224,13 @@
                             return null;
                         }
                     }
+                    console.log('Online game capture (jump):', {
+                        isOnlineGame,
+                        capturedPiece,
+                        player: piece.player,
+                        score: scores[piece.player] + pieceValues[capturedPiece.type],
+                        capturedPieces: [...(capturedPieces[piece.player] || []), capturedPiece]
+                    });
                     capturedSquares.push([jump[0], jump[1]]);
                     recordGraveyardCapture(piece.player, capturedPiece);
                     captureValue = pieceValues[capturedPiece.type];
@@ -19611,66 +20263,151 @@
                 }
             }
 
-            if (board[toRow][toCol]) {
-                // Archers and Ballistas cannot capture by landing - they can only shoot
-                if (piece.type === 'Archer' || piece.type === 'Ballista') {
-                    gameLog.push(`${piece.player === 'W' ? 'Player' : 'AI'} ${piece.type} cannot capture by landing - must shoot instead`);
-                    // Don't allow the move - this shouldn't happen but just in case
-                } else {
-                    const capturedPiece = board[toRow][toCol];
-                    if (capturedPiece.type === 'Zombie') {
-                        const result = handleZombieCaptureAttempt(piece, fromRow, fromCol, toRow, toCol);
-                        if (!result.success) {
-                            return;
-                        }
-                        captured = true;
-                    } else {
-                        if (capturedPiece.type === 'Lich') {
-                            const allowed = resolveLichCaptureAttempt({
-                                attackerType: piece.type,
-                                attackerPlayer: piece.player,
-                                targetRow: toRow,
-                                targetCol: toCol,
-                                actionLabel: 'capture'
+                        if (board[toRow][toCol]) {
+
+                            console.log('Capture detected in online game:', {
+
+                                isOnlineGame,
+
+                                toRow,
+
+                                toCol,
+
+                                piece: board[toRow][toCol]
+
                             });
-                            if (!allowed) {
-                                return null;
+
+                            // Archers and Ballistas cannot capture by landing - they can only shoot
+
+                            if (piece.type === 'Archer' || piece.type === 'Ballista') {
+
+                                gameLog.push(`${piece.player === 'W' ? 'Player' : 'AI'} ${piece.type} cannot capture by landing - must shoot instead`);
+
+                                // Don't allow the move - this shouldn't happen but just in case
+
+                            } else {
+
+                                const capturedPiece = board[toRow][toCol];
+
+                                if (capturedPiece.type === 'Zombie') {
+
+                                    const result = handleZombieCaptureAttempt(piece, fromRow, fromCol, toRow, toCol);
+
+                                    if (!result.success) {
+
+                                        return;
+
+                                    }
+
+                                    captured = true;
+
+                                } else {
+
+                                    if (capturedPiece.type === 'Lich') {
+
+                                        const allowed = resolveLichCaptureAttempt({
+
+                                            attackerType: piece.type,
+
+                                            attackerPlayer: piece.player,
+
+                                            targetRow: toRow,
+
+                                            targetCol: toCol,
+
+                                            actionLabel: 'capture'
+
+                                        });
+
+                                        if (!allowed) {
+
+                                            return null;
+
+                                        }
+
+                                    }
+
+                                console.log('Online game capture (regular):', {
+
+                                    isOnlineGame,
+
+                                    capturedPiece,
+
+                                    player: piece.player,
+
+                                    score: scores[piece.player] + pieceValues[capturedPiece.type],
+
+                                    capturedPieces: [...(capturedPieces[piece.player] || []), capturedPiece]
+
+                                });
+
+                                capturedSquares.push([toRow, toCol]);
+
+                                recordGraveyardCapture(piece.player, capturedPiece);
+
+                                    captureValue = pieceValues[capturedPiece.type];
+
+                                    scores[piece.player] += captureValue;
+
+                                    registerScoreGain(piece.player, captureValue, true);
+
+                                    registerPieceLoss(opponent, capturedPiece.type);
+
+                                    trackCapture(piece.player); // Track capture for statistics
+
+                                    gameLog.push(`${piece.player === 'W' ? 'Player' : 'AI'} captured ${capturedPiece.type} (+${captureValue} points) with ${piece.type} at ${formatBoardCoordinates(toRow,toCol)}`);
+
+                                    if (capturedPiece.type === 'Champion') {
+
+                                        championCaptured[capturedPiece.player] = true;
+
+                                    }
+
+                                    cleanupNecromancerTracking(capturedPiece);
+
+                                    if (capturedPiece.type === 'King') {
+
+                                        // Complete the move first
+
+                                        board[toRow][toCol] = piece;
+
+                                        board[fromRow][fromCol] = null;
+
+                                        firstMoves.delete(`${fromRow},${fromCol},${piece.player}`);
+
+                                        renderBoard();
+
+                                        updateScoreDisplay();
+
+                                        updateCapturedPiecesDisplay();
+
+                                        updateGameLog();
+
+                                        // Immediately set gameOver flag to prevent any further actions
+
+                                        gameOver = true;
+
+                                        // Add 3-5 second delay before showing end game popup to allow final move animation to complete
+
+                                        const endGameDelay = 3000 + Math.random() * 2000; // Random delay between 3000-5000ms
+
+                                        setTimeout(() => {
+
+                                            endGame(piece.player);
+
+                                        }, endGameDelay);
+
+                                        return;
+
+                                    }
+
+                                    captured = true;
+
+                                }
+
                             }
-                        }
-                    capturedSquares.push([toRow, toCol]);
-                    recordGraveyardCapture(piece.player, capturedPiece);
-                        captureValue = pieceValues[capturedPiece.type];
-                        scores[piece.player] += captureValue;
-                        registerScoreGain(piece.player, captureValue, true);
-                        registerPieceLoss(opponent, capturedPiece.type);
-                        trackCapture(piece.player); // Track capture for statistics
-                        gameLog.push(`${piece.player === 'W' ? 'Player' : 'AI'} captured ${capturedPiece.type} (+${captureValue} points) with ${piece.type} at ${formatBoardCoordinates(toRow,toCol)}`);
-                        if (capturedPiece.type === 'Champion') {
-                            championCaptured[capturedPiece.player] = true;
-                        }
-                        cleanupNecromancerTracking(capturedPiece);
-                        if (capturedPiece.type === 'King') {
-                            // Complete the move first
-                            board[toRow][toCol] = piece;
-                            board[fromRow][fromCol] = null;
-                            firstMoves.delete(`${fromRow},${fromCol},${piece.player}`);
-                            renderBoard();
-                            updateScoreDisplay();
-                            updateCapturedPiecesDisplay();
-                            updateGameLog();
-                            // Immediately set gameOver flag to prevent any further actions
-                            gameOver = true;
-                            // Add 3-5 second delay before showing end game popup to allow final move animation to complete
-                            const endGameDelay = 3000 + Math.random() * 2000; // Random delay between 3000-5000ms
-                            setTimeout(() => {
-                                endGame(piece.player);
-                            }, endGameDelay);
-                            return;
-                        }
-                        captured = true;
-                    }
-                }
-            } else {
+
+                        } else {
                 gameLog.push(`${piece.player === 'W' ? 'Player' : 'AI'} moved ${piece.type} from ${formatBoardCoordinates(fromRow,fromCol)} to ${formatBoardCoordinates(toRow,toCol)}`);
             }
 
@@ -21427,6 +22164,9 @@
         }
 
         function aiTurn() {
+            if (isOnlineGame) {
+                return;
+            }
             currentPlayer = 'B';
             aiPending = false; // clear any scheduled AI flag
             aiRoundNumber++; // Increment AI round counter
@@ -22794,6 +23534,7 @@
             wizardSummonedThisTurn = { 'W': false, 'B': false };
             wizardCannotMoveNextTurn = { 'W': new Set(), 'B': new Set() };
             wizardSacrificedByPlayer = { 'W': false, 'B': false };
+            lastSyncedTurn = null;
             necromancersSummoned = { 'W': 0, 'B': 0 };
             huntsmenSummoned = { 'W': 0, 'B': 0 };
             huntsmenOnBoard = { 'W': 0, 'B': 0 };
@@ -22864,7 +23605,27 @@
             const turnShootModal = document.getElementById('turn-shoot-modal');
             if (turnShootModal) turnShootModal.style.display = 'none';
 
-            // Perform coin toss to determine starting player
+            // Online: honor server-designated starting player (skip coin toss UI)
+            if (isOnlineGame) {
+                currentPlayer = onlineStartingTurn || 'W';
+                firstPlayer = currentPlayer;
+                gameLog.push(`Online game start: ${currentPlayer === 'W' ? 'White' : 'Black'} moves first.`);
+                const baseMoves = calculateBaseMoves(currentPlayer);
+                const shouldStartTimer = myPlayerColor && myPlayerColor === currentPlayer;
+                applyStartTurnModifiers(currentPlayer, baseMoves, {
+                    skipTurnTimer: !shouldStartTimer
+                });
+                renderBoard();
+                updateScoreDisplay();
+                updateStatus();
+                updateGameLog();
+                updateCapturedPiecesDisplay();
+                updateEndTurnButton();
+                startGameTimer();
+                return;
+            }
+
+            // Offline/AI: perform coin toss to determine starting player
             performCoinToss(
                 'First Round',
                 'Determining who goes first...',
@@ -22878,6 +23639,7 @@
                         const baseMoves = calculateBaseMoves('W');
                         movesLeft = baseMoves;
                         initialMovesLeft = baseMoves;
+                        const shouldStartTimer = !isOnlineGame || (myPlayerColor && myPlayerColor === 'W');
 
                         // Render board and update UI after coin toss
                         renderBoard();
@@ -22889,7 +23651,9 @@
 
                         // Start timer after everything is set up
                         startGameTimer();
-                        const startReady = applyStartTurnModifiers('W', baseMoves);
+                        const startReady = applyStartTurnModifiers('W', baseMoves, {
+                            skipTurnTimer: !shouldStartTimer
+                        });
 
                         if (!startReady) {
                             checkGameOver();
@@ -22902,8 +23666,15 @@
                         gameLog.push(`${getOpponentDisplayName()} won the coin toss and goes first!`);
 
                         const baseMoves = calculateBaseMoves('B');
-                        movesLeft = baseMoves;
-                        initialMovesLeft = baseMoves;
+                        if (isOnlineGame) {
+                            const shouldStartTimer = myPlayerColor && myPlayerColor === 'B';
+                            applyStartTurnModifiers('B', baseMoves, {
+                                skipTurnTimer: !shouldStartTimer
+                            });
+                        } else {
+                            movesLeft = baseMoves;
+                            initialMovesLeft = baseMoves;
+                        }
 
                         // Render board and update UI after coin toss
                         renderBoard();
@@ -22916,17 +23687,30 @@
                         // Start timer after everything is set up
                         startGameTimer();
 
-                        // Trigger AI turn after a brief delay
-                        setTimeout(() => {
-                            aiTurn();
-                        }, 1500);
+                        // Trigger AI turn after a brief delay (offline only)
+                        if (!isOnlineGame) {
+                            setTimeout(() => {
+                                aiTurn();
+                            }, 1500);
+                        }
                     }
                 }
             );
         }
 
         function updateStatus() {
-            document.getElementById('status').textContent = `${currentPlayer === 'W' ? "Player" : "AI"}'s turn: ${movesLeft} moves remaining`;
+            let turnLabel;
+            if (isOnlineGame) {
+                if (myPlayerColor && currentPlayer === myPlayerColor) {
+                    turnLabel = 'Your';
+                } else {
+                    const oppName = getOpponentDisplayName();
+                    turnLabel = oppName ? `${oppName}'s` : "Opponent's";
+                }
+            } else {
+                turnLabel = currentPlayer === 'W' ? 'Player' : 'AI';
+            }
+            document.getElementById('status').textContent = `${turnLabel} turn: ${movesLeft} moves remaining`;
 
             // Remove warcry active background when bonus moves are spent
             if (movesLeft <= baseMovesThisTurn) {
@@ -22934,7 +23718,7 @@
             }
 
             // Explicitly check if round should end after status update
-            if (!gamePaused && currentPlayer === 'W' && movesLeft <= 0 && !reinforcementPending && !aiPending) {
+            if (!gamePaused && isLocalPlayersTurn() && movesLeft <= 0 && !reinforcementPending && !aiPending) {
                 setTimeout(() => triggerAiTurn(), 0);
             }
         }
@@ -23089,9 +23873,10 @@
         function updateEndTurnButton() {
             const endTurnButton = document.getElementById('end-turn-button');
             if (!endTurnButton) return;
+            const isMyTurnNow = isMyTurn();
             const noMovesSpent = movesLeft >= initialMovesLeft;
             const selectionActive = !!selectedPiece;
-            endTurnButton.disabled = currentPlayer !== 'W' || noMovesSpent || selectionActive;
+            endTurnButton.disabled = !isMyTurnNow || noMovesSpent || selectionActive;
             // Update hint button visibility
             updateHintButton();
             // Safety net
@@ -23102,7 +23887,7 @@
             const hintButton = document.getElementById('hint-button');
             if (hintButton) {
                 // Show hint button only if hint mode is enabled and it's the player's turn
-                if (hintModeEnabled && currentPlayer === 'W' && movesLeft > 0) {
+                if (hintModeEnabled && isMyTurn() && movesLeft > 0) {
                     hintButton.style.display = 'inline-block';
                 } else {
                     hintButton.style.display = 'none';
@@ -23111,7 +23896,7 @@
         }
 
         function showHint() {
-            if (!hintModeEnabled || currentPlayer !== 'W') return;
+            if (!hintModeEnabled || !isLocalPlayersTurn()) return;
 
             // Use simplified AI logic to find a good move
             // Pass current movesLeft and movedPieces to the function
