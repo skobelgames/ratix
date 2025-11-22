@@ -17929,13 +17929,13 @@
             if (gameOver || !isMyTurn() || (reinforcementPending && reinforcementPending.stage === 'selectPiece') || zombieAutoAdvanceInProgress) return;
             if (gamePaused && !huntsmanSelectionActive && !lichSoulBlastMode) return;
             const piece = board[row][col];
-            if (isOnlineGame && piece) {
+            if (isOnlineGame && piece && !selectedPiece) {
                 const uid = getMyUid();
-            const matchesColor = myPlayerColor && piece.player === myPlayerColor;
-            const matchesUid = uid && currentOnlinePlayers[piece.player] === uid;
-            if (!matchesColor && !matchesUid) {
-                return;
-            }
+                const matchesColor = myPlayerColor && piece.player === myPlayerColor;
+                const matchesUid = uid && currentOnlinePlayers[piece.player] === uid;
+                if (!matchesColor && !matchesUid) {
+                    return;
+                }
             } else if (!isOnlineGame) {
                 const localColor = getLocalPlayerColor();
                 if (!huntsmanSelectionActive && !selectedPiece && piece && localColor && piece.player !== localColor) {
