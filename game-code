@@ -5897,8 +5897,11 @@
             // Update board if game state exists. Preserve the local state while it's our turn
             // so that in-progress moves aren't overwritten by a slightly stale snapshot.
             if (gameData.gameState) {
-                // Always load the latest state so turn, moves, and board stay in sync
-                loadGameState(gameData.gameState, gameId);
+                // Only load state when: turn changed (need new turn state) OR not my turn (see opponent moves)
+                // Skip loading during my active turn to preserve in-progress moves and captures
+                if (turnChanged || !myTurn) {
+                    loadGameState(gameData.gameState, gameId);
+                }
             }
 
             // If the turn switched, rehydrate turn start so moves/captures work online
