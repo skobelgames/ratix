@@ -2704,6 +2704,16 @@
             padding: 40px;
             border-radius: 10px;
             text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        .waiting-message.capture-flash {
+            animation: waitingBoxCaptureFlash 0.8s ease-out;
+        }
+        @keyframes waitingBoxCaptureFlash {
+            0% { background-color: #f44336; }
+            30% { background-color: #ff5252; }
+            60% { background-color: #ffcdd2; }
+            100% { background-color: white; }
         }
         .waiting-message h2 {
             margin-bottom: 20px;
@@ -8209,6 +8219,28 @@
             }
         }
 
+        // Auto-end turn when movesLeft reaches zero - works for both online and offline games
+        function checkAutoEndTurn() {
+            if (gameOver || gamePaused || reinforcementPending || lichSoulBlastResolving) return;
+            if (isBlockingActionPending()) return;
+            if (isElephantrySpecialActive() || pistolierMoveShootMode) return;
+            if (isAnySpecialModeActive()) return;
+
+            if (movesLeft <= 0) {
+                if (isOnlineGame) {
+                    // For online games, only trigger if it's my turn
+                    if (myPlayerColor && currentPlayer === myPlayerColor) {
+                        setTimeout(() => triggerAiTurn(), 100);
+                    }
+                } else {
+                    // For offline games, check if it's player's turn
+                    if (isLocalPlayersTurn() && !aiPending) {
+                        setTimeout(() => triggerAiTurn(), 100);
+                    }
+                }
+            }
+        }
+
         function isAnySpecialModeActive() {
             return turnAndShootMode || turnAndMoveMode || guardOfHonourMode || teleportMode || teleportSwapMode || chargeMode || ogreRageMode || infernoMode || strafeMode || summonSpectreMode || archerMoveDiagMode || archerDiagShootSelectMode || archerDiag2ShootMode || elephantryChargeMode || elephantryExtendedRangeActive || elephantryMoveShootMode || pistolierMoveShootMode || fusilierCrackShotActive || fusilierStrafeActive || huntsmanBurstMode || pendingHuntsmanBurst || championSummonMode || necromancerSummonMode || kingShotMode || kingEvadeMode || lichSoulBlastMode || darkVoidMode || voidBlastMode;
         }
@@ -10302,21 +10334,27 @@
 
         function triggerWaitingOverlayCaptureFlash() {
             const statusSection = document.getElementById('waiting-player-status');
-            if (!statusSection) return;
+            const waitingBox = document.querySelector('.waiting-message');
 
-            // Remove existing flash class if any
-            statusSection.classList.remove('capture-flash');
-
-            // Force reflow to restart animation
-            void statusSection.offsetWidth;
-
-            // Add flash class
-            statusSection.classList.add('capture-flash');
-
-            // Remove flash class after animation completes (return to normal green)
-            setTimeout(() => {
+            // Apply flash to status section (green background)
+            if (statusSection) {
                 statusSection.classList.remove('capture-flash');
-            }, 1500);
+                void statusSection.offsetWidth;
+                statusSection.classList.add('capture-flash');
+                setTimeout(() => {
+                    statusSection.classList.remove('capture-flash');
+                }, 1500);
+            }
+
+            // Apply flash to the entire waiting box (white background)
+            if (waitingBox) {
+                waitingBox.classList.remove('capture-flash');
+                void waitingBox.offsetWidth;
+                waitingBox.classList.add('capture-flash');
+                setTimeout(() => {
+                    waitingBox.classList.remove('capture-flash');
+                }, 1500);
+            }
         }
 
         function startOpponentWaitingTimer() {
@@ -13073,6 +13111,8 @@
             if (aiNameEl) {
                 aiNameEl.textContent = getOpponentDisplayName();
             }
+            // Also update waiting overlay scores in real-time
+            updateWaitingOverlay();
         }
 
         function showPieceInfo(piece, player) {
@@ -23973,9 +24013,16 @@
                 removeWarcryActiveBackground();
             }
 
-            // Explicitly check if round should end after status update
-            if (!gamePaused && isLocalPlayersTurn() && movesLeft <= 0 && !reinforcementPending && !aiPending) {
-                setTimeout(() => triggerAiTurn(), 0);
+            // Auto-end turn when moves reach zero (for both online and offline games)
+            if (!gamePaused && !gameOver && movesLeft <= 0 && !reinforcementPending) {
+                if (isOnlineGame) {
+                    // For online games, only trigger if it's my turn and no special modes active
+                    if (myPlayerColor && currentPlayer === myPlayerColor && !isAnySpecialModeActive() && !isBlockingActionPending()) {
+                        setTimeout(() => triggerAiTurn(), 100);
+                    }
+                } else if (isLocalPlayersTurn() && !aiPending) {
+                    setTimeout(() => triggerAiTurn(), 0);
+                }
             }
         }
 
@@ -24137,8 +24184,10 @@
             endTurnButton.disabled = !isMyTurnNow || noMovesSpent || selectionActive;
             // Update hint button visibility
             updateHintButton();
-            // Safety net
+            // Safety net for local games
             ensureAITurnIfNeeded();
+            // Auto-end turn when moves reach zero (works for both online and offline)
+            checkAutoEndTurn();
         }
 
         function updateHintButton() {
