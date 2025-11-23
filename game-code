@@ -2721,6 +2721,81 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .opponent-turn-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            margin: 0 0 5px 0;
+        }
+        .waiting-subtitle {
+            font-size: 1em;
+            color: #555;
+            margin: 0 0 15px 0;
+        }
+        .waiting-message #waiting-message-text {
+            font-size: 1em;
+            color: #555;
+            margin: 10px 0;
+        }
+        .opponent-timer-section {
+            margin: 15px 0;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .opponent-timer-label {
+            font-size: 1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .opponent-timer-label span {
+            font-family: monospace;
+            font-size: 1.2em;
+            color: #2196F3;
+        }
+        .opponent-timer-bar-container {
+            width: 100%;
+            height: 12px;
+            background-color: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .opponent-timer-bar {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            border-radius: 6px;
+            transition: width 1s linear, background 0.3s ease;
+        }
+        .opponent-timer-bar.low-time {
+            background: linear-gradient(90deg, #f44336, #ff9800);
+        }
+        .opponent-timer-bar.critical-time {
+            background: linear-gradient(90deg, #d32f2f, #f44336);
+            animation: pulse-timer 0.5s ease-in-out infinite alternate;
+        }
+        @keyframes pulse-timer {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        .player-status-section {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .player-status-item {
+            font-size: 0.95em;
+            color: #333;
+        }
+        .player-status-item span {
+            font-weight: bold;
+            color: #2196F3;
+        }
     </style>
 </head>
 <body>
@@ -3107,9 +3182,21 @@
     <!-- Waiting Overlay for Online Games -->
     <div id="waiting-overlay" class="waiting-overlay">
         <div class="waiting-message">
-            <h2>Waiting for opponent...</h2>
+            <h3 class="opponent-turn-title">Your opponent's turn</h3>
+            <p class="waiting-subtitle">Waiting for opponent</p>
+            <div class="opponent-timer-section">
+                <div class="opponent-timer-label">Time remaining: <span id="opponent-time-display">01:00</span></div>
+                <div class="opponent-timer-bar-container">
+                    <div class="opponent-timer-bar" id="opponent-timer-bar"></div>
+                </div>
+            </div>
             <div class="spinner"></div>
             <p id="waiting-message-text">Your opponent is thinking...</p>
+            <div class="player-status-section" id="waiting-player-status">
+                <div class="player-status-item">Moves: <span id="waiting-moves-display">3</span></div>
+                <div class="player-status-item">Your Score: <span id="waiting-your-score">0</span></div>
+                <div class="player-status-item">Opponent Score: <span id="waiting-opponent-score">0</span></div>
+            </div>
         </div>
     </div>
 
@@ -5889,9 +5976,15 @@
             // If it's not our turn, show waiting overlay
             const myTurn = isMyTurn(gameData);
             if (!myTurn) {
+                const wasAlreadyActive = document.getElementById('waiting-overlay').classList.contains('active');
                 document.getElementById('waiting-overlay').classList.add('active');
+                // Start opponent timer countdown if just showing overlay (turn changed to opponent)
+                if (!wasAlreadyActive || turnChanged) {
+                    startOpponentWaitingTimer();
+                }
             } else {
                 document.getElementById('waiting-overlay').classList.remove('active');
+                stopOpponentWaitingTimer();
             }
 
             // Update board if game state exists. Preserve the local state while it's our turn
@@ -7949,6 +8042,7 @@
                 sendMove(moveData, nextPlayer);
                 // Show waiting overlay for opponent
                 document.getElementById('waiting-overlay').classList.add('active');
+                startOpponentWaitingTimer();
                 return;
             }
 
@@ -9657,6 +9751,7 @@
         let aiTurnTimeRemaining = TURN_TIME_OPTIONS[selectedTurnTimerKey];
         let currentTurnTimerPlayer = null;
         let aiTurnTimeoutForced = false;
+        let opponentWaitingTimerInterval = null; // Timer for opponent countdown in waiting overlay
         let roundCount = 1; // Initialize round counter early for timer display
         let playerRoundNumber = 0; // Track player's round count (for first 2 rounds features)
         let aiRoundNumber = 0; // Track AI's round count (for first 2 rounds features)
@@ -10096,6 +10191,93 @@
                 } else {
                     board.classList.remove('low-time');
                 }
+            }
+
+            // Update waiting overlay timer display
+            updateWaitingOverlay();
+        }
+
+        function updateWaitingOverlay() {
+            const waitingOverlay = document.getElementById('waiting-overlay');
+            if (!waitingOverlay || !waitingOverlay.classList.contains('active')) {
+                return; // Only update if overlay is visible
+            }
+
+            const iAmBlack = isOnlineGame && myPlayerColor === 'B';
+            const oppTime = iAmBlack ? playerTurnTimeRemaining : aiTurnTimeRemaining;
+            const totalTime = TURN_TIME_OPTIONS[selectedTurnTimerKey] || 60;
+
+            // Update time display
+            const timeDisplay = document.getElementById('opponent-time-display');
+            if (timeDisplay) {
+                timeDisplay.textContent = formatTime(Math.max(0, oppTime));
+            }
+
+            // Update timer bar
+            const timerBar = document.getElementById('opponent-timer-bar');
+            if (timerBar) {
+                const percentage = Math.max(0, (oppTime / totalTime) * 100);
+                timerBar.style.width = percentage + '%';
+
+                // Update bar color based on time remaining
+                timerBar.classList.remove('low-time', 'critical-time');
+                if (oppTime <= 5) {
+                    timerBar.classList.add('critical-time');
+                } else if (oppTime <= 10) {
+                    timerBar.classList.add('low-time');
+                }
+            }
+
+            // Update player status (moves and scores)
+            const movesDisplay = document.getElementById('waiting-moves-display');
+            if (movesDisplay) {
+                movesDisplay.textContent = movesLeft;
+            }
+
+            const myScore = iAmBlack ? scores['B'] : scores['W'];
+            const oppScore = iAmBlack ? scores['W'] : scores['B'];
+
+            const yourScoreDisplay = document.getElementById('waiting-your-score');
+            if (yourScoreDisplay) {
+                yourScoreDisplay.textContent = myScore;
+            }
+
+            const oppScoreDisplay = document.getElementById('waiting-opponent-score');
+            if (oppScoreDisplay) {
+                oppScoreDisplay.textContent = oppScore;
+            }
+        }
+
+        function startOpponentWaitingTimer() {
+            stopOpponentWaitingTimer();
+
+            // Reset opponent time to full duration at start of their turn
+            const iAmBlack = isOnlineGame && myPlayerColor === 'B';
+            const duration = TURN_TIME_OPTIONS[selectedTurnTimerKey];
+            if (iAmBlack) {
+                playerTurnTimeRemaining = duration;
+            } else {
+                aiTurnTimeRemaining = duration;
+            }
+
+            // Update display immediately
+            updateWaitingOverlay();
+
+            // Start countdown interval
+            opponentWaitingTimerInterval = setInterval(() => {
+                if (iAmBlack) {
+                    playerTurnTimeRemaining = Math.max(0, playerTurnTimeRemaining - 1);
+                } else {
+                    aiTurnTimeRemaining = Math.max(0, aiTurnTimeRemaining - 1);
+                }
+                updateWaitingOverlay();
+            }, 1000);
+        }
+
+        function stopOpponentWaitingTimer() {
+            if (opponentWaitingTimerInterval) {
+                clearInterval(opponentWaitingTimerInterval);
+                opponentWaitingTimerInterval = null;
             }
         }
 
@@ -23732,6 +23914,8 @@
 
             stopGameTimer();
             stopTurnTimer();
+            stopOpponentWaitingTimer();
+            document.getElementById('waiting-overlay').classList.remove('active');
             playerTurnTimeRemaining = 0;
             aiTurnTimeRemaining = 0;
             updateTimerDisplay();
