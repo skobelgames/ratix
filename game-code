@@ -2704,6 +2704,16 @@
             padding: 40px;
             border-radius: 10px;
             text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        .waiting-message.capture-flash {
+            animation: waitingBoxCaptureFlash 0.8s ease-out;
+        }
+        @keyframes waitingBoxCaptureFlash {
+            0% { background-color: #f44336; }
+            30% { background-color: #ff5252; }
+            60% { background-color: #ffcdd2; }
+            100% { background-color: white; }
         }
         .waiting-message h2 {
             margin-bottom: 20px;
@@ -2787,14 +2797,32 @@
             display: flex;
             flex-direction: column;
             gap: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .player-status-section.capture-flash {
+            background-color: #ffcdd2 !important;
+            animation: captureFlash 0.8s ease-out;
+        }
+        @keyframes captureFlash {
+            0% { background-color: #f44336; }
+            50% { background-color: #ff5252; }
+            100% { background-color: #ffcdd2; }
         }
         .player-status-item {
             font-size: 0.95em;
             color: #333;
+            transition: color 0.3s ease;
         }
         .player-status-item span {
             font-weight: bold;
             color: #2196F3;
+            transition: color 0.3s ease;
+        }
+        .player-status-section.capture-flash .player-status-item {
+            color: #b71c1c;
+        }
+        .player-status-section.capture-flash .player-status-item span {
+            color: #d32f2f;
         }
     </style>
 </head>
@@ -3193,7 +3221,7 @@
             <div class="spinner"></div>
             <p id="waiting-message-text">Your opponent is thinking...</p>
             <div class="player-status-section" id="waiting-player-status">
-                <div class="player-status-item">Moves: <span id="waiting-moves-display">3</span></div>
+                <div class="player-status-item">Opponent Moves Left: <span id="waiting-moves-display">3</span></div>
                 <div class="player-status-item">Your Score: <span id="waiting-your-score">0</span></div>
                 <div class="player-status-item">Opponent Score: <span id="waiting-opponent-score">0</span></div>
             </div>
@@ -6087,11 +6115,19 @@
                 movesLeft: movesLeft,
                 capturedPieces: capturedPieces,
                 gameLog: gameLog,
-                roundCount: roundCount || 1
+                roundCount: roundCount || 1,
+                nextRoundModifier: nextRoundModifier // Sync warcry/despair bonuses
             };
         }
 
         function loadGameState(state, gameId) {
+            // Track previous state for capture detection
+            const prevCapturedCount = {
+                'W': capturedPieces['W'] ? capturedPieces['W'].length : 0,
+                'B': capturedPieces['B'] ? capturedPieces['B'].length : 0
+            };
+            const prevScores = { ...scores };
+
             if (state.board && state.board.cells) {
                 board = deserializeBoardFromNetwork(state.board);
             } else {
@@ -6110,6 +6146,11 @@
             };
             gameLog = state.gameLog || [];
             roundCount = state.roundCount || 1;
+
+            // Restore warcry/despair modifiers from synced state
+            if (state.nextRoundModifier) {
+                nextRoundModifier = { ...state.nextRoundModifier };
+            }
 
             // Reset transient turn state when syncing from network to allow moves/captures
             selectedPiece = null;
@@ -6139,6 +6180,27 @@
             updateGameLog();
             updateEndTurnButton();
             updateTimerDisplay();
+
+            // Real-time sync for waiting overlay: update moves, scores, and detect captures
+            if (isOnlineGame) {
+                // Detect if opponent made a capture (my pieces were captured)
+                const myColor = myPlayerColor;
+                const newCapturedCount = {
+                    'W': capturedPieces['W'] ? capturedPieces['W'].length : 0,
+                    'B': capturedPieces['B'] ? capturedPieces['B'].length : 0
+                };
+
+                // Check if any of my pieces were captured (opponent captured my piece)
+                const myCapturedPiecesIncreased = myColor && newCapturedCount[myColor] > prevCapturedCount[myColor];
+
+                // Update waiting overlay with new moves and scores
+                updateWaitingOverlay();
+
+                // Flash red if opponent captured one of my pieces
+                if (myCapturedPiecesIncreased) {
+                    triggerWaitingOverlayCaptureFlash();
+                }
+            }
         }
 
         // Fallback UI updater used by older calls; keeps turn/status panels refreshed.
@@ -8153,6 +8215,28 @@
                 if (!anyValidActions) {
                     movesLeft = 0; // Ensure movesLeft is 0 before triggering
                     triggerAiTurn();
+                }
+            }
+        }
+
+        // Auto-end turn when movesLeft reaches zero - works for both online and offline games
+        function checkAutoEndTurn() {
+            if (gameOver || gamePaused || reinforcementPending || lichSoulBlastResolving) return;
+            if (isBlockingActionPending()) return;
+            if (isElephantrySpecialActive() || pistolierMoveShootMode) return;
+            if (isAnySpecialModeActive()) return;
+
+            if (movesLeft <= 0) {
+                if (isOnlineGame) {
+                    // For online games, only trigger if it's my turn
+                    if (myPlayerColor && currentPlayer === myPlayerColor) {
+                        setTimeout(() => triggerAiTurn(), 100);
+                    }
+                } else {
+                    // For offline games, check if it's player's turn
+                    if (isLocalPlayersTurn() && !aiPending) {
+                        setTimeout(() => triggerAiTurn(), 100);
+                    }
                 }
             }
         }
@@ -10245,6 +10329,31 @@
             const oppScoreDisplay = document.getElementById('waiting-opponent-score');
             if (oppScoreDisplay) {
                 oppScoreDisplay.textContent = oppScore;
+            }
+        }
+
+        function triggerWaitingOverlayCaptureFlash() {
+            const statusSection = document.getElementById('waiting-player-status');
+            const waitingBox = document.querySelector('.waiting-message');
+
+            // Apply flash to status section (green background)
+            if (statusSection) {
+                statusSection.classList.remove('capture-flash');
+                void statusSection.offsetWidth;
+                statusSection.classList.add('capture-flash');
+                setTimeout(() => {
+                    statusSection.classList.remove('capture-flash');
+                }, 1500);
+            }
+
+            // Apply flash to the entire waiting box (white background)
+            if (waitingBox) {
+                waitingBox.classList.remove('capture-flash');
+                void waitingBox.offsetWidth;
+                waitingBox.classList.add('capture-flash');
+                setTimeout(() => {
+                    waitingBox.classList.remove('capture-flash');
+                }, 1500);
             }
         }
 
@@ -13002,6 +13111,8 @@
             if (aiNameEl) {
                 aiNameEl.textContent = getOpponentDisplayName();
             }
+            // Also update waiting overlay scores in real-time
+            updateWaitingOverlay();
         }
 
         function showPieceInfo(piece, player) {
@@ -23902,9 +24013,16 @@
                 removeWarcryActiveBackground();
             }
 
-            // Explicitly check if round should end after status update
-            if (!gamePaused && isLocalPlayersTurn() && movesLeft <= 0 && !reinforcementPending && !aiPending) {
-                setTimeout(() => triggerAiTurn(), 0);
+            // Auto-end turn when moves reach zero (for both online and offline games)
+            if (!gamePaused && !gameOver && movesLeft <= 0 && !reinforcementPending) {
+                if (isOnlineGame) {
+                    // For online games, only trigger if it's my turn and no special modes active
+                    if (myPlayerColor && currentPlayer === myPlayerColor && !isAnySpecialModeActive() && !isBlockingActionPending()) {
+                        setTimeout(() => triggerAiTurn(), 100);
+                    }
+                } else if (isLocalPlayersTurn() && !aiPending) {
+                    setTimeout(() => triggerAiTurn(), 0);
+                }
             }
         }
 
@@ -24066,8 +24184,10 @@
             endTurnButton.disabled = !isMyTurnNow || noMovesSpent || selectionActive;
             // Update hint button visibility
             updateHintButton();
-            // Safety net
+            // Safety net for local games
             ensureAITurnIfNeeded();
+            // Auto-end turn when moves reach zero (works for both online and offline)
+            checkAutoEndTurn();
         }
 
         function updateHintButton() {
