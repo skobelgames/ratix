@@ -2400,6 +2400,109 @@
             color: #333;
             cursor: not-allowed;
         }
+        .friend-action-btn.remove-btn {
+            background: #f44336;
+            border-color: #f44336;
+        }
+        .friend-action-btn.remove-btn:hover {
+            background: #d32f2f;
+            border-color: #d32f2f;
+        }
+        .friend-action-btn.send-request-btn {
+            background: #2196F3;
+            border-color: #2196F3;
+        }
+        .friend-action-btn.send-request-btn:hover {
+            background: #1976D2;
+            border-color: #1976D2;
+        }
+        .friend-action-btn.pending-btn {
+            background: #ff9800;
+            border-color: #ff9800;
+            cursor: default;
+        }
+
+        /* Friend Requests Section */
+        .friend-requests-section {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: #fff3e0;
+            border: 1px solid #ffcc80;
+            border-radius: 8px;
+        }
+        .friend-requests-section h4 {
+            margin: 0 0 10px 0;
+            color: #e65100;
+            font-size: 14px;
+        }
+        .friend-request-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid #ddd;
+            margin-bottom: 8px;
+        }
+        .friend-request-row:last-child {
+            margin-bottom: 0;
+        }
+        .friend-request-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .friend-request-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .friend-request-btn.accept {
+            background: #4CAF50;
+            color: #fff;
+        }
+        .friend-request-btn.accept:hover {
+            background: #45a049;
+        }
+        .friend-request-btn.decline {
+            background: #f44336;
+            color: #fff;
+        }
+        .friend-request-btn.decline:hover {
+            background: #d32f2f;
+        }
+        .friend-request-btn.cancel {
+            background: #9e9e9e;
+            color: #fff;
+        }
+        .friend-request-btn.cancel:hover {
+            background: #757575;
+        }
+        .sent-requests-section {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+        }
+        .sent-requests-section h4 {
+            margin: 0 0 10px 0;
+            color: #1565c0;
+            font-size: 14px;
+        }
+        .friend-requests-empty {
+            color: #666;
+            font-size: 13px;
+            font-style: italic;
+        }
+        .all-time-points-stat {
+            color: #9c27b0 !important;
+            font-weight: bold;
+        }
 
         /* Matchmaking Lobby */
         #matchmaking-lobby {
@@ -3120,6 +3223,22 @@
                     <h4>Friend Points</h4>
                     <div class="stat-number" id="friend-stat-points">0</div>
                 </div>
+                <div class="stat-card">
+                    <h4>All-Time Points</h4>
+                    <div class="stat-number all-time-points-stat" id="friend-stat-alltime">0</div>
+                </div>
+            </div>
+
+            <!-- Incoming Friend Requests -->
+            <div id="incoming-friend-requests" class="friend-requests-section" style="display: none;">
+                <h4>Incoming Friend Requests</h4>
+                <div id="incoming-requests-list"></div>
+            </div>
+
+            <!-- Sent Friend Requests -->
+            <div id="sent-friend-requests" class="sent-requests-section" style="display: none;">
+                <h4>Sent Friend Requests</h4>
+                <div id="sent-requests-list"></div>
             </div>
 
             <div class="friend-search-controls">
@@ -3935,7 +4054,7 @@
          *       allow write: if false; // Managed by Cloud Functions or admin
          *     }
          *
-         *     // Friend invitations - authenticated users only
+         *     // Friend invitations (game challenges) - authenticated users only
          *     match /friendInvitations/{invitationId} {
          *       allow read: if request.auth != null &&
          *                     (request.auth.uid == resource.data.fromUid ||
@@ -3948,6 +4067,20 @@
          *       allow delete: if request.auth != null &&
          *                       (request.auth.uid == resource.data.fromUid ||
          *                        request.auth.uid == resource.data.toUid);
+         *     }
+         *
+         *     // Friend requests (add friend requests) - authenticated users only
+         *     match /friendRequests/{requestId} {
+         *       allow read: if request.auth != null &&
+         *                     (request.auth.uid == resource.data.fromUid ||
+         *                      request.auth.uid == resource.data.toUid);
+         *       allow create: if request.auth != null &&
+         *                       request.auth.uid == request.resource.data.fromUid;
+         *       allow update: if request.auth != null &&
+         *                       (request.auth.uid == resource.data.fromUid ||
+         *                        request.auth.uid == resource.data.toUid);
+         *       allow delete: if request.auth != null &&
+         *                       request.auth.uid == resource.data.fromUid;
          *     }
          *
          *     // Games collection - authenticated users
@@ -3988,6 +4121,10 @@
         let onlineStartingTurn = 'W';
         let currentOnlinePlayers = { W: null, B: null };
         const FRIEND_LIMIT = 50;
+        const FRIEND_REQUEST_DAILY_LIMIT = 20; // Max friend requests per day to prevent spam
+        const FRIEND_REQUEST_COOLDOWN_MS = 30000; // 30 second cooldown between requests to same user
+        let friendRequestsListener = null; // Listener for incoming friend requests
+        let lastFriendRequestTime = {}; // Track when requests were sent to each user
         const PLATFORM_STATS_COLLECTION = 'platformStats';
         const PLATFORM_STATS_DOC = 'aggregates';
         const GAME_DOC_READY_RETRY_DELAY_MS = 250;
@@ -4108,6 +4245,8 @@
                 if (currentGameId && gameListener) {
                     gameListener(); // Unsubscribe from game updates
                 }
+                // Stop friend requests listener
+                stopFriendRequestsListener();
                 isOnlineGame = false;
                 await auth.signOut();
                 showAuthScreen();
@@ -4123,6 +4262,7 @@
                 losses: 0,
                 draws: 0,
                 points: 0,
+                allTimePoints: 0, // Persists even after unfriending
                 history: {}
             };
         }
@@ -4296,6 +4436,8 @@
                     const sanitizedDoc = await userRef.get();
                     currentUserProfile = applyProfileDefaults(sanitizedDoc.data());
                     showMainMenu();
+                    // Start listening for friend requests
+                    startFriendRequestsListener();
                 } else {
                     showProfileSetupScreen();
                 }
@@ -4321,8 +4463,15 @@
             }
             if (!data.friendStats) {
                 updates.friendStats = createDefaultFriendStats();
-            } else if (!data.friendStats.history) {
-                updates['friendStats.history'] = {};
+            } else {
+                if (!data.friendStats.history) {
+                    updates['friendStats.history'] = {};
+                }
+                // Migration: Add allTimePoints for existing users
+                if (data.friendStats.allTimePoints === undefined) {
+                    // Initialize with current points as a baseline
+                    updates['friendStats.allTimePoints'] = data.friendStats.points || 0;
+                }
             }
             if (!data.usernameLowercase && data.username) {
                 updates.usernameLowercase = data.username.toLowerCase();
@@ -5612,7 +5761,7 @@
             }
         }
 
-        function renderFriendSearchResults(players) {
+        async function renderFriendSearchResults(players) {
             const container = document.getElementById('friend-search-results');
             if (!container) return;
             container.innerHTML = '';
@@ -5622,6 +5771,25 @@
             }
 
             const friendIds = currentUserProfile ? currentUserProfile.friends || [] : [];
+
+            // Get pending sent requests to show correct button state
+            let pendingRequestUids = [];
+            let incomingRequestUids = [];
+            try {
+                const sentRequests = await db.collection('friendRequests')
+                    .where('fromUid', '==', currentUser.uid)
+                    .where('status', '==', 'pending')
+                    .get();
+                pendingRequestUids = sentRequests.docs.map(doc => doc.data().toUid);
+
+                const incomingRequests = await db.collection('friendRequests')
+                    .where('toUid', '==', currentUser.uid)
+                    .where('status', '==', 'pending')
+                    .get();
+                incomingRequestUids = incomingRequests.docs.map(doc => doc.data().fromUid);
+            } catch (error) {
+                console.error('Error fetching pending requests:', error);
+            }
 
             players.forEach(player => {
                 const row = document.createElement('div');
@@ -5646,15 +5814,27 @@
                 actionBtn.className = 'friend-action-btn';
                 const alreadyFriend = friendIds.includes(player.uid);
                 const limitReached = friendIds.length >= FRIEND_LIMIT;
+                const hasPendingRequest = pendingRequestUids.includes(player.uid);
+                const hasIncomingRequest = incomingRequestUids.includes(player.uid);
+
                 if (alreadyFriend) {
                     actionBtn.textContent = 'Friends';
                     actionBtn.disabled = true;
+                } else if (hasPendingRequest) {
+                    actionBtn.textContent = 'Pending...';
+                    actionBtn.className = 'friend-action-btn pending-btn';
+                    actionBtn.disabled = true;
+                } else if (hasIncomingRequest) {
+                    actionBtn.textContent = 'Accept Request';
+                    actionBtn.className = 'friend-action-btn send-request-btn';
+                    actionBtn.addEventListener('click', () => sendFriendRequest(player.uid));
                 } else if (limitReached) {
                     actionBtn.textContent = 'Limit reached';
                     actionBtn.disabled = true;
                 } else {
-                    actionBtn.textContent = 'Add Friend';
-                    actionBtn.addEventListener('click', () => addFriend(player.uid));
+                    actionBtn.textContent = 'Send Request';
+                    actionBtn.className = 'friend-action-btn send-request-btn';
+                    actionBtn.addEventListener('click', () => sendFriendRequest(player.uid));
                 }
 
                 row.appendChild(avatarEl);
@@ -5664,39 +5844,376 @@
             });
         }
 
-        async function addFriend(friendUid) {
+        async function sendFriendRequest(targetUid) {
             if (!currentUser || !currentUserProfile) return;
             const messageEl = document.getElementById('friend-search-message');
             if (messageEl) {
                 messageEl.textContent = '';
             }
             try {
-                const meRef = db.collection('users').doc(currentUser.uid);
-                const meSnapshot = await meRef.get();
-                const existingFriends = Array.isArray(meSnapshot.data()?.friends) ? meSnapshot.data().friends : [];
-
-                if (existingFriends.includes(friendUid)) {
-                    throw new Error('You are already friends.');
+                // Check if already friends
+                const existingFriends = currentUserProfile.friends || [];
+                if (existingFriends.includes(targetUid)) {
+                    throw new Error('You are already friends with this player.');
                 }
+
+                // Check if friend list is full
                 if (existingFriends.length >= FRIEND_LIMIT) {
-                    throw new Error('You already have 50 friends.');
+                    throw new Error('Your friend list is full (50/50). Remove a friend first.');
                 }
 
-                await meRef.update({
-                    friends: firebase.firestore.FieldValue.arrayUnion(friendUid)
+                // Check cooldown for this specific user
+                const now = Date.now();
+                if (lastFriendRequestTime[targetUid] && (now - lastFriendRequestTime[targetUid]) < FRIEND_REQUEST_COOLDOWN_MS) {
+                    const remainingSecs = Math.ceil((FRIEND_REQUEST_COOLDOWN_MS - (now - lastFriendRequestTime[targetUid])) / 1000);
+                    throw new Error(`Please wait ${remainingSecs}s before sending another request to this player.`);
+                }
+
+                // Check daily limit
+                const todayStart = new Date();
+                todayStart.setHours(0, 0, 0, 0);
+                const sentTodaySnapshot = await db.collection('friendRequests')
+                    .where('fromUid', '==', currentUser.uid)
+                    .where('createdAt', '>=', todayStart)
+                    .get();
+
+                if (sentTodaySnapshot.size >= FRIEND_REQUEST_DAILY_LIMIT) {
+                    throw new Error(`You've reached your daily limit of ${FRIEND_REQUEST_DAILY_LIMIT} friend requests.`);
+                }
+
+                // Check if request already exists (either direction)
+                const existingRequest = await db.collection('friendRequests')
+                    .where('fromUid', '==', currentUser.uid)
+                    .where('toUid', '==', targetUid)
+                    .where('status', '==', 'pending')
+                    .get();
+
+                if (!existingRequest.empty) {
+                    throw new Error('You already have a pending request to this player.');
+                }
+
+                // Check if they already sent us a request
+                const reverseRequest = await db.collection('friendRequests')
+                    .where('fromUid', '==', targetUid)
+                    .where('toUid', '==', currentUser.uid)
+                    .where('status', '==', 'pending')
+                    .get();
+
+                if (!reverseRequest.empty) {
+                    // Auto-accept their request instead
+                    const requestId = reverseRequest.docs[0].id;
+                    await acceptFriendRequest(requestId);
+                    return;
+                }
+
+                // Check if target's friend list is full
+                const targetDoc = await db.collection('users').doc(targetUid).get();
+                const targetFriends = targetDoc.data()?.friends || [];
+                if (targetFriends.length >= FRIEND_LIMIT) {
+                    throw new Error('This player\'s friend list is full.');
+                }
+
+                // Create friend request
+                await db.collection('friendRequests').add({
+                    fromUid: currentUser.uid,
+                    fromUsername: currentUserProfile.username,
+                    fromAvatar: currentUserProfile.avatar || '🙂',
+                    toUid: targetUid,
+                    toUsername: targetDoc.data()?.username || 'Unknown',
+                    toAvatar: targetDoc.data()?.avatar || '🙂',
+                    status: 'pending',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
+                // Track cooldown
+                lastFriendRequestTime[targetUid] = now;
+
                 if (messageEl) {
-                    messageEl.textContent = 'Friend added!';
+                    messageEl.textContent = 'Friend request sent!';
+                    messageEl.style.color = '#4CAF50';
                 }
+                searchFriends(); // Refresh search results
+            } catch (error) {
+                console.error('Error sending friend request:', error);
+                if (messageEl) {
+                    messageEl.textContent = error.message;
+                    messageEl.style.color = '#e65100';
+                }
+            }
+        }
+
+        async function acceptFriendRequest(requestId) {
+            if (!currentUser || !currentUserProfile) return;
+            try {
+                const requestRef = db.collection('friendRequests').doc(requestId);
+                const requestDoc = await requestRef.get();
+
+                if (!requestDoc.exists) {
+                    throw new Error('Friend request not found.');
+                }
+
+                const requestData = requestDoc.data();
+
+                // Verify this request is for the current user
+                if (requestData.toUid !== currentUser.uid) {
+                    throw new Error('You cannot accept this request.');
+                }
+
+                // Check friend limits for both users
+                const myFriends = currentUserProfile.friends || [];
+                if (myFriends.length >= FRIEND_LIMIT) {
+                    throw new Error('Your friend list is full.');
+                }
+
+                const senderDoc = await db.collection('users').doc(requestData.fromUid).get();
+                const senderFriends = senderDoc.data()?.friends || [];
+                if (senderFriends.length >= FRIEND_LIMIT) {
+                    // Reject the request instead
+                    await requestRef.update({ status: 'rejected' });
+                    throw new Error('The sender\'s friend list is now full.');
+                }
+
+                // Add both users as friends (mutual)
+                const batch = db.batch();
+
+                // Update request status
+                batch.update(requestRef, { status: 'accepted' });
+
+                // Add to current user's friends
+                batch.update(db.collection('users').doc(currentUser.uid), {
+                    friends: firebase.firestore.FieldValue.arrayUnion(requestData.fromUid)
+                });
+
+                // Add to sender's friends
+                batch.update(db.collection('users').doc(requestData.fromUid), {
+                    friends: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
+                });
+
+                await batch.commit();
+
                 await refreshCurrentUserProfile();
                 await loadFriendPanel();
             } catch (error) {
-                console.error('Error adding friend:', error);
-                if (messageEl) {
-                    messageEl.textContent = error.message;
-                }
+                console.error('Error accepting friend request:', error);
+                alert(error.message || 'Failed to accept friend request.');
             }
+        }
+
+        async function declineFriendRequest(requestId) {
+            if (!currentUser) return;
+            try {
+                const requestRef = db.collection('friendRequests').doc(requestId);
+                const requestDoc = await requestRef.get();
+
+                if (!requestDoc.exists) {
+                    throw new Error('Friend request not found.');
+                }
+
+                const requestData = requestDoc.data();
+
+                // Verify this request is for the current user
+                if (requestData.toUid !== currentUser.uid) {
+                    throw new Error('You cannot decline this request.');
+                }
+
+                await requestRef.update({ status: 'declined' });
+            } catch (error) {
+                console.error('Error declining friend request:', error);
+                alert(error.message || 'Failed to decline friend request.');
+            }
+        }
+
+        async function cancelFriendRequest(requestId) {
+            if (!currentUser) return;
+            try {
+                const requestRef = db.collection('friendRequests').doc(requestId);
+                const requestDoc = await requestRef.get();
+
+                if (!requestDoc.exists) {
+                    throw new Error('Friend request not found.');
+                }
+
+                const requestData = requestDoc.data();
+
+                // Verify this request was sent by the current user
+                if (requestData.fromUid !== currentUser.uid) {
+                    throw new Error('You cannot cancel this request.');
+                }
+
+                await requestRef.delete();
+            } catch (error) {
+                console.error('Error canceling friend request:', error);
+                alert(error.message || 'Failed to cancel friend request.');
+            }
+        }
+
+        async function removeFriend(friendUid) {
+            if (!currentUser || !currentUserProfile) return;
+
+            const confirmed = confirm('Are you sure you want to remove this friend? Your match history with them will be removed from your current stats (but All-Time Points will be preserved).');
+            if (!confirmed) return;
+
+            try {
+                // Get friend's record to recalculate stats
+                const friendStats = currentUserProfile.friendStats || createDefaultFriendStats();
+                const friendRecord = friendStats.history ? friendStats.history[friendUid] : null;
+
+                // Prepare updates
+                const updates = {
+                    friends: firebase.firestore.FieldValue.arrayRemove(friendUid)
+                };
+
+                // If there's history with this friend, recalculate stats (excluding allTimePoints)
+                if (friendRecord) {
+                    const recordWins = friendRecord.wins || 0;
+                    const recordLosses = friendRecord.losses || 0;
+                    const recordDraws = friendRecord.draws || 0;
+                    const recordMatches = friendRecord.totalMatches || 0;
+
+                    // Decrement stats by the friend's record
+                    updates['friendStats.wins'] = firebase.firestore.FieldValue.increment(-recordWins);
+                    updates['friendStats.losses'] = firebase.firestore.FieldValue.increment(-recordLosses);
+                    updates['friendStats.draws'] = firebase.firestore.FieldValue.increment(-recordDraws);
+                    updates['friendStats.totalMatches'] = firebase.firestore.FieldValue.increment(-recordMatches);
+
+                    // Recalculate points lost from this friend (wins give +15, draws +5, losses -5)
+                    const pointsFromFriend = (recordWins * 15) + (recordDraws * 5) + (recordLosses * -5);
+                    updates['friendStats.points'] = firebase.firestore.FieldValue.increment(-pointsFromFriend);
+
+                    // Remove this friend's history entry
+                    updates[`friendStats.history.${friendUid}`] = firebase.firestore.FieldValue.delete();
+                }
+
+                await db.collection('users').doc(currentUser.uid).update(updates);
+
+                // Also remove from the other user's friend list (mutual unfriend)
+                await db.collection('users').doc(friendUid).update({
+                    friends: firebase.firestore.FieldValue.arrayRemove(currentUser.uid),
+                    [`friendStats.history.${currentUser.uid}`]: firebase.firestore.FieldValue.delete()
+                });
+
+                // Note: We could also recalculate the other user's stats, but that would require
+                // knowing their full history. For simplicity, we just remove the history entry.
+
+                await refreshCurrentUserProfile();
+                await loadFriendPanel();
+            } catch (error) {
+                console.error('Error removing friend:', error);
+                alert('Failed to remove friend. Please try again.');
+            }
+        }
+
+        function startFriendRequestsListener() {
+            if (!currentUser || !db) return;
+
+            // Stop existing listener
+            if (friendRequestsListener) {
+                friendRequestsListener();
+                friendRequestsListener = null;
+            }
+
+            // Listen for incoming friend requests
+            friendRequestsListener = db.collection('friendRequests')
+                .where('toUid', '==', currentUser.uid)
+                .where('status', '==', 'pending')
+                .onSnapshot(snapshot => {
+                    renderIncomingFriendRequests(snapshot.docs);
+                }, error => {
+                    console.error('Friend requests listener error:', error);
+                });
+
+            // Also listen for sent requests
+            db.collection('friendRequests')
+                .where('fromUid', '==', currentUser.uid)
+                .where('status', '==', 'pending')
+                .onSnapshot(snapshot => {
+                    renderSentFriendRequests(snapshot.docs);
+                }, error => {
+                    console.error('Sent requests listener error:', error);
+                });
+        }
+
+        function stopFriendRequestsListener() {
+            if (friendRequestsListener) {
+                friendRequestsListener();
+                friendRequestsListener = null;
+            }
+        }
+
+        function renderIncomingFriendRequests(docs) {
+            const container = document.getElementById('incoming-friend-requests');
+            const list = document.getElementById('incoming-requests-list');
+            if (!container || !list) return;
+
+            if (docs.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'block';
+            list.innerHTML = '';
+
+            docs.forEach(doc => {
+                const data = doc.data();
+                const row = document.createElement('div');
+                row.className = 'friend-request-row';
+
+                row.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="friend-avatar">${data.fromAvatar || '🙂'}</div>
+                        <div class="friend-details">
+                            <strong>${data.fromUsername || 'Unknown'}</strong>
+                            <span class="friend-record">wants to be your friend</span>
+                        </div>
+                    </div>
+                    <div class="friend-request-actions">
+                        <button class="friend-request-btn accept" onclick="acceptFriendRequest('${doc.id}')">Accept</button>
+                        <button class="friend-request-btn decline" onclick="declineFriendRequest('${doc.id}')">Decline</button>
+                    </div>
+                `;
+
+                list.appendChild(row);
+            });
+        }
+
+        function renderSentFriendRequests(docs) {
+            const container = document.getElementById('sent-friend-requests');
+            const list = document.getElementById('sent-requests-list');
+            if (!container || !list) return;
+
+            if (docs.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'block';
+            list.innerHTML = '';
+
+            docs.forEach(doc => {
+                const data = doc.data();
+                const row = document.createElement('div');
+                row.className = 'friend-request-row';
+
+                row.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="friend-avatar">${data.toAvatar || '🙂'}</div>
+                        <div class="friend-details">
+                            <strong>${data.toUsername || 'Unknown'}</strong>
+                            <span class="friend-record">pending...</span>
+                        </div>
+                    </div>
+                    <div class="friend-request-actions">
+                        <button class="friend-request-btn cancel" onclick="cancelFriendRequest('${doc.id}')">Cancel</button>
+                    </div>
+                `;
+
+                list.appendChild(row);
+            });
+        }
+
+        // Legacy function name for backwards compatibility
+        async function addFriend(friendUid) {
+            return sendFriendRequest(friendUid);
         }
 
         async function loadFriendPanel() {
@@ -5735,8 +6252,15 @@
                     details.appendChild(nameEl);
                     details.appendChild(recordEl);
 
+                    // Add remove button
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'friend-action-btn remove-btn';
+                    removeBtn.textContent = 'Remove';
+                    removeBtn.addEventListener('click', () => removeFriend(friend.uid));
+
                     row.appendChild(avatarEl);
                     row.appendChild(details);
+                    row.appendChild(removeBtn);
                     listEl.appendChild(row);
                 });
             } catch (error) {
@@ -5753,6 +6277,7 @@
                 { id: 'friend-stat-losses', value: stats.losses },
                 { id: 'friend-stat-draws', value: stats.draws },
                 { id: 'friend-stat-points', value: stats.points },
+                { id: 'friend-stat-alltime', value: stats.allTimePoints },
                 { id: 'stat-friend-matches', value: stats.totalMatches },
                 { id: 'stat-friend-wins', value: stats.wins },
                 { id: 'stat-friend-losses', value: stats.losses },
@@ -5802,10 +6327,15 @@
         async function updateFriendMatchStats(opponentId, result, { gameScore = 0, ladderPoints = 0 } = {}) {
             if (!currentUser) return;
             try {
+                const pointsToAdd = ladderPoints || 0;
                 const updates = {
                     'friendStats.totalMatches': firebase.firestore.FieldValue.increment(1),
-                    'friendStats.points': firebase.firestore.FieldValue.increment(ladderPoints || 0)
+                    'friendStats.points': firebase.firestore.FieldValue.increment(pointsToAdd)
                 };
+                // Always track allTimePoints (persists even after unfriending)
+                if (pointsToAdd > 0) {
+                    updates['friendStats.allTimePoints'] = firebase.firestore.FieldValue.increment(pointsToAdd);
+                }
                 if (result === 'win') {
                     updates['friendStats.wins'] = firebase.firestore.FieldValue.increment(1);
                 } else if (result === 'loss') {
