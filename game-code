@@ -1299,6 +1299,97 @@
         #rules-content li {
             margin: 5px 0;
         }
+        /* Main Menu How to Play Modal Styles */
+        #main-menu-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(50, 50, 50, 0.8);
+            z-index: 2001;
+        }
+        #main-menu-how-to-play-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 0;
+            border: 2px solid #333;
+            border-radius: 10px;
+            z-index: 2005;
+            width: 90vw;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-sizing: border-box;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        }
+        #main-menu-how-to-play-modal .modal-header {
+            background-color: #333;
+            color: #fff;
+            padding: 15px 20px;
+            margin: 0;
+            border-radius: 8px 8px 0 0;
+        }
+        #main-menu-how-to-play-modal .modal-header .modal-close {
+            color: #fff;
+            font-size: 24px;
+        }
+        #main-menu-how-to-play-modal .modal-content {
+            padding: 20px;
+            max-height: calc(80vh - 120px);
+            overflow-y: auto;
+        }
+        #main-menu-how-to-play-modal .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+        }
+        #main-menu-how-to-play-modal .modal-footer button {
+            padding: 10px 30px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #main-menu-how-to-play-modal .modal-footer button:hover {
+            background-color: #45a049;
+        }
+        #main-menu-rules-content h2 {
+            color: #333;
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+            margin-top: 20px;
+        }
+        #main-menu-rules-content h3 {
+            color: #555;
+            margin-top: 15px;
+        }
+        #main-menu-rules-content .piece-info {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #333;
+            border-radius: 3px;
+        }
+        #main-menu-rules-content .piece-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+        #main-menu-rules-content ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        #main-menu-rules-content li {
+            margin: 5px 0;
+        }
         #controls {
             margin-top: 0;
             display: inline-flex;
@@ -3045,7 +3136,22 @@
             <button class="menu-btn secondary" onclick="showStatsProfile()">📊 Stats & Profile</button>
             <button class="menu-btn secondary" onclick="playOffline()">🤖 Play vs AI (Offline)</button>
             <button class="menu-btn secondary" onclick="showDonationModal()" style="background-color: #FF69B4; color: white;">💝 Support Us - Donate</button>
-            <button class="menu-btn secondary" onclick="openHowToPlay()">📘 How to Play</button>
+            <button class="menu-btn secondary" onclick="openMainMenuHowToPlay()">📘 How to Play</button>
+        </div>
+    </div>
+
+    <!-- Main Menu How to Play Modal (separate from in-game modal) -->
+    <div id="main-menu-modal-overlay"></div>
+    <div id="main-menu-how-to-play-modal">
+        <div class="modal-header">
+            <span>How to Play - RATIX</span>
+            <button class="modal-close" onclick="closeMainMenuHowToPlay()" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-content">
+            <div id="main-menu-rules-content"></div>
+        </div>
+        <div class="modal-footer">
+            <button onclick="closeMainMenuHowToPlay()">Close</button>
         </div>
     </div>
 
@@ -7600,6 +7706,191 @@
 
             // Reset the flag
             howToPlayOpenedFromMenu = false;
+        }
+
+        function openMainMenuHowToPlay() {
+            // Generate rules content for main menu modal
+            generateMainMenuRulesContent();
+            const overlay = document.getElementById('main-menu-modal-overlay');
+            if (overlay) overlay.style.display = 'block';
+            const modal = document.getElementById('main-menu-how-to-play-modal');
+            if (modal) {
+                modal.style.display = 'block';
+                modal.style.zIndex = 2002;
+            }
+        }
+
+        function closeMainMenuHowToPlay() {
+            const modal = document.getElementById('main-menu-how-to-play-modal');
+            if (modal) modal.style.display = 'none';
+            const overlay = document.getElementById('main-menu-modal-overlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+
+        function generateMainMenuRulesContent() {
+            const rulesDiv = document.getElementById('main-menu-rules-content');
+            const piecePoints = Object.entries(pieceValues || {}).sort((a, b) => a[0].localeCompare(b[0]));
+            const piecePointsHtml = piecePoints.map(([name, val]) => `<li><strong>${name}:</strong> ${val} points</li>`).join('');
+            const pieceInfoEntries = Object.entries(pieceInfo || {}).sort((a, b) => a[0].localeCompare(b[0]));
+            const pieceInfoHtml = pieceInfoEntries.map(([name, info]) => {
+                const pts = info.points ? `<div><strong>Points:</strong> ${info.points}</div>` : '';
+                const extra = info.extra ? `<div><strong>Info:</strong> ${info.extra}</div>` : '';
+                return `<li class="piece-info"><div class="piece-name">${name}</div>${pts}${extra}</li>`;
+            }).join('');
+
+            let html = `
+                <h2>Game Overview</h2>
+                <p><strong>RATIX</strong> is a strategic chess-like war game where you command an army against an AI opponent. Victory comes through capturing the enemy King or achieving alternate win conditions. Each game features tactical depth with special abilities, summoning mechanics, and strategic resource management.</p>
+
+                <h2>Game Variants</h2>
+                <ul>
+                    <li><strong>24's (Standard):</strong> 10×14 board, 24 pieces per side. Perfect for learning the fundamentals with Infantry, Cavalry, Trolls, Dragons, Wizards, Guards, a Champion, and King.</li>
+                    <li><strong>36's (Advanced):</strong> 10×14 board, 36 pieces per side. Adds Archers, Ballistas, and Ogres for expanded tactical options.</li>
+                    <li><strong>36's (Expert):</strong> 10×14 board, 36 pieces per side. Includes all Advanced pieces plus Mercenaries and Elephantry with powerful special abilities.</li>
+                    <li><strong>36's (Elite):</strong> 10×14 board, 36 pieces per side. Adds Necromancers, Liches, and Zombies enabling advanced summoning strategies and dark magic.</li>
+                    <li><strong>36's (Supreme):</strong> 10×14 board with the Elite roster. Unlocks experimental spellcraft including Energy Blast, Sacrifice spells, and Champion-summoned Huntsmen.</li>
+                    <li><strong>24's Close-Combat Battle:</strong> Compact 8×12 board for fast-paced aggressive gameplay with immediate piece-to-piece contact.</li>
+                </ul>
+
+                <h2>Victory Conditions</h2>
+                <ul>
+                    <li><strong>Regicide:</strong> Capture the enemy King for instant victory (most common).</li>
+                    <li><strong>Supremacy:</strong> Capture the enemy Champion, reduce their score to ≤1 point, and move your King or Champion to their back row.</li>
+                    <li><strong>Relentless:</strong> Activate 3 reinforcements using Infantry while your opponent has zero reinforcements available.</li>
+                    <li><strong>Score Victory:</strong> Have the highest score when the game timer expires.</li>
+                </ul>
+
+                <h2>Ranks & Points</h2>
+                <ul>
+                    <li>Wins: +15 ladder points (draw +5, loss -5). Submission/quit applies an extra -10.</li>
+                    <li>Victory bonuses (ranked & friends): Regicide +2, Supremacy +5, Relentless +7 (applied on wins only).</li>
+                    <li>Ranks: Bronze, Silver, Gold, Platinum, Diamond, Mythic. Your total ladder points set your tier.</li>
+                    <li>Progress bars in your profile and the matchmaking lobby show your climb to the next rank.</li>
+                    <li>Friend matches mirror ranked scoring but stay in a separate friend ladder so ranked integrity remains.</li>
+                </ul>
+
+                <h2>Draw Conditions</h2>
+                <ul>
+                    <li><strong>Truce:</strong> When both players have 6 or fewer pieces remaining, either player can propose a truce. Both must agree to end in a draw. If declined, the truce can be re-proposed for up to 3 attempts across subsequent rounds. After 3 declined attempts, truce is no longer available.</li>
+                    <li><strong>Match:</strong> When both players only have their King remaining, the game automatically ends in a draw.</li>
+                </ul>
+
+                <h2>Basic Gameplay</h2>
+                <h3>Move Points System</h3>
+                <ul>
+                    <li>You start each round with <strong>3 move points</strong> (reduced to 2 if your Champion is captured).</li>
+                    <li>Basic moves cost 1 point, special abilities cost 1-3 points depending on power.</li>
+                    <li>Plan your actions carefully—once you spend your points, your turn ends.</li>
+                </ul>
+
+                <h3>Bonus Moves & Penalties</h3>
+                <ul>
+                    <li><strong>Warcry:</strong> Score 10+ points in a single round to gain +2 bonus moves next round. The board glows gold when active.</li>
+                    <li><strong>Despair:</strong> Lose 2 or more non-Infantry pieces in a round to suffer -2 moves next round. Poor planning has consequences!</li>
+                    <li><strong>Champion Pressure:</strong> If your Champion reaches the enemy's back row, your opponent loses 1 move point each round while it remains there.</li>
+                </ul>
+
+                <h2>Piece Point Values (Alphabetical)</h2>
+                <ul>${piecePointsHtml}</ul>
+
+                <h2>Piece Information (Alphabetical)</h2>
+                <ul>${pieceInfoHtml}</ul>
+
+                <h3>Reinforcements</h3>
+                <p>When your Infantry, Champion, or King reaches the opponent's back row <strong>without capturing a piece</strong>, you earn a reinforcement. Choose one previously captured piece from your graveyard to return to the board on that square.</p>
+                <ul>
+                    <li>Infantry reinforcements: Return any captured piece.</li>
+                    <li>Champion/King reinforcements: In Expert+ variants, you can select Ballistas, Elephantry, or Mercenaries for immediate tactical pressure.</li>
+                    <li>Strategic tip: Reinforcements can swing the game—protect pieces making the journey to the back row!</li>
+                </ul>
+
+                <h2>Special Abilities by Piece</h2>
+                <h3>Royal Pieces</h3>
+                <ul>
+                    <li><strong>King - Guard of Honour:</strong> Swap positions with an adjacent Guard (costs 2 points, usable once per game). Use this to escape danger or reposition defensively.</li>
+                    <li><strong>Champion:</strong> Can summon Pistoliers or Fusiliers (costs 2 points). Also enables Barrage ability when you have Moral Boost.</li>
+                </ul>
+
+                <h3>Magic Units</h3>
+                <ul>
+                    <li><strong>Wizard - Teleport:</strong> Instantly move to any empty square of the same color (costs 2 points, usable twice per game).</li>
+                    <li><strong>Wizard - Teleport Swap:</strong> Swap positions with an enemy Wizard on the same color square (costs 2 points, usable once per game).</li>
+                    <li><strong>Necromancer:</strong> Can summon Zombies and Spectres near Dark Void tiles (costs 2 points, requires coin flip). Can also create Dark Void squares (costs 2 points).</li>
+                    <li><strong>Lich:</strong> Requires souls from captures to unlock abilities. Can use Soulstride (2-square leap) after 2 captures and Soul Blast (ranged attack) with increasing range per 3 souls collected. Immune to most magical attacks—requires Wizards, Necromancers, or Spectres to capture.</li>
+                </ul>
+
+                <h3>Heavy Assault</h3>
+                <ul>
+                    <li><strong>Cavalry - Charge:</strong> Move unlimited squares in one straight direction (costs 2 points, usable once per game). Great for surprise attacks or escaping.</li>
+                    <li><strong>Dragon - Inferno:</strong> Move 1 square and capture all adjacent enemies in a devastating area attack (costs 2 points, usable once per game).</li>
+                    <li><strong>Dragon - Strafe:</strong> Move then attack diagonally (usable twice per game).</li>
+                    <li><strong>Ogre - Rage:</strong> Rush 2 squares straight (horizontal or vertical) and capture every enemy in a 2×3 corridor along the path (costs 2 points, usable once per game).</li>
+                    <li><strong>Elephantry - Charge:</strong> One-time 3-square charge that captures all enemies along the path (devastating when lanes are clear).</li>
+                    <li><strong>Elephantry - Triple Shot:</strong> Fire three coin-flip attacks at 2-square range without moving (costs 2 points).</li>
+                    <li><strong>Elephantry - Move+Shoot:</strong> Move then shoot in one action (costs 2 points).</li>
+                </ul>
+
+                <h3>Ranged & Skirmish Units</h3>
+                <ul>
+                    <li><strong>Archer - Skirmish:</strong> Move then shoot diagonally 1 square (costs 2 points, usable twice per game).</li>
+                    <li><strong>Archer - Longshot Diagonal:</strong> Shoot diagonally 2 squares (costs 2 points, usable twice per game).</li>
+                    <li><strong>Ballista - Extend Range:</strong> Gain +1 shooting range for the current round (costs 2 points, usable once per round).</li>
+                    <li><strong>Ballista - Double Time:</strong> Move 2 squares in one direction (costs 2 points, usable twice per game).</li>
+                    <li><strong>Pistolier:</strong> Can move then shoot diagonally in one action.</li>
+                    <li><strong>Fusilier - Crack Shot:</strong> Fire three coin-flip shots (costs 2 points). Also has Strafe repositioning ability.</li>
+                </ul>
+
+                <h3>Elite Units</h3>
+                <ul>
+                    <li><strong>Mercenary - Bonus Turn:</strong> After a successful capture, flip a coin. If you win, continue moving with this piece and ignore move point costs for the rest of the round (usable once per round). High risk, high reward!</li>
+                    <li><strong>Huntsman (Supreme only):</strong> Champions can summon Huntsmen (max 2 active, 6 total per game). Huntsmen move 1 square normally or spend 2 points for Burst—flip four coins to chain up to 4 movement steps. Opponents need coin flips to capture Huntsmen, but Huntsmen auto-capture Zombies.</li>
+                </ul>
+
+                <h2>Advanced Mechanics</h2>
+                <h3>Dark Void (Elite & Supreme)</h3>
+                <p>Necromancers and Liches can create <strong>Dark Void</strong> squares (costs 2 points). These cursed tiles remove any piece on that square and create a dangerous zone:</p>
+                <ul>
+                    <li>All captures or attacks adjacent to Dark Void require a coin flip to succeed.</li>
+                    <li>Failed captures near Dark Void root the attacker in place.</li>
+                    <li>Necromancers can summon Zombies, Spectres, or other undead adjacent to Dark Void tiles.</li>
+                    <li>Lich summoning may spawn additional Dark Void squares as the darkness spreads.</li>
+                </ul>
+
+                <h3>Barrage (All Variants)</h3>
+                <p>When you earn a <strong>Moral Boost</strong> (by winning multiple coin flips or achieving specific thresholds), your Champion or King can unleash Barrage (costs 2 points, requires Champion alive).</p>
+                <ul>
+                    <li>Targets six random squares across the board.</li>
+                    <li>Each square is resolved with an independent coin flip—success captures the piece.</li>
+                    <li><strong>Warning:</strong> Barrage can hit your own pieces! Use carefully.</li>
+                    <li>AI opponents can also use Barrage when they earn Moral Boosts.</li>
+                </ul>
+
+                <h3>Supreme Spellcraft (Supreme Variant Only)</h3>
+                <p>The Supreme variant unlocks experimental magic:</p>
+                <ul>
+                    <li><strong>Energy Blast:</strong> Wizards and Necromancers first succeed on a spellcasting coin flip (costs 2 move points even if failed), then flip four coins to determine blast distance (1 square per success). The blast travels straight or diagonally toward the opponent's side, vaporizing all enemies in its path while ignoring friendlies. First use costs 2 points, second costs 3.</li>
+                    <li><strong>Sacrifice Spell:</strong> Once per game, a Wizard or Necromancer can spend 3 move points and win a coin flip to remove themselves from play, detonating a blast reaching 2 squares orthogonally and 1 square diagonally. Only available if the coin flip succeeds.</li>
+                    <li><strong>Protection:</strong> When a spell would capture your King, you may (once per game) sacrifice a Wizard, Necromancer, or Champion to negate the capture. This also deducts 2 move points from the start of your next round.</li>
+                </ul>
+
+                <h2>Strategy Tips</h2>
+                <ul>
+                    <li><strong>Protect Your Royals:</strong> Losing your King ends the game. Losing your Champion reduces your move points to 2 per round and disables Barrage—protect them at all costs!</li>
+                    <li><strong>Plan Your Move Points:</strong> With only 3 points per round, every action matters. Think ahead—can you afford that special ability or should you save points for critical captures?</li>
+                    <li><strong>Save Special Abilities:</strong> Most special abilities can only be used once or twice per game. Don't waste them on low-value targets—save them for game-changing moments.</li>
+                    <li><strong>Mind the Timers:</strong> Both game and round timers are ticking. Running out of time forfeits your turn or can lead to time-based defeat. Stay focused!</li>
+                    <li><strong>Control the Back Row:</strong> Getting Infantry, Champions, or your King to the enemy back row without capturing earns reinforcements. Plan safe paths to resurrect your fallen pieces.</li>
+                    <li><strong>Value High-Point Targets:</strong> Prioritize capturing high-value pieces like Wizards (9), Necromancers (10), Mercenaries (10), Elephantry (11), and Champions (12) to boost your score.</li>
+                    <li><strong>Pursue Warcry Bonuses:</strong> Scoring 10+ points in one round grants +2 moves next round. Chain captures for explosive turns!</li>
+                    <li><strong>Avoid Despair:</strong> Losing 2+ non-Infantry pieces in a round costs you 2 moves next round. Play defensively when exposed.</li>
+                    <li><strong>Use Coin Flips Wisely:</strong> Many advanced abilities require coin flips. Don't gamble important pieces unless you can afford to lose the flip.</li>
+                    <li><strong>Study Your Opponent:</strong> Different AI personalities (Berserker, Guardian, Tactician, Sorcerer, Nomad) play differently. Adapt your strategy!</li>
+                    <li><strong>Dark Void Dangers:</strong> In Elite/Supreme variants, avoid clustering near Dark Void tiles—all captures adjacent to them require coin flips.</li>
+                    <li><strong>Friendly Fire Warning:</strong> Barrage, Dragon Inferno, and some spell effects can hit your own pieces. Position carefully before unleashing area attacks!</li>
+                </ul>
+            `;
+
+            rulesDiv.innerHTML = html;
         }
 
         function toggleGameLog() {
