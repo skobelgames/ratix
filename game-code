@@ -3485,6 +3485,10 @@
                 <h3>Friend Points</h3>
                 <div class="stat-number" id="stat-friend-points">0</div>
             </div>
+            <div class="stat-card">
+                <h3>All-Time Points</h3>
+                <div class="stat-number all-time-points-stat" id="stat-friend-alltime">0</div>
+            </div>
         </div>
 
         <div class="achievements-section">
@@ -6282,7 +6286,8 @@
                 { id: 'stat-friend-wins', value: stats.wins },
                 { id: 'stat-friend-losses', value: stats.losses },
                 { id: 'stat-friend-draws', value: stats.draws },
-                { id: 'stat-friend-points', value: stats.points }
+                { id: 'stat-friend-points', value: stats.points },
+                { id: 'stat-friend-alltime', value: stats.allTimePoints }
             ];
             targets.forEach(({ id, value }) => {
                 const el = document.getElementById(id);
