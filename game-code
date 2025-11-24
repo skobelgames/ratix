@@ -2094,6 +2094,34 @@
             color: #666;
         }
 
+        /* Guest Play Section */
+        .guest-play-section {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .guest-play-btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+        .guest-play-btn:hover {
+            background-color: #1976D2;
+        }
+        .guest-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+        }
+
         /* Profile Setup Screen */
         #profile-setup-screen {
             display: none;
@@ -2272,6 +2300,13 @@
         }
         .menu-btn.secondary:hover {
             background-color: #1976D2;
+        }
+        .menu-btn.guest-login-btn {
+            background-color: #FF9800;
+            margin-top: 20px;
+        }
+        .menu-btn.guest-login-btn:hover {
+            background-color: #F57C00;
         }
 
         .platform-stats-wrapper {
@@ -3203,6 +3238,11 @@
             <button type="submit">Create Account</button>
             <div id="signup-error" class="auth-error"></div>
         </form>
+
+        <div class="guest-play-section">
+            <button class="guest-play-btn" onclick="playAsGuest()">🎮 Play as Guest</button>
+            <p class="guest-info">Play offline vs AI without creating an account</p>
+        </div>
     </div>
 
     <!-- Profile Setup Screen -->
@@ -3423,11 +3463,12 @@
         </div>
 
         <div class="menu-options">
-            <button class="menu-btn" onclick="showMatchmakingLobby()">🎯 Play Online</button>
+            <button class="menu-btn" onclick="showMatchmakingLobby()" id="play-online-btn">🎯 Play Online</button>
             <button class="menu-btn secondary" onclick="showStatsProfile()">📊 Stats & Profile</button>
             <button class="menu-btn secondary" onclick="playOffline()">🤖 Play vs AI (Offline)</button>
             <button class="menu-btn secondary" onclick="showDonationModal()" style="background-color: #FF69B4; color: white;">💝 Support Us - Donate</button>
             <button class="menu-btn secondary" onclick="openMainMenuHowToPlay()">📘 How to Play</button>
+            <button class="menu-btn guest-login-btn" onclick="showAuthScreen()" id="guest-login-btn" style="display: none;">🔑 Login / Sign Up</button>
         </div>
     </div>
 
@@ -4289,6 +4330,7 @@
         let firebaseApp, auth, db, storage;
         let currentUser = null;
         let currentUserProfile = null;
+        let isGuest = false; // Flag to track if user is playing as guest
         let selectedAvatar = '👑';
         let currentGameId = null;
         let gameListener = null;
@@ -4424,11 +4466,70 @@
                 // Stop friend requests listener
                 stopFriendRequestsListener();
                 isOnlineGame = false;
+
+                // If guest user, just reset state
+                if (isGuest) {
+                    isGuest = false;
+                    currentUser = null;
+                    currentUserProfile = null;
+                    showAuthScreen();
+                    return;
+                }
+
                 await auth.signOut();
                 showAuthScreen();
             } catch (error) {
                 console.error('Logout error:', error);
             }
+        }
+
+        function playAsGuest() {
+            // Set guest mode
+            isGuest = true;
+
+            // Create a guest user profile
+            currentUser = { uid: 'guest_' + Date.now(), email: 'guest@ratix.com' };
+            currentUserProfile = {
+                uid: currentUser.uid,
+                email: currentUser.email,
+                username: 'Guest',
+                avatar: '👤',
+                country: 'Unknown',
+                isPro: false,
+                isDonor: false,
+                stats: {
+                    wins: 0,
+                    losses: 0,
+                    draws: 0,
+                    totalGames: 0,
+                    highestScore: 0,
+                    totalPoints: 0
+                },
+                friends: [],
+                friendStats: {
+                    totalMatches: 0,
+                    wins: 0,
+                    losses: 0,
+                    draws: 0,
+                    points: 0,
+                    allTimePoints: 0,
+                    history: {}
+                },
+                gamesPlayedToday: {
+                    count: 0,
+                    lastReset: new Date().toDateString()
+                },
+                lastActive: new Date()
+            };
+
+            // Track as visitor
+            trackVisitorSession();
+
+            // Set up live stats for guests
+            setupRealtimeOnlineStats();
+
+            // Show main menu with guest restrictions
+            showMainMenu();
         }
 
         function createDefaultFriendStats() {
@@ -7332,15 +7433,25 @@
             hideAllScreens();
             document.getElementById('main-menu-screen').style.display = 'flex';
             updateMainMenuUI();
-            refreshPresence();
             loadPlatformStats();
-            loadFriendPanel();
-            checkAndUpdateProStatus();
-            checkAndUpdateDonorStatus();
-            updateFriendsOnlineCount();
+
+            // Skip these functions for guest users
+            if (!isGuest) {
+                refreshPresence();
+                loadFriendPanel();
+                checkAndUpdateProStatus();
+                checkAndUpdateDonorStatus();
+                updateFriendsOnlineCount();
+            }
         }
 
         function showMatchmakingLobby() {
+            // Block guest users from accessing online play
+            if (isGuest) {
+                alert('Online play is only available for registered users. Please login or sign up to play online matches.');
+                return;
+            }
+
             stopGame(); // Stop any running game before showing lobby
             hideAllScreens();
             document.getElementById('matchmaking-lobby').style.display = 'flex';
@@ -7442,8 +7553,44 @@
             document.getElementById('menu-user-name').textContent = currentUserProfile.username;
             document.getElementById('menu-user-stats').textContent =
                 `W: ${currentUserProfile.stats.wins} | L: ${currentUserProfile.stats.losses} | D: ${currentUserProfile.stats.draws}`;
-            refreshRankDisplays();
-            updatePlayerNamesWithProBadge();
+
+            // Handle guest-specific UI
+            if (isGuest) {
+                // Hide online play button
+                document.getElementById('play-online-btn').style.display = 'none';
+
+                // Show guest login button
+                document.getElementById('guest-login-btn').style.display = 'block';
+
+                // Hide friends section
+                document.querySelector('.friend-dashboard').style.display = 'none';
+
+                // Update user info to show "Visitor" count in live stats
+                document.querySelector('.user-info-bar .logout-btn').textContent = 'Back to Login';
+
+                // Hide rank information for guests
+                const rankLine = document.getElementById('menu-rank-line');
+                if (rankLine) rankLine.style.display = 'none';
+            } else {
+                // Show online play button
+                document.getElementById('play-online-btn').style.display = 'block';
+
+                // Hide guest login button
+                document.getElementById('guest-login-btn').style.display = 'none';
+
+                // Show friends section
+                document.querySelector('.friend-dashboard').style.display = 'block';
+
+                // Reset logout button text
+                document.querySelector('.user-info-bar .logout-btn').textContent = 'Logout';
+
+                // Show rank information for logged-in users
+                const rankLine = document.getElementById('menu-rank-line');
+                if (rankLine) rankLine.style.display = 'block';
+
+                refreshRankDisplays();
+                updatePlayerNamesWithProBadge();
+            }
         }
 
         function updateStatsUI() {
