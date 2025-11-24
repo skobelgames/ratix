@@ -7538,14 +7538,25 @@
             resetVariantSelections();
         }
 
+        let howToPlayOpenedFromMenu = false; // Track if opened from main menu
+
         function openHowToPlay() {
-            gamePaused = true;
-            // Pause timers if they exist (safe for main menu/offline)
-            pausedTimers.game = !!gameTimerInterval;
-            pausedTimers.turn = !!turnTimerInterval;
-            pausedTimers.turnPlayer = currentTurnTimerPlayer; // Save which player's timer was running
-            stopGameTimer?.();
-            stopTurnTimer?.();
+            // Check if we're in an active game (game-container is visible)
+            const gameContainer = document.getElementById('game-container');
+            const isInGame = gameContainer && gameContainer.style.display !== 'none' && gameContainer.style.display !== '';
+
+            howToPlayOpenedFromMenu = !isInGame;
+
+            if (isInGame) {
+                // Only pause game if we're in an active game
+                gamePaused = true;
+                // Pause timers if they exist (safe for main menu/offline)
+                pausedTimers.game = !!gameTimerInterval;
+                pausedTimers.turn = !!turnTimerInterval;
+                pausedTimers.turnPlayer = currentTurnTimerPlayer; // Save which player's timer was running
+                stopGameTimer?.();
+                stopTurnTimer?.();
+            }
 
             // Generate and display rules content
             generateRulesContent();
@@ -7555,6 +7566,12 @@
             if (howTo) {
                 howTo.style.display = 'block';
                 howTo.style.zIndex = 2002;
+
+                // Update footer button text based on context
+                const footerBtn = howTo.querySelector('.modal-footer button');
+                if (footerBtn) {
+                    footerBtn.textContent = howToPlayOpenedFromMenu ? 'Close' : 'Resume Game';
+                }
             }
         }
 
@@ -7562,20 +7579,27 @@
             document.getElementById('how-to-play-modal').style.display = 'none';
             const overlay = document.getElementById('modal-overlay');
             if (overlay) overlay.style.display = 'none';
-            gamePaused = false;
 
-            // Resume timers if they were running
-            if (pausedTimers.game && gameTimeRemaining > 0) {
-                startGameTimer();
-            }
-            if (pausedTimers.turn && pausedTimers.turnPlayer) {
-                if (pausedTimers.turnPlayer === 'W' && playerTurnTimeRemaining > 0) {
-                    startTurnTimer('W', { reset: false });
-                } else if (pausedTimers.turnPlayer === 'B' && aiTurnTimeRemaining > 0) {
-                    startTurnTimer('B', { reset: false });
+            // Only resume game state if we were in an active game
+            if (!howToPlayOpenedFromMenu) {
+                gamePaused = false;
+
+                // Resume timers if they were running
+                if (pausedTimers.game && gameTimeRemaining > 0) {
+                    startGameTimer();
                 }
+                if (pausedTimers.turn && pausedTimers.turnPlayer) {
+                    if (pausedTimers.turnPlayer === 'W' && playerTurnTimeRemaining > 0) {
+                        startTurnTimer('W', { reset: false });
+                    } else if (pausedTimers.turnPlayer === 'B' && aiTurnTimeRemaining > 0) {
+                        startTurnTimer('B', { reset: false });
+                    }
+                }
+                pausedTimers = { game: null, turn: null, turnPlayer: null };
             }
-            pausedTimers = { game: null, turn: null, turnPlayer: null };
+
+            // Reset the flag
+            howToPlayOpenedFromMenu = false;
         }
 
         function toggleGameLog() {
