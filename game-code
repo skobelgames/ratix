@@ -3464,7 +3464,7 @@
 
         <div class="menu-options">
             <button class="menu-btn" onclick="showMatchmakingLobby()" id="play-online-btn">🎯 Play Online</button>
-            <button class="menu-btn secondary" onclick="showStatsProfile()">📊 Stats & Profile</button>
+            <button class="menu-btn secondary" id="stats-profile-btn" onclick="showStatsProfile()">📊 Stats & Profile</button>
             <button class="menu-btn secondary" onclick="playOffline()">🤖 Play vs AI (Offline)</button>
             <button class="menu-btn secondary" onclick="showDonationModal()" style="background-color: #FF69B4; color: white;">💝 Support Us - Donate</button>
             <button class="menu-btn secondary" onclick="openMainMenuHowToPlay()">📘 How to Play</button>
@@ -4885,7 +4885,7 @@
         }
 
         async function trackVisitorSession() {
-            if (!db || currentUser) return;
+            if (!db || (currentUser && !isGuest)) return;
             try {
                 sessionId = generateSessionId();
                 const visitorsRef = db.collection('visitors').doc(sessionId);
@@ -7559,6 +7559,9 @@
                 // Hide online play button
                 document.getElementById('play-online-btn').style.display = 'none';
 
+                // Hide Stats & Profile button for guests
+                document.getElementById('stats-profile-btn').style.display = 'none';
+
                 // Show guest login button
                 document.getElementById('guest-login-btn').style.display = 'block';
 
@@ -7574,6 +7577,9 @@
             } else {
                 // Show online play button
                 document.getElementById('play-online-btn').style.display = 'block';
+
+                // Show Stats & Profile button for logged-in users
+                document.getElementById('stats-profile-btn').style.display = 'block';
 
                 // Hide guest login button
                 document.getElementById('guest-login-btn').style.display = 'none';
