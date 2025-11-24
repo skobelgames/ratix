@@ -238,6 +238,38 @@
             font-size: 13px;
             color: #555;
         }
+        .rank-line {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .rank-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .rank-progress-bar {
+            width: 220px;
+            height: 8px;
+            background: #e6e6e6;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        .rank-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4caf50, #2196f3);
+            border-radius: 6px;
+            transition: width 0.3s ease;
+        }
+        .rank-progress-label {
+            font-size: 12px;
+            color: #555;
+        }
         #landing-header {
             text-align: center;
             color: #fff;
@@ -2913,6 +2945,16 @@
                 <div class="user-details">
                     <div class="user-name" id="menu-user-name">Player</div>
                     <div class="user-stats-summary" id="menu-user-stats">W: 0 | L: 0 | D: 0</div>
+                    <div class="rank-line" id="menu-rank-line">
+                        <div class="rank-row">
+                            <span id="menu-rank-emoji">🥉</span>
+                            <span id="menu-rank-text">Bronze · 0 pts</span>
+                        </div>
+                        <div class="rank-progress-bar">
+                            <div class="rank-progress-fill" id="menu-rank-progress"></div>
+                        </div>
+                        <div class="rank-progress-label" id="menu-rank-next">Next: Silver (0/100)</div>
+                    </div>
                 </div>
             </div>
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
@@ -3003,6 +3045,7 @@
             <button class="menu-btn secondary" onclick="showStatsProfile()">📊 Stats & Profile</button>
             <button class="menu-btn secondary" onclick="playOffline()">🤖 Play vs AI (Offline)</button>
             <button class="menu-btn secondary" onclick="showDonationModal()" style="background-color: #FF69B4; color: white;">💝 Support Us - Donate</button>
+            <button class="menu-btn secondary" onclick="openHowToPlay()">📘 How to Play</button>
         </div>
     </div>
 
@@ -3011,6 +3054,16 @@
         <div class="lobby-header">
             <h2>Matchmaking Lobby</h2>
             <button onclick="backToMainMenu()">← Back</button>
+        </div>
+        <div class="rank-line" id="lobby-rank-line" style="margin-bottom: 15px;">
+            <div class="rank-row">
+                <span id="lobby-rank-emoji">🥉</span>
+                <span id="lobby-rank-text">Bronze · 0 pts</span>
+            </div>
+            <div class="rank-progress-bar">
+                <div class="rank-progress-fill" id="lobby-rank-progress"></div>
+            </div>
+            <div class="rank-progress-label" id="lobby-rank-next">Next: Silver (0/100)</div>
         </div>
 
         <div class="lobby-tabs">
@@ -3130,6 +3183,16 @@
                     <div class="user-name" id="profile-user-name" style="font-size:24px;">Player</div>
                     <button onclick="showEditUsernameModal()" style="background: #2196F3; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; font-size: 12px;">Edit Name</button>
                 </div>
+                <div class="rank-line" id="profile-rank-line">
+                    <div class="rank-row">
+                        <span id="profile-rank-emoji">🥉</span>
+                        <span id="profile-rank-text">Bronze · 0 pts</span>
+                    </div>
+                    <div class="rank-progress-bar">
+                        <div class="rank-progress-fill" id="profile-rank-progress"></div>
+                    </div>
+                    <div class="rank-progress-label" id="profile-rank-next">Next: Silver (0/100)</div>
+                </div>
                 <div class="user-stats-summary">Member since: <span id="member-since">-</span></div>
                 <div id="pro-status-display" style="margin-top: 10px; font-size: 16px; font-weight: bold; color: #4CAF50; display: none;">
                     <span class="pro-badge">⭐</span> Pro Member
@@ -3228,11 +3291,10 @@
         </div>
     </div>
 
-    <div id="landing-header" style="display:none;">
-        <h1>RATIX</h1>
-        <p>Created by Craig Skobel</p>
-        <button class="how-to-button" onclick="openHowToPlay()">How to Play</button>
-    </div>
+        <div id="landing-header" style="display:none;">
+            <h1>RATIX</h1>
+            <p>Created by Craig Skobel</p>
+        </div>
     <div id="start-menu" style="display:none;">
         <div class="start-menu-header">
             <h2>Select Game Variant</h2>
@@ -3959,6 +4021,74 @@
             };
         }
 
+        function applyStatsDefaults(stats = {}) {
+            return {
+                wins: stats.wins || 0,
+                losses: stats.losses || 0,
+                draws: stats.draws || 0,
+                totalGames: stats.totalGames || 0,
+                highestScore: stats.highestScore || 0,
+                totalPoints: stats.totalPoints || 0
+            };
+        }
+
+        const RANKING_POINTS = {
+            win: 15,
+            draw: 5,
+            loss: -5,
+            quitPenalty: -10,
+            bonuses: {
+                Regicide: 2,
+                Supremacy: 5,
+                Relentless: 7
+            }
+        };
+
+        const RANK_TIERS = [
+            { name: 'Bronze', emoji: '🥉', color: '#c47a3a', min: 0 },
+            { name: 'Silver', emoji: '🥈', color: '#9e9e9e', min: 100 },
+            { name: 'Gold', emoji: '🥇', color: '#c9a000', min: 250 },
+            { name: 'Platinum', emoji: '💠', color: '#00bcd4', min: 500 },
+            { name: 'Diamond', emoji: '💎', color: '#00e5ff', min: 800 },
+            { name: 'Mythic', emoji: '🏆', color: '#d4af37', min: 1200 }
+        ];
+
+        function computeLadderPoints(result, reason = '') {
+            const base = RANKING_POINTS[result] ?? 0;
+            let total = base;
+            const normalizedReason = (reason || '').trim();
+            const bonus = RANKING_POINTS.bonuses[normalizedReason] || 0;
+            if (result === 'win') {
+                total += bonus;
+            }
+            if (result === 'loss' && normalizedReason === 'Submission') {
+                total += RANKING_POINTS.quitPenalty;
+            }
+            return total;
+        }
+
+        function getRankInfo(points = 0) {
+            const tiers = [...RANK_TIERS].sort((a, b) => a.min - b.min);
+            let current = tiers[0];
+            for (const t of tiers) {
+                if (points >= t.min) current = t;
+            }
+            const next = tiers.find(t => t.min > points);
+            const nextThreshold = next ? next.min : null;
+            const start = current.min;
+            const denom = next ? (nextThreshold - start) : 1;
+            const progress = next ? Math.max(0, Math.min(1, (points - start) / denom)) : 1;
+            return {
+                ...current,
+                points,
+                nextName: next ? next.name : 'Max',
+                nextAt: nextThreshold,
+                progress,
+                pointsIntoTier: points - start,
+                pointsToNext: next ? Math.max(0, nextThreshold - points) : 0
+            };
+        }
+
         // ========== PROFILE MANAGEMENT ==========
         function selectAvatar(avatar, event) {
             const target = event ? event.target : document.querySelector(`[data-avatar="${avatar}"]`);
@@ -4073,6 +4203,16 @@
             if (!Array.isArray(data.friends)) {
                 updates.friends = [];
             }
+            if (!data.stats) {
+                updates.stats = applyStatsDefaults();
+            } else {
+                const filled = applyStatsDefaults(data.stats);
+                Object.entries(filled).forEach(([k, v]) => {
+                    if (data.stats[k] === undefined) {
+                        updates[`stats.${k}`] = v;
+                    }
+                });
+            }
             if (!data.friendStats) {
                 updates.friendStats = createDefaultFriendStats();
             } else if (!data.friendStats.history) {
@@ -4134,12 +4274,12 @@
             return currentUserProfile;
         }
 
-        async function updateUserStats(result, score) {
+        async function updateUserStats(result, { gameScore = 0, ladderPoints = 0, reason = '' } = {}) {
             if (!currentUser || !currentUserProfile) return;
 
             const updates = {
                 'stats.totalGames': firebase.firestore.FieldValue.increment(1),
-                'stats.totalPoints': firebase.firestore.FieldValue.increment(score),
+                'stats.totalPoints': firebase.firestore.FieldValue.increment(ladderPoints),
                 lastActive: firebase.firestore.FieldValue.serverTimestamp()
             };
 
@@ -4151,8 +4291,8 @@
                 updates['stats.draws'] = firebase.firestore.FieldValue.increment(1);
             }
 
-            if (score > currentUserProfile.stats.highestScore) {
-                updates['stats.highestScore'] = score;
+            if (gameScore > currentUserProfile.stats.highestScore) {
+                updates['stats.highestScore'] = gameScore;
             }
 
             try {
@@ -4491,6 +4631,11 @@
                 badges += '💝 ';
             }
 
+            const rankInfo = currentUserProfile.stats ? getRankInfo(currentUserProfile.stats.totalPoints || 0) : null;
+            if (rankInfo) {
+                badges += `${rankInfo.emoji} `;
+            }
+
             const usernameWithBadge = badges + username;
 
             // Update all username displays
@@ -4499,9 +4644,11 @@
 
             if (menuName) {
                 menuName.textContent = usernameWithBadge;
+                menuName.style.color = rankInfo ? rankInfo.color : '';
             }
             if (profileName) {
                 profileName.textContent = usernameWithBadge;
+                profileName.style.color = rankInfo ? rankInfo.color : '';
             }
         }
 
@@ -5546,12 +5693,12 @@
             };
         }
 
-        async function updateFriendMatchStats(opponentId, result, score) {
+        async function updateFriendMatchStats(opponentId, result, { gameScore = 0, ladderPoints = 0 } = {}) {
             if (!currentUser) return;
             try {
                 const updates = {
                     'friendStats.totalMatches': firebase.firestore.FieldValue.increment(1),
-                    'friendStats.points': firebase.firestore.FieldValue.increment(score || 0)
+                    'friendStats.points': firebase.firestore.FieldValue.increment(ladderPoints || 0)
                 };
                 if (result === 'win') {
                     updates['friendStats.wins'] = firebase.firestore.FieldValue.increment(1);
@@ -5925,6 +6072,7 @@
         async function startOnlineGame(gameId) {
             currentGameId = gameId;
             isOnlineGame = true; // Ensure this is set at the start
+            onlineStatsRecorded = false;
 
             // Get the game data to know the variant
             const gameRef = db.collection('games').doc(gameId);
@@ -5977,6 +6125,7 @@
 
             // NOW, set all the online-specific variables, AFTER resetGame() has run.
             isOnlineGame = true;
+            attachOnlineUnloadHandler();
             
             // Update UI with opponent name
             updateScoreDisplay();
@@ -6049,11 +6198,24 @@
 
             // Check if game is completed
             if (gameData.status === 'completed') {
+                if (!gameOver) {
+                    const result = gameData.result || {};
+                    const finalScores = result.finalScores || {};
+                    if (typeof finalScores.W === 'number') {
+                        scores['W'] = finalScores.W;
+                    }
+                    if (typeof finalScores.B === 'number') {
+                        scores['B'] = finalScores.B;
+                    }
+                    endGame(result.winner || 'draw', result.reason || 'Match');
+                }
+                recordOnlineCompletionStats(gameData, gameData.result || {});
                 if (gameListener) {
                     gameListener();
                     gameListener = null;
                 }
                 isOnlineGame = false; // Game is over, no more moves
+                detachOnlineUnloadHandler();
             }
         }
 
@@ -6250,13 +6412,18 @@
                 const myScore = (finalScores[myPlayerColor] !== undefined)
                     ? finalScores[myPlayerColor]
                     : ((myPlayerColor === 'W') ? scores.W : scores.B);
+                const ladderPoints = computeLadderPoints(myResult, result.reason || '');
 
                 if (friendMatch && opponentInfo) {
-                    await updateFriendMatchStats(opponentInfo.uid, myResult, myScore);
+                    await updateFriendMatchStats(opponentInfo.uid, myResult, {
+                        gameScore: myScore,
+                        ladderPoints
+                    });
                 } else {
-                    await updateUserStats(myResult, myScore);
+                    await updateUserStats(myResult, { gameScore: myScore, ladderPoints, reason: result.reason || '' });
                     await updatePlatformTotals();
                 }
+                onlineStatsRecorded = true;
 
                 // Cleanup
                 if (gameListener) {
@@ -6282,7 +6449,7 @@
                 // End the game with opponent as winner
                 await endOnlineGame({
                     winner: opponentColor,
-                    reason: 'forfeit',
+                    reason: 'Submission',
                     finalScores: { W: scores['W'], B: scores['B'] }
                 });
 
@@ -6332,6 +6499,7 @@
             checkAndUpdateProStatus();
             checkAndUpdateDonorStatus();
             updateFriendsOnlineCount();
+            refreshRankDisplays();
         }
 
         function showStatsProfile() {
@@ -6370,6 +6538,54 @@
             document.body.classList.remove('game-loaded');
         }
 
+        function updateRankLine(prefix, rankInfo) {
+            const emojiEl = document.getElementById(`${prefix}-rank-emoji`);
+            const textEl = document.getElementById(`${prefix}-rank-text`);
+            const progressEl = document.getElementById(`${prefix}-rank-progress`);
+            const nextEl = document.getElementById(`${prefix}-rank-next`);
+            if (!rankInfo) return;
+            if (emojiEl) emojiEl.textContent = rankInfo.emoji;
+            if (textEl) {
+                textEl.textContent = `${rankInfo.name} · ${rankInfo.points} pts`;
+                textEl.style.color = rankInfo.color;
+            }
+            if (progressEl) {
+                const pct = Math.round(rankInfo.progress * 100);
+                progressEl.style.width = `${pct}%`;
+                progressEl.style.background = `linear-gradient(90deg, ${rankInfo.color}, #4caf50)`;
+            }
+            if (nextEl) {
+                if (rankInfo.nextAt === null) {
+                    nextEl.textContent = `${rankInfo.name} Max Rank`;
+                } else {
+                    nextEl.textContent = `Next: ${rankInfo.nextName} (${rankInfo.pointsIntoTier}/${rankInfo.nextAt - rankInfo.min} pts)`;
+                }
+            }
+        }
+
+        function applyRankStylingToNames(rankInfo) {
+            if (!rankInfo) return;
+            const targets = [
+                document.getElementById('menu-user-name'),
+                document.getElementById('profile-user-name')
+            ];
+            targets.forEach(el => {
+                if (el) {
+                    el.style.color = rankInfo.color;
+                }
+            });
+        }
+
+        function refreshRankDisplays() {
+            if (!currentUserProfile || !currentUserProfile.stats) return;
+            const points = currentUserProfile.stats.totalPoints || 0;
+            const rankInfo = getRankInfo(points);
+            updateRankLine('menu', rankInfo);
+            updateRankLine('profile', rankInfo);
+            updateRankLine('lobby', rankInfo);
+            applyRankStylingToNames(rankInfo);
+        }
+
         function updateMainMenuUI() {
             if (!currentUserProfile) return;
 
@@ -6377,6 +6593,8 @@
             document.getElementById('menu-user-name').textContent = currentUserProfile.username;
             document.getElementById('menu-user-stats').textContent =
                 `W: ${currentUserProfile.stats.wins} | L: ${currentUserProfile.stats.losses} | D: ${currentUserProfile.stats.draws}`;
+            refreshRankDisplays();
+            updatePlayerNamesWithProBadge();
         }
 
         function updateStatsUI() {
@@ -6397,6 +6615,9 @@
                 const date = currentUserProfile.createdAt.toDate();
                 document.getElementById('member-since').textContent = date.toLocaleDateString();
             }
+
+            refreshRankDisplays();
+            updatePlayerNamesWithProBadge();
 
             // Update achievements
             const achievementsGrid = document.getElementById('achievements-grid');
@@ -6975,6 +7196,8 @@
         let initialMovesLeft = 3;
         let baseMovesThisTurn = 3; // Track base moves without bonus (to know when bonus moves are spent)
         let aiPending = false; // Prevent duplicate AI scheduling
+        let onlineUnloadHandler = null; // Tracks beforeunload handler for online forfeits
+        let onlineStatsRecorded = false; // Prevent double-posting stats for completed online games
         let gamePaused = false; // Track if game is paused
         let gameOver = false; // Track if game has ended
         let pausedTimers = { game: null, turn: null, turnPlayer: null }; // Store timer states when paused
@@ -7171,6 +7394,61 @@
             }
         }
 
+        function attachOnlineUnloadHandler() {
+            if (onlineUnloadHandler) return;
+            onlineUnloadHandler = () => {
+                if (isOnlineGame && currentGameId && !gameOver) {
+                    forfeitOnlineGame();
+                }
+            };
+            window.addEventListener('beforeunload', onlineUnloadHandler);
+        }
+
+        function detachOnlineUnloadHandler() {
+            if (!onlineUnloadHandler) return;
+            window.removeEventListener('beforeunload', onlineUnloadHandler);
+            onlineUnloadHandler = null;
+        }
+
+        async function recordOnlineCompletionStats(gameData, result = {}) {
+            if (onlineStatsRecorded || !isOnlineGame || !currentGameId) return;
+            onlineStatsRecorded = true;
+            try {
+                const finalScores = result.finalScores || { W: scores['W'], B: scores['B'] };
+                let opponentInfo = null;
+                let opponentProfile = null;
+                const uid = currentUser?.uid || auth?.currentUser?.uid;
+                if (gameData?.player1 && gameData?.player2 && uid) {
+                    opponentInfo = (gameData.player1.uid === uid) ? gameData.player2 : gameData.player1;
+                    if (opponentInfo?.uid && db) {
+                        const opponentSnap = await db.collection('users').doc(opponentInfo.uid).get();
+                        opponentProfile = opponentSnap.exists ? opponentSnap.data() : null;
+                    }
+                }
+                const friendMatch = opponentInfo ? isMutualFriend(opponentInfo.uid, opponentProfile) : false;
+                let myResult = 'draw';
+                if (result.winner) {
+                    myResult = (myPlayerColor && result.winner === myPlayerColor) ? 'win' : 'loss';
+                }
+                const myScore = (finalScores[myPlayerColor] !== undefined)
+                    ? finalScores[myPlayerColor]
+                    : ((myPlayerColor === 'W') ? scores['W'] : scores['B']);
+                const ladderPoints = computeLadderPoints(myResult, result.reason || '');
+                if (friendMatch && opponentInfo) {
+                    await updateFriendMatchStats(opponentInfo.uid, myResult, {
+                        gameScore: myScore,
+                        ladderPoints
+                    });
+                } else {
+                    await updateUserStats(myResult, { gameScore: myScore, ladderPoints, reason: result.reason || '' });
+                    await updatePlatformTotals();
+                }
+            } catch (error) {
+                console.error('Error recording completion stats:', error);
+                onlineStatsRecorded = false; // allow retry if snapshot fires again
+            }
+        }
+
         // Centralized function to completely stop and clean up the game
         function stopGame() {
             // Stop all timers and intervals
@@ -7186,6 +7464,9 @@
                 clearTimeout(zombieAdvanceTimer);
                 zombieAdvanceTimer = null;
             }
+
+            detachOnlineUnloadHandler();
+            onlineStatsRecorded = false;
 
             // Stop Firebase listener for online games
             if (gameListener) {
@@ -7245,9 +7526,10 @@
             // Stop the game completely
             stopGame();
 
-            // Show main menu
+            // Show main menu (not the offline start menu)
+            hideAllScreens();
             document.getElementById('game-container').style.display = 'none';
-            document.getElementById('start-menu').style.display = 'flex';
+            document.getElementById('main-menu-screen').style.display = 'flex';
             document.body.classList.remove('game-loaded');
             const landingHeader = document.getElementById('landing-header');
             if (landingHeader) landingHeader.style.display = 'block';
@@ -7258,18 +7540,22 @@
 
         function openHowToPlay() {
             gamePaused = true;
-            // Pause timers - save state BEFORE stopping
-            pausedTimers.game = gameTimerInterval;
-            pausedTimers.turn = turnTimerInterval;
+            // Pause timers if they exist (safe for main menu/offline)
+            pausedTimers.game = !!gameTimerInterval;
+            pausedTimers.turn = !!turnTimerInterval;
             pausedTimers.turnPlayer = currentTurnTimerPlayer; // Save which player's timer was running
-            stopGameTimer();
-            stopTurnTimer();
+            stopGameTimer?.();
+            stopTurnTimer?.();
 
             // Generate and display rules content
             generateRulesContent();
             const overlay = document.getElementById('modal-overlay');
             if (overlay) overlay.style.display = 'block';
-            document.getElementById('how-to-play-modal').style.display = 'block';
+            const howTo = document.getElementById('how-to-play-modal');
+            if (howTo) {
+                howTo.style.display = 'block';
+                howTo.style.zIndex = 2002;
+            }
         }
 
         function closeHowToPlay() {
@@ -7340,6 +7626,14 @@
 
         function generateRulesContent() {
             const rulesDiv = document.getElementById('rules-content');
+            const piecePoints = Object.entries(pieceValues || {}).sort((a, b) => a[0].localeCompare(b[0]));
+            const piecePointsHtml = piecePoints.map(([name, val]) => `<li><strong>${name}:</strong> ${val} points</li>`).join('');
+            const pieceInfoEntries = Object.entries(pieceInfo || {}).sort((a, b) => a[0].localeCompare(b[0]));
+            const pieceInfoHtml = pieceInfoEntries.map(([name, info]) => {
+                const pts = info.points ? `<div><strong>Points:</strong> ${info.points}</div>` : '';
+                const extra = info.extra ? `<div><strong>Info:</strong> ${info.extra}</div>` : '';
+                return `<li class="piece-info"><div class="piece-name">${name}</div>${pts}${extra}</li>`;
+            }).join('');
 
             let html = `
                 <h2>Game Overview</h2>
@@ -7363,6 +7657,15 @@
                     <li><strong>Score Victory:</strong> Have the highest score when the game timer expires.</li>
                 </ul>
 
+                <h2>Ranks & Points</h2>
+                <ul>
+                    <li>Wins: +15 ladder points (draw +5, loss -5). Submission/quit applies an extra -10.</li>
+                    <li>Victory bonuses (ranked & friends): Regicide +2, Supremacy +5, Relentless +7 (applied on wins only).</li>
+                    <li>Ranks: Bronze, Silver, Gold, Platinum, Diamond, Mythic. Your total ladder points set your tier.</li>
+                    <li>Progress bars in your profile and the matchmaking lobby show your climb to the next rank.</li>
+                    <li>Friend matches mirror ranked scoring but stay in a separate friend ladder so ranked integrity remains.</li>
+                </ul>
+
                 <h2>Draw Conditions</h2>
                 <ul>
                     <li><strong>Truce:</strong> When both players have 6 or fewer pieces remaining, either player can propose a truce. Both must agree to end in a draw. If declined, the truce can be re-proposed for up to 3 attempts across subsequent rounds. After 3 declined attempts, truce is no longer available.</li>
@@ -7383,6 +7686,12 @@
                     <li><strong>Despair:</strong> Lose 2 or more non-Infantry pieces in a round to suffer -2 moves next round. Poor planning has consequences!</li>
                     <li><strong>Champion Pressure:</strong> If your Champion reaches the enemy's back row, your opponent loses 1 move point each round while it remains there.</li>
                 </ul>
+
+                <h2>Piece Point Values (Alphabetical)</h2>
+                <ul>${piecePointsHtml}</ul>
+
+                <h2>Piece Information (Alphabetical)</h2>
+                <ul>${pieceInfoHtml}</ul>
 
                 <h3>Reinforcements</h3>
                 <p>When your Infantry, Champion, or King reaches the opponent's back row <strong>without capturing a piece</strong>, you earn a reinforcement. Choose one previously captured piece from your graveyard to return to the board on that square.</p>
@@ -7459,50 +7768,6 @@
                     <li><strong>Energy Blast:</strong> Wizards and Necromancers first succeed on a spellcasting coin flip (costs 2 move points even if failed), then flip four coins to determine blast distance (1 square per success). The blast travels straight or diagonally toward the opponent's side, vaporizing all enemies in its path while ignoring friendlies. First use costs 2 points, second costs 3.</li>
                     <li><strong>Sacrifice Spell:</strong> Once per game, a Wizard or Necromancer can spend 3 move points and win a coin flip to remove themselves from play, detonating a blast reaching 2 squares orthogonally and 1 square diagonally. Only available if the coin flip succeeds.</li>
                     <li><strong>Protection:</strong> When a spell would capture your King, you may (once per game) sacrifice a Wizard, Necromancer, or Champion to negate the capture. This also deducts 2 move points from the start of your next round.</li>
-                </ul>
-
-                <h2>Piece Information</h2>
-            `;
-
-            // Add piece information
-            for (let [pieceName, info] of Object.entries(pieceInfo)) {
-                // Format the info.extra to make "Special Moves:" or "Special Move:" bold
-                let formattedExtra = info.extra.replace(/Special Moves?:/g, '<strong>$&</strong>');
-
-                html += `
-                    <div class="piece-info">
-                        <div class="piece-name">${pieceName}</div>
-                        <div><strong>Movement:</strong> ${info.points}</div>
-                        <div><strong>Important:</strong> ${formattedExtra}</div>
-                    </div>
-                `;
-            }
-
-            html += `
-                <h2>Piece Point Values</h2>
-                <p>When you capture an enemy piece, you gain points based on the piece's value:</p>
-                <ul>
-                    <li><strong>Archer:</strong> 2 points</li>
-                    <li><strong>Ballista:</strong> 5 points</li>
-                    <li><strong>Cavalry:</strong> 3 points</li>
-                    <li><strong>Champion:</strong> 12 points</li>
-                    <li><strong>Dragon:</strong> 7 points</li>
-                    <li><strong>Elephantry:</strong> 11 points</li>
-                    <li><strong>Fusilier:</strong> 4 points</li>
-                    <li><strong>Guard:</strong> 4 points</li>
-                    <li><strong>Huntsman:</strong> 6 points</li>
-                    <li><strong>Infantry:</strong> 1 point</li>
-                    <li><strong>King:</strong> 13 points</li>
-                    <li><strong>Lich:</strong> 11 points</li>
-                    <li><strong>Mercenary:</strong> 3 points</li>
-                    <li><strong>Necromancer:</strong> 10 points</li>
-                    <li><strong>Ogre:</strong> 8 points</li>
-                    <li><strong>Pistolier:</strong> 3 points</li>
-                    <li><strong>Spectre:</strong> 5 points</li>
-                    <li><strong>Troll:</strong> 6 points</li>
-                    <li><strong>Undead:</strong> 4 points</li>
-                    <li><strong>Wizard:</strong> 9 points</li>
-                    <li><strong>Zombie:</strong> 3 points</li>
                 </ul>
 
                 <h2>Strategy Tips</h2>
@@ -10067,12 +10332,15 @@
             const sanitized = sanitizePlayerName(name);
             playerDisplayName = sanitized;
             const playerLabel = document.getElementById('player-name-label');
+            const rankInfo = currentUserProfile?.stats ? getRankInfo(currentUserProfile.stats.totalPoints || 0) : null;
             if (playerLabel) {
                 playerLabel.textContent = sanitized;
+                playerLabel.style.color = rankInfo ? rankInfo.color : '';
             }
             const statsNameLabel = document.getElementById('stats-player-name');
             if (statsNameLabel) {
                 statsNameLabel.textContent = sanitized;
+                statsNameLabel.style.color = rankInfo ? rankInfo.color : '';
             }
             if (persist) {
                 persistPlayerName(sanitized);
@@ -10639,7 +10907,7 @@
             if (!isSupremacyPosition(player)) return;
             gameLog.push(`${player === 'W' ? 'Player' : 'AI'} achieved Supremacy victory!`);
             updateGameLog();
-            endGame(player);
+            endGame(player, 'Supremacy');
         }
 
         const pieceInfo = {
@@ -11648,11 +11916,11 @@
             document.getElementById('game-container').style.display = 'flex';
             document.body.classList.add('game-loaded');
 
-            // Ensure reset and how to play buttons are visible for offline games
+            // Ensure reset button visibility; show How to Play only for offline games
             const resetBtn = document.getElementById('reset-game-btn');
             const howToPlayBtn = document.getElementById('how-to-play-btn');
-            if (resetBtn) resetBtn.style.display = '';
-            if (howToPlayBtn) howToPlayBtn.style.display = '';
+            if (resetBtn) resetBtn.style.display = isOnlineGame ? 'none' : '';
+            if (howToPlayBtn) howToPlayBtn.style.display = isOnlineGame ? 'none' : '';
 
             const boardDiv = document.getElementById('board');
             boardDiv.style.gridTemplateColumns = `repeat(${COLS}, 50px)`;
@@ -20724,7 +20992,7 @@
                 championsOnBackRow[piece.player].push([toRow, toCol]);
             }
 
-            if ((piece.type === 'Infantry' || piece.type === 'Champion' || piece.type === 'King') && toRow === opponentBackRow && !captured) {
+            if ((piece.type === 'Infantry' || piece.type === 'Champion' || piece.type === 'King') && toRow === opponentBackRow) {
                 reinforce(piece.player, toRow, toCol);
             }
 
@@ -21030,11 +21298,43 @@
             return player === 'W' ? (gameVariant === 'ccb' ? 7 : 9) : 0;
         }
 
+        function isLocalPlayer(player) {
+            return isOnlineGame ? myPlayerColor === player : player === 'W';
+        }
+
+        function getColorLabel(color) {
+            if (color === 'draw' || !color) return 'Draw';
+            const opponentName = getOpponentDisplayName() || 'Opponent';
+            if (isOnlineGame && myPlayerColor) {
+                return color === myPlayerColor ? 'Player' : opponentName;
+            }
+            return color === 'W' ? 'Player' : opponentName;
+        }
+
+        function getReinforcementBucket(player) {
+            const sourcePlayer = getOpponent(player); // Opponent holds the pieces this player has lost
+            if (!capturedPieces[sourcePlayer]) {
+                capturedPieces[sourcePlayer] = [];
+            }
+            return { bucket: capturedPieces[sourcePlayer], sourcePlayer };
+        }
+
         function updateReinforcementHint() {
             const hint = document.getElementById('reinforcement-hint');
             if (!hint) return;
-            const showHint = reinforcementPending && reinforcementPending.player === 'W' && reinforcementPending.stage === 'awaitingPlacement';
+            const showHint = reinforcementPending && isLocalPlayer(reinforcementPending.player) && reinforcementPending.stage === 'awaitingPlacement';
             hint.style.display = showHint ? 'block' : 'none';
+        }
+
+        function decrementGraveyardCount() {
+            if (!reinforcementPending || !reinforcementPending.player || !reinforcementPending.pieceType) return;
+            const { player, pieceType } = reinforcementPending;
+            const { bucket: graveyard } = getReinforcementBucket(player);
+            if (!graveyard || !graveyard.length) return;
+            const index = graveyard.findIndex(p => p && p.type === pieceType && p.player === player);
+            if (index === -1) return;
+            graveyard.splice(index, 1);
+            updateCapturedPiecesDisplay();
         }
 
         function clearReinforcementHighlights() {
@@ -21086,7 +21386,9 @@
         function reinforce(player, row, col) {
             resetReinforcementState();
             reinforcementPending = { player, row, col, stage: 'selectPiece' };
-            let availablePieces = capturedPieces[player].map(p => p.type);
+            const playerIsLocal = isLocalPlayer(player);
+            const { bucket: graveyard } = getReinforcementBucket(player);
+            let availablePieces = graveyard.filter(p => p.player === player).map(p => p.type);
             const piece = board[row][col];
             // King and Champion can bring extra reinforcements in advanced+ variants (36s and above)
             if (piece.type === 'Champion' || piece.type === 'King') {
@@ -21098,7 +21400,7 @@
                 resetReinforcementState();
                 return;
             }
-            if (player === 'W') {
+            if (playerIsLocal) {
                 const modal = document.getElementById('reinforce-modal');
                 const select = document.getElementById('reinforce-select');
                 if (select) {
@@ -21121,6 +21423,7 @@
         function confirmReinforcement(pieceType) {
             if (!reinforcementPending) return;
             const { player } = reinforcementPending;
+            const playerIsLocal = isLocalPlayer(player);
             const select = document.getElementById('reinforce-select');
             const selectedType = pieceType || (select && select.value);
             if (!selectedType) return;
@@ -21140,7 +21443,7 @@
             reinforcementPending.pieceType = selectedType;
             reinforcementPending.backRow = backRow;
             reinforcementPending.stage = 'awaitingPlacement';
-            if (player === 'W') {
+            if (playerIsLocal) {
                 reinforcementTargetSquares.clear();
                 availableSquares.forEach(([r, c]) => reinforcementTargetSquares.add(`${r},${c}`));
                 const modal = document.getElementById('reinforce-modal');
@@ -24045,6 +24348,9 @@
 
             // Prepare winner message and title
             let winnerText, reasonText, modalTitle;
+            const myColor = (isOnlineGame && myPlayerColor) ? myPlayerColor : 'W';
+            const opponentColor = getOpponent(myColor);
+            const playerWon = winner !== 'draw' && winner === myColor;
             if (winner === 'draw') {
                 winnerText = 'Draw!';
                 modalTitle = 'Game Complete';
@@ -24060,16 +24366,12 @@
                     reasonText = reason || 'Draw';
                 }
             } else {
-                const winnerLabel = winner === 'W' ? 'Player' : getOpponentDisplayName();
-                const loserLabel = winner === 'W' ? getOpponentDisplayName() : 'Player';
-                winnerText = `${winnerLabel} Wins!`;
+                const winnerLabel = getColorLabel(winner);
+                const loserLabel = getColorLabel(getOpponent(winner));
+                winnerText = playerWon ? 'You Win!' : `${winnerLabel} Wins!`;
 
                 // Set modal title based on whether player won or lost
-                if (winner === 'W') {
-                    modalTitle = 'Victory Achieved';
-                } else {
-                    modalTitle = 'All is Lost';
-                }
+                modalTitle = playerWon ? 'Victory Achieved' : 'All is Lost';
 
                 // Create simplified victory method text
                 let victoryMethod = '';
@@ -24088,11 +24390,15 @@
                     victoryMethod = 'Regicide';
                 }
 
-                reasonText = `${winnerLabel} was victorious by ${victoryMethod}`;
+                reasonText = playerWon
+                    ? `You were victorious by ${victoryMethod}`
+                    : `${winnerLabel} was victorious by ${victoryMethod}`;
             }
 
             // Add to game log
-            const scoreSummary = `Final Score - Player: ${scores['W']}, ${getOpponentDisplayName()}: ${scores['B']}`;
+            const myScore = scores[myColor];
+            const oppScore = scores[opponentColor];
+            const scoreSummary = `Final Score - Player: ${myScore}, ${getOpponentDisplayName()}: ${oppScore}`;
             const message = `${winnerText} ${reasonText} ${scoreSummary}`;
             gameLog.push(message);
             updateGameLog();
@@ -24106,22 +24412,22 @@
             document.getElementById('stats-ai-name').textContent = getOpponentDisplayName();
 
             // Populate player stats
-            document.getElementById('stats-player-score').textContent = scores['W'];
-            document.getElementById('stats-player-warcry').textContent = gameStats.warcryBonusCount['W'];
-            document.getElementById('stats-player-despair').textContent = gameStats.despairPenaltyCount['W'];
-            document.getElementById('stats-player-captures').textContent = gameStats.mostCapturesInRound['W'];
-            document.getElementById('stats-player-high-score').textContent = gameStats.highestScoreInRound['W'];
-            document.getElementById('stats-player-summons').textContent = gameStats.summonCount['W'];
-            document.getElementById('stats-player-reinforcements').textContent = gameStats.reinforcementCount['W'];
+            document.getElementById('stats-player-score').textContent = scores[myColor];
+            document.getElementById('stats-player-warcry').textContent = gameStats.warcryBonusCount[myColor];
+            document.getElementById('stats-player-despair').textContent = gameStats.despairPenaltyCount[myColor];
+            document.getElementById('stats-player-captures').textContent = gameStats.mostCapturesInRound[myColor];
+            document.getElementById('stats-player-high-score').textContent = gameStats.highestScoreInRound[myColor];
+            document.getElementById('stats-player-summons').textContent = gameStats.summonCount[myColor];
+            document.getElementById('stats-player-reinforcements').textContent = gameStats.reinforcementCount[myColor];
 
             // Populate AI stats
-            document.getElementById('stats-ai-score').textContent = scores['B'];
-            document.getElementById('stats-ai-warcry').textContent = gameStats.warcryBonusCount['B'];
-            document.getElementById('stats-ai-despair').textContent = gameStats.despairPenaltyCount['B'];
-            document.getElementById('stats-ai-captures').textContent = gameStats.mostCapturesInRound['B'];
-            document.getElementById('stats-ai-high-score').textContent = gameStats.highestScoreInRound['B'];
-            document.getElementById('stats-ai-summons').textContent = gameStats.summonCount['B'];
-            document.getElementById('stats-ai-reinforcements').textContent = gameStats.reinforcementCount['B'];
+            document.getElementById('stats-ai-score').textContent = scores[opponentColor];
+            document.getElementById('stats-ai-warcry').textContent = gameStats.warcryBonusCount[opponentColor];
+            document.getElementById('stats-ai-despair').textContent = gameStats.despairPenaltyCount[opponentColor];
+            document.getElementById('stats-ai-captures').textContent = gameStats.mostCapturesInRound[opponentColor];
+            document.getElementById('stats-ai-high-score').textContent = gameStats.highestScoreInRound[opponentColor];
+            document.getElementById('stats-ai-summons').textContent = gameStats.summonCount[opponentColor];
+            document.getElementById('stats-ai-reinforcements').textContent = gameStats.reinforcementCount[opponentColor];
             addHighScoreEntry(playerDisplayName, scores['W']);
 
             // Format and display game info
