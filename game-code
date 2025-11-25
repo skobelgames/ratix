@@ -3248,6 +3248,12 @@
             <input type="email" id="signup-email" placeholder="Email" required>
             <input type="password" id="signup-password" placeholder="Password (min 6 characters)" required minlength="6">
             <input type="password" id="signup-confirm" placeholder="Confirm Password" required minlength="6">
+            <div style="text-align: left; margin: 15px 0;">
+                <label style="display: flex; align-items: flex-start; cursor: pointer; font-size: 12px; line-height: 1.4;">
+                    <input type="checkbox" id="signup-terms-checkbox" required style="margin-right: 8px; margin-top: 2px; width: 16px; height: 16px; cursor: pointer; flex-shrink: 0;">
+                    <span style="color: #333;">I agree to the <a href="#" onclick="event.preventDefault(); openTermsModal();" style="color: #2196F3; text-decoration: underline;">Terms & Conditions</a> and <a href="#" onclick="event.preventDefault(); openPrivacyModal();" style="color: #2196F3; text-decoration: underline;">Privacy Policy</a></span>
+                </label>
+            </div>
             <button type="submit">Create Account</button>
             <div id="signup-error" class="auth-error"></div>
         </form>
@@ -4068,15 +4074,193 @@
                     <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Priority matchmaking</li>
                     <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Future tournament & league access</li>
                 </ul>
-                <div style="font-size: 32px; font-weight: bold; color: #4CAF50; margin: 20px 0;">£1.00</div>
+                <div style="font-size: 32px; font-weight: bold; color: #4CAF50; margin: 20px 0;">£3.00</div>
                 <p style="color: #666; font-size: 14px;">One-time payment • Lifetime access</p>
             </div>
+
+            <!-- Legal Consent Checkboxes -->
+            <div style="margin: 25px 0; padding: 20px; background: #f9f9f9; border-radius: 8px; border: 1px solid #e0e0e0;">
+                <div style="text-align: left; margin-bottom: 15px;">
+                    <label style="display: flex; align-items: flex-start; cursor: pointer; font-size: 13px; line-height: 1.5;">
+                        <input type="checkbox" id="terms-consent-checkbox" onchange="updateProButtonState()" style="margin-right: 10px; margin-top: 3px; width: 18px; height: 18px; cursor: pointer; flex-shrink: 0;">
+                        <span style="color: #333;">I agree to the <a href="#" onclick="event.preventDefault(); openTermsModal();" style="color: #2196F3; text-decoration: underline;">Terms & Conditions</a> and <a href="#" onclick="event.preventDefault(); openPrivacyModal();" style="color: #2196F3; text-decoration: underline;">Privacy Policy</a></span>
+                    </label>
+                </div>
+                <div style="text-align: left;">
+                    <label style="display: flex; align-items: flex-start; cursor: pointer; font-size: 13px; line-height: 1.5;">
+                        <input type="checkbox" id="cancellation-consent-checkbox" onchange="updateProButtonState()" style="margin-right: 10px; margin-top: 3px; width: 18px; height: 18px; cursor: pointer; flex-shrink: 0;">
+                        <span style="color: #333;"><strong>I request immediate access</strong> to Ratix Pro Tier features and understand that once I unlock these features, I will <strong>lose my right to cancel and receive a refund</strong> under the UK Consumer Contracts Regulations 2013</span>
+                    </label>
+                </div>
+            </div>
+
             <div style="margin-top: 25px;">
-                <div id="paypal-button-container" style="margin: 10px 0; min-height: 50px;">
+                <div id="paypal-button-container" style="margin: 10px 0; min-height: 50px; opacity: 0.5; pointer-events: none;">
                     <!-- PayPal button will render here -->
                 </div>
             </div>
             <p style="font-size: 12px; color: #999; margin-top: 20px;">Secure payment processing • Money-back guarantee</p>
+        </div>
+    </div>
+
+    <!-- Terms & Conditions Modal -->
+    <div id="terms-modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
+        <div style="background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto;">
+            <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
+                <span style="font-size: 24px; font-weight: bold;">Terms & Conditions</span>
+                <button class="modal-close" onclick="closeTermsModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
+            </div>
+            <div style="text-align: left; line-height: 1.6; color: #333;">
+                <p style="font-size: 12px; color: #666; margin-bottom: 20px;"><strong>Effective Date:</strong> 25 November 2025</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">1. About Ratix</h3>
+                <p>Ratix ("the Game") is operated by Skobel Games ("we", "us", "our"), a UK-based company. These Terms & Conditions govern your use of Ratix and the purchase of the Pro Tier upgrade.</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">2. Pro Tier Purchase</h3>
+                <p>The Ratix Pro Tier is available for a one-time payment of £3.00 (GBP). This grants you:</p>
+                <ul style="margin-left: 20px;">
+                    <li>Lifetime access to the 36s Supreme game variant</li>
+                    <li>Unlimited ranked games (no daily limits)</li>
+                    <li>Star badge next to your username</li>
+                    <li>Priority matchmaking</li>
+                    <li>Future tournament and league access</li>
+                </ul>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">3. Right to Cancel (UK Consumer Contracts Regulations 2013)</h3>
+                <p><strong>Important:</strong> Under the UK Consumer Contracts Regulations 2013, you have the right to cancel your purchase within 14 days of payment without giving any reason.</p>
+                <p><strong>However,</strong> by purchasing the Pro Tier upgrade, you expressly request immediate access to the digital content (Pro features). By ticking the consent checkbox, you acknowledge that:</p>
+                <ul style="margin-left: 20px;">
+                    <li>You request immediate access to Ratix Pro Tier features</li>
+                    <li>Once you access these features, you lose your right to cancel and receive a refund</li>
+                    <li>This is in accordance with the Consumer Contracts Regulations 2013</li>
+                </ul>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">4. Payment Processing</h3>
+                <p>All payments are processed securely through PayPal. We do not store your payment card details. By making a purchase, you agree to PayPal's terms of service.</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">5. Account and Usage</h3>
+                <p>You are responsible for maintaining the security of your account. You must not share your account credentials or use the service for any unlawful purpose. We reserve the right to suspend or terminate accounts that violate these terms.</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">6. Intellectual Property</h3>
+                <p>All content, features, and functionality of Ratix are owned by Skobel Games and protected by international copyright, trademark, and other intellectual property laws.</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">7. Limitation of Liability</h3>
+                <p>To the fullest extent permitted by law, Skobel Games shall not be liable for any indirect, incidental, or consequential damages arising from your use of Ratix. Our total liability shall not exceed the amount you paid for the Pro Tier upgrade.</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">8. Changes to Terms</h3>
+                <p>We may update these Terms & Conditions from time to time. Continued use of Ratix after changes constitutes acceptance of the updated terms. Material changes will be communicated via email or in-game notification.</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">9. Governing Law</h3>
+                <p>These terms are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">10. Contact Us</h3>
+                <p>If you have any questions about these Terms & Conditions, please contact us at: <strong>support@skobelgames.com</strong></p>
+
+                <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #f0f0f0; font-size: 12px; color: #666;">
+                    © 2025 Skobel Games. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacy-modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
+        <div style="background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto;">
+            <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
+                <span style="font-size: 24px; font-weight: bold;">Privacy Policy</span>
+                <button class="modal-close" onclick="closePrivacyModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
+            </div>
+            <div style="text-align: left; line-height: 1.6; color: #333;">
+                <p style="font-size: 12px; color: #666; margin-bottom: 20px;"><strong>Effective Date:</strong> 25 November 2025</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">1. Introduction</h3>
+                <p>Skobel Games ("we", "us", "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal information when you use Ratix.</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">2. Information We Collect</h3>
+                <p><strong>Account Information:</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li>Email address (for account creation and login)</li>
+                    <li>Username and chosen avatar</li>
+                    <li>Country selection</li>
+                    <li>Game statistics and performance data</li>
+                </ul>
+                <p><strong>Payment Information:</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li>Transaction ID and payment status (processed by PayPal)</li>
+                    <li>We do not store credit card or banking details</li>
+                </ul>
+                <p><strong>Usage Information:</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li>Game activity (matches played, wins/losses, scores)</li>
+                    <li>IP address (for consent logging and security)</li>
+                    <li>Device and browser information</li>
+                </ul>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">3. How We Use Your Information</h3>
+                <p>We use your information to:</p>
+                <ul style="margin-left: 20px;">
+                    <li>Provide and maintain the Ratix game service</li>
+                    <li>Process Pro Tier upgrades and maintain your account status</li>
+                    <li>Enable online multiplayer matchmaking and friend features</li>
+                    <li>Track game statistics and leaderboards</li>
+                    <li>Communicate important updates about the service</li>
+                    <li>Comply with UK legal requirements (including consent logging)</li>
+                    <li>Prevent fraud and ensure service security</li>
+                </ul>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">4. Legal Basis for Processing (UK GDPR)</h3>
+                <p>We process your personal data under the following legal bases:</p>
+                <ul style="margin-left: 20px;">
+                    <li><strong>Contract:</strong> To provide the game service and Pro Tier features you've purchased</li>
+                    <li><strong>Consent:</strong> For non-essential features where you've given explicit consent</li>
+                    <li><strong>Legitimate Interest:</strong> To improve our service and prevent fraud</li>
+                    <li><strong>Legal Obligation:</strong> To comply with UK consumer protection laws</li>
+                </ul>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">5. Data Storage and Security</h3>
+                <p>Your data is stored securely using Google Firebase services with encryption in transit and at rest. We implement appropriate technical and organizational measures to protect your information against unauthorized access, alteration, or destruction.</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">6. Data Sharing</h3>
+                <p>We do not sell your personal information. We share data only with:</p>
+                <ul style="margin-left: 20px;">
+                    <li><strong>PayPal:</strong> For payment processing (subject to their privacy policy)</li>
+                    <li><strong>Google Firebase:</strong> For hosting and database services</li>
+                    <li><strong>Legal authorities:</strong> If required by law</li>
+                </ul>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">7. Your Rights (UK GDPR)</h3>
+                <p>You have the right to:</p>
+                <ul style="margin-left: 20px;">
+                    <li><strong>Access:</strong> Request a copy of your personal data</li>
+                    <li><strong>Rectification:</strong> Correct inaccurate data</li>
+                    <li><strong>Erasure:</strong> Request deletion of your account and data</li>
+                    <li><strong>Portability:</strong> Receive your data in a portable format</li>
+                    <li><strong>Object:</strong> Object to certain data processing</li>
+                    <li><strong>Withdraw Consent:</strong> Withdraw consent at any time</li>
+                </ul>
+                <p>To exercise these rights, contact us at: <strong>privacy@skobelgames.com</strong></p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">8. Data Retention</h3>
+                <p>We retain your data for as long as your account is active. If you delete your account, we will remove your personal data within 30 days, except where retention is required by law.</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">9. Cookies and Tracking</h3>
+                <p>Ratix uses minimal cookies for authentication and session management. We do not use third-party advertising or tracking cookies.</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">10. Children's Privacy</h3>
+                <p>Ratix is intended for users aged 13 and above. We do not knowingly collect data from children under 13. If you believe a child has provided us with personal data, please contact us.</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">11. Changes to Privacy Policy</h3>
+                <p>We may update this Privacy Policy from time to time. We will notify you of material changes via email or in-game notification.</p>
+
+                <h3 style="color: #2196F3; margin-top: 20px;">12. Contact Us</h3>
+                <p>For privacy-related questions or to exercise your rights, contact:</p>
+                <p><strong>Email:</strong> privacy@skobelgames.com<br>
+                <strong>Company:</strong> Skobel Games, United Kingdom</p>
+
+                <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #f0f0f0; font-size: 12px; color: #666;">
+                    © 2025 Skobel Games. All rights reserved.
+                </p>
+            </div>
         </div>
     </div>
 
@@ -4733,6 +4917,10 @@
 
                 await db.collection('users').doc(currentUser.uid).set(profileData);
                 currentUserProfile = profileData;
+
+                // Log consent for new user signup
+                await logConsentToFirestore(currentUser.uid, 'signup');
+
                 showMainMenu();
             } catch (error) {
                 console.error('Profile setup error:', error);
@@ -5366,6 +5554,14 @@
             const modal = document.getElementById('upgrade-modal');
             if (modal) {
                 modal.style.display = 'block';
+
+                // Reset checkboxes and disable PayPal button initially
+                const termsCheckbox = document.getElementById('terms-consent-checkbox');
+                const cancellationCheckbox = document.getElementById('cancellation-consent-checkbox');
+                if (termsCheckbox) termsCheckbox.checked = false;
+                if (cancellationCheckbox) cancellationCheckbox.checked = false;
+                updateProButtonState();
+
                 try {
                     await loadPayPalSdk();
                     initPayPalButton();
@@ -5377,7 +5573,92 @@
 
         function closeUpgradeModal() {
             const modal = document.getElementById('upgrade-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                // Reset checkboxes when modal closes
+                const termsCheckbox = document.getElementById('terms-consent-checkbox');
+                const cancellationCheckbox = document.getElementById('cancellation-consent-checkbox');
+                if (termsCheckbox) termsCheckbox.checked = false;
+                if (cancellationCheckbox) cancellationCheckbox.checked = false;
+                updateProButtonState();
+            }
+        }
+
+        // Terms & Conditions modal controls
+        function openTermsModal() {
+            const modal = document.getElementById('terms-modal');
+            if (modal) modal.style.display = 'block';
+        }
+
+        function closeTermsModal() {
+            const modal = document.getElementById('terms-modal');
             if (modal) modal.style.display = 'none';
+        }
+
+        // Privacy Policy modal controls
+        function openPrivacyModal() {
+            const modal = document.getElementById('privacy-modal');
+            if (modal) modal.style.display = 'block';
+        }
+
+        function closePrivacyModal() {
+            const modal = document.getElementById('privacy-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        // Update PayPal button state based on consent checkboxes
+        function updateProButtonState() {
+            const termsCheckbox = document.getElementById('terms-consent-checkbox');
+            const cancellationCheckbox = document.getElementById('cancellation-consent-checkbox');
+            const paypalContainer = document.getElementById('paypal-button-container');
+
+            if (!termsCheckbox || !cancellationCheckbox || !paypalContainer) return;
+
+            const bothChecked = termsCheckbox.checked && cancellationCheckbox.checked;
+
+            if (bothChecked) {
+                paypalContainer.style.opacity = '1';
+                paypalContainer.style.pointerEvents = 'auto';
+            } else {
+                paypalContainer.style.opacity = '0.5';
+                paypalContainer.style.pointerEvents = 'none';
+            }
+        }
+
+        // Log consent to Firestore
+        async function logConsentToFirestore(userId, consentType) {
+            if (!db || !userId || userId.startsWith('guest_')) return;
+
+            try {
+                // Get user's IP address (best effort - may not always work due to privacy)
+                let ipAddress = 'unknown';
+                try {
+                    const ipResponse = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipResponse.json();
+                    ipAddress = ipData.ip;
+                } catch (err) {
+                    console.log('Could not fetch IP address:', err);
+                }
+
+                const consentData = {
+                    userId: userId,
+                    consentType: consentType, // 'signup' or 'pro_upgrade'
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    ipAddress: ipAddress,
+                    userAgent: navigator.userAgent,
+                    termsAccepted: true,
+                    privacyPolicyAccepted: true
+                };
+
+                if (consentType === 'pro_upgrade') {
+                    consentData.cancellationRightsWaived = true;
+                }
+
+                await db.collection('userConsents').add(consentData);
+                console.log('Consent logged successfully');
+            } catch (error) {
+                console.error('Error logging consent:', error);
+            }
         }
 
         function initPayPalButton() {
@@ -5409,7 +5690,7 @@
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
-                                value: '1.00',
+                                value: '3.00',
                                 currency_code: 'GBP'
                             },
                             description: 'RATIX Pro Upgrade - Lifetime Access'
@@ -5420,6 +5701,11 @@
                     try {
                         const order = await actions.order.capture();
                         console.log('PayPal order captured:', order);
+
+                        // Log consent to Firestore before upgrading
+                        if (currentUser && currentUser.uid) {
+                            await logConsentToFirestore(currentUser.uid, 'pro_upgrade');
+                        }
 
                         // Update user to Pro status
                         await handleSuccessfulPayment({
