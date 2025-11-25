@@ -18016,7 +18016,6 @@
                 validMoves = getValidMoves(row, col);
                 showPieceInfo(piece, piece.player);
                 lastAction = null;
-                playSoundById('move-sound'); // Selection sound (also covers selecting without moving)
                 renderBoard();
                 updateEndTurnButton();
             } else if (selectedPiece) {
@@ -22121,14 +22120,6 @@
             updateScoreDisplay();
         }
 
-        // Safely play short UI/game sounds by element id
-        function playSoundById(id) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.currentTime = 0;
-            el.play().catch(err => console.log('Sound play failed:', err));
-        }
-
         function movePiece(fromRow, fromCol, toRow, toCol, jump) {
             const piece = board[fromRow][fromCol];
             const opponent = getOpponent(piece.player);
@@ -22354,7 +22345,11 @@
             firstMoves.delete(`${fromRow},${fromCol},${piece.player}`);
 
             // Play move sound effect
-            playSoundById('move-sound');
+            const moveSound = document.getElementById('move-sound');
+            if (moveSound) {
+                moveSound.currentTime = 0; // Reset to start
+                moveSound.play().catch(e => console.log('Sound play failed:', e));
+            }
 
             // If a Ballista moved and had an active range boost, it persists for the turn (no change needed)
 
