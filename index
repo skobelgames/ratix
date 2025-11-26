@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-    <title>RATIX - Strategic Chess Variant</title>
+    <title>Ratix - Strategic Chess Variant</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -3231,7 +3231,7 @@
 <body>
     <!-- Authentication Screen -->
     <div id="auth-screen">
-        <h1>🎮 RATIX Online 🎮</h1>
+        <h1>🎮 Ratix Online 🎮</h1>
         <div class="auth-tabs">
             <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
             <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
@@ -3248,6 +3248,12 @@
             <input type="email" id="signup-email" placeholder="Email" required>
             <input type="password" id="signup-password" placeholder="Password (min 6 characters)" required minlength="6">
             <input type="password" id="signup-confirm" placeholder="Confirm Password" required minlength="6">
+            <div style="margin: 15px 0; text-align: left;">
+                <label style="display: flex; align-items: flex-start; cursor: pointer; font-size: 13px; color: #fff;">
+                    <input type="checkbox" id="signup-terms-checkbox" required style="margin-right: 8px; margin-top: 2px; cursor: pointer; width: 16px; height: 16px;">
+                    <span>I agree to the <a href="#" onclick="event.preventDefault(); showTermsModal();" style="color: #4CAF50; text-decoration: underline;">Terms and Conditions</a> and <a href="#" onclick="event.preventDefault(); showPrivacyModal();" style="color: #4CAF50; text-decoration: underline;">Privacy Policy</a></span>
+                </label>
+            </div>
             <button type="submit">Create Account</button>
             <div id="signup-error" class="auth-error"></div>
         </form>
@@ -3335,7 +3341,7 @@
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
-        <h2>RATIX Online</h2>
+        <h2>Ratix Online</h2>
 
         <div class="platform-stats-wrapper">
             <div class="platform-stats-header">
@@ -3489,7 +3495,7 @@
     <div id="main-menu-modal-overlay"></div>
     <div id="main-menu-how-to-play-modal">
         <div class="modal-header">
-            <span>How to Play - RATIX</span>
+            <span>How to Play - Ratix</span>
             <button class="modal-close" onclick="closeMainMenuHowToPlay()" aria-label="Close">&times;</button>
         </div>
         <div class="modal-content">
@@ -3747,7 +3753,7 @@
     </div>
 
         <div id="landing-header" style="display:none;">
-            <h1>RATIX</h1>
+            <h1>Ratix</h1>
             <p>Created by Craig Skobel</p>
         </div>
     <div id="start-menu" style="display:none;">
@@ -3759,7 +3765,7 @@
             <button id="variant-btn-24s" data-ready="false" onclick="handleVariantClick('24s')">24's (Standard)</button>
             <div id="variant-info-24s" class="variant-info">
                 <p class="variant-description">Board: 10x14. Layout: single Infantry front rank backing a classic Cavalry, Troll, Dragon, Wizard, Guard, Champion, and King battle line.</p>
-                <p class="variant-difficulty"><strong>Recommended skill:</strong> Beginner-friendly for learning RATIX fundamentals, yet still offers solid tactical depth for any player.</p>
+                <p class="variant-difficulty"><strong>Recommended skill:</strong> Beginner-friendly for learning Ratix fundamentals, yet still offers solid tactical depth for any player.</p>
             </div>
         </div>
         <div class="variant-option">
@@ -3843,12 +3849,22 @@
             <button id="turn-timer-standard" onclick="setTurnTimer('standard', this)" class="selected-option">60 secs (Standard)</button>
         </div>
     </div>
-    <footer id="landing-footer">RATIX &copy; 2025 Skobel Games</footer>
+    <footer id="landing-footer" style="text-align: center; padding: 15px 0;">
+        <div style="margin-bottom: 6px;">
+            <a href="#" onclick="event.preventDefault(); showPrivacyModal();" style="color: #4CAF50; font-weight: bold; text-decoration: underline;">Privacy Policy</a>
+            <span style="margin: 0 8px; color: #777;">|</span>
+            <a href="#" onclick="event.preventDefault(); showTermsModal();" style="color: #4CAF50; font-weight: bold; text-decoration: underline;">Terms &amp; Conditions</a>
+        </div>
+        <div>Ratix &copy; 2025 Skobel Games</div>
+        <div style="margin-top: 4px;">
+            <a href="https://www.skobelgames.com" target="_blank" rel="noopener noreferrer" style="color: #4CAF50; text-decoration: underline;">www.skobelgames.com</a>
+        </div>
+    </footer>
     <div id="game-container">
         <div id="top-bar">
             <div id="top-buttons-left">
                 <button id="how-to-play-btn" class="how-to-button" onclick="openHowToPlay()">How to Play</button>
-                <button id="RATIX-brand-button" type="button">RATIX</button>
+                <button id="ratix-brand-button" type="button">Ratix</button>
                 <button id="main-menu-btn" onclick="returnToMainMenu()">Main Menu</button>
             </div>
             <div id="top-buttons-right">
@@ -3976,7 +3992,7 @@
     </div>
     <div id="how-to-play-modal">
         <div class="modal-header">
-            <span>How to Play - RATIX</span>
+            <span>How to Play - Ratix</span>
             <button class="modal-close" onclick="closeHowToPlay()" aria-label="Close">&times;</button>
         </div>
         <div class="modal-content">
@@ -4052,6 +4068,143 @@
         <p id="coin-flip-popup-message"></p>
     </div>
 
+    <!-- Terms & Conditions Modal -->
+    <div id="terms-modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
+        <div style="background-color: #fff; margin: 3% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
+                <span style="font-size: 24px; font-weight: bold;">Terms & Conditions</span>
+                <button class="modal-close" onclick="closeTermsModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
+            </div>
+            <div style="text-align: left; color: #333; line-height: 1.6;">
+                <p style="margin-bottom: 15px;"><strong>Skobel Games - Ratix</strong><br>Last Updated: November 2025</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">1. Acceptance of Terms</h3>
+                <p>By accessing and using Ratix ("the Game"), operated by Skobel Games ("we", "us", "our"), you agree to be bound by these Terms & Conditions. If you do not agree, please do not use the Game.</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">2. Pro Tier Purchase</h3>
+                <p>The Pro Tier is available for a one-time payment of £3.00 (GBP). Upon purchase:</p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>You will receive immediate access to Pro features</li>
+                    <li>Your purchase is non-refundable once digital content has been accessed</li>
+                    <li>Access is granted for the lifetime of your account</li>
+                </ul>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">3. Right to Cancel (UK Consumer Contracts Regulations 2013)</h3>
+                <p><strong>Important:</strong> Under UK law, you have the right to cancel your purchase within 14 days. However, by ticking the consent checkbox at purchase, you explicitly request immediate access to digital content. This waives your right to cancel once the Pro features are unlocked.</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">4. User Accounts</h3>
+                <p>You are responsible for maintaining the confidentiality of your account and password. You agree to notify us immediately of any unauthorized use of your account.</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">5. Acceptable Use</h3>
+                <p>You agree not to:</p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>Use the Game for any unlawful purpose</li>
+                    <li>Attempt to gain unauthorized access to our systems</li>
+                    <li>Harass, abuse, or harm other users</li>
+                    <li>Use cheats, exploits, or automation tools</li>
+                </ul>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">6. Service Availability</h3>
+                <p>We strive to provide continuous service but do not guarantee uninterrupted access. We reserve the right to modify or discontinue the Game with reasonable notice.</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">7. Intellectual Property</h3>
+                <p>All content, features, and functionality of Ratix are owned by Skobel Games and protected by copyright and other intellectual property laws.</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">8. Limitation of Liability</h3>
+                <p>To the fullest extent permitted by law, Skobel Games shall not be liable for any indirect, incidental, or consequential damages arising from your use of the Game.</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">9. Governing Law</h3>
+                <p>These Terms are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">10. Contact Information</h3>
+                <p>For questions about these Terms, please contact: <strong>Skobel Games</strong><br>Game: Ratix<br>Location: United Kingdom</p>
+            </div>
+            <div style="text-align: center; margin-top: 25px;">
+                <button onclick="closeTermsModal()" style="padding: 12px 30px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacy-modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
+        <div style="background-color: #fff; margin: 3% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
+                <span style="font-size: 24px; font-weight: bold;">Privacy Policy</span>
+                <button class="modal-close" onclick="closePrivacyModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
+            </div>
+            <div style="text-align: left; color: #333; line-height: 1.6;">
+                <p style="margin-bottom: 15px;"><strong>Skobel Games - Ratix</strong><br>Last Updated: November 2025</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">1. Information We Collect</h3>
+                <p><strong>Account Information:</strong></p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>Email address and password (encrypted)</li>
+                    <li>Username and avatar selection</li>
+                    <li>Country location (automatically detected)</li>
+                </ul>
+                <p><strong>Payment Information:</strong></p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>Transaction details (processed securely via PayPal)</li>
+                    <li>Purchase consent records (timestamp and IP address)</li>
+                    <li>We do not store credit card details</li>
+                </ul>
+                <p><strong>Usage Information:</strong></p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>Game statistics and match history</li>
+                    <li>Session data and activity logs</li>
+                </ul>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">2. How We Use Your Information</h3>
+                <p>We use your information to:</p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>Provide and maintain the Game services</li>
+                    <li>Process payments and manage Pro Tier subscriptions</li>
+                    <li>Comply with legal obligations (UK Consumer Contracts Regulations 2013)</li>
+                    <li>Improve the Game experience</li>
+                    <li>Communicate important updates</li>
+                </ul>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">3. Data Storage and Security</h3>
+                <p>Your data is stored securely using Firebase (Google Cloud Platform) with industry-standard encryption. Payment processing is handled by PayPal's secure infrastructure.</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">4. UK GDPR Rights</h3>
+                <p>Under UK data protection law, you have the right to:</p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Access:</strong> Request a copy of your personal data</li>
+                    <li><strong>Rectification:</strong> Correct inaccurate data</li>
+                    <li><strong>Erasure:</strong> Request deletion of your data</li>
+                    <li><strong>Portability:</strong> Receive your data in a portable format</li>
+                    <li><strong>Object:</strong> Object to processing of your data</li>
+                </ul>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">5. Consent Records</h3>
+                <p>When you purchase Pro Tier, we record your consent including timestamp and IP address. This is required for compliance with UK Consumer Contracts Regulations 2013 and serves as proof that you waived your cancellation right.</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">6. Third-Party Services</h3>
+                <p>We use:</p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li><strong>Firebase:</strong> Authentication and data storage (Google Privacy Policy applies)</li>
+                    <li><strong>PayPal:</strong> Payment processing (PayPal Privacy Policy applies)</li>
+                </ul>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">7. Data Retention</h3>
+                <p>We retain your data for as long as your account is active or as needed to provide services. Payment records are retained for 7 years to comply with UK tax law.</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">8. Children's Privacy</h3>
+                <p>The Game is not intended for children under 13. We do not knowingly collect information from children under 13.</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">9. Changes to This Policy</h3>
+                <p>We may update this Privacy Policy from time to time. We will notify users of any material changes via email or in-game notification.</p>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">10. Contact Us</h3>
+                <p>For privacy-related questions or to exercise your rights, contact:<br><strong>Skobel Games</strong><br>Game: Ratix<br>Location: United Kingdom</p>
+            </div>
+            <div style="text-align: center; margin-top: 25px;">
+                <button onclick="closePrivacyModal()" style="padding: 12px 30px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px;">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Upgrade to Pro Modal -->
     <div id="upgrade-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
         <div style="background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; text-align: center;">
@@ -4068,9 +4221,27 @@
                     <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Priority matchmaking</li>
                     <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Future tournament & league access</li>
                 </ul>
-                <div style="font-size: 32px; font-weight: bold; color: #4CAF50; margin: 20px 0;">£1.00</div>
+                <div style="font-size: 32px; font-weight: bold; color: #4CAF50; margin: 20px 0;">£3.00</div>
                 <p style="color: #666; font-size: 14px;">One-time payment • Lifetime access</p>
             </div>
+
+            <!-- UK Legal Compliance Consent Checkboxes -->
+            <div style="margin: 20px 0; padding: 20px; background: #f0f8ff; border-radius: 8px; border: 1px solid #4CAF50;">
+                <div style="text-align: left; margin-bottom: 15px;">
+                    <label style="display: flex; align-items: flex-start; cursor: pointer; font-size: 13px; color: #333;">
+                        <input type="checkbox" id="terms-consent-checkbox" style="margin-right: 10px; margin-top: 2px; cursor: pointer; width: 18px; height: 18px;">
+                        <span>I agree to the <a href="#" onclick="event.preventDefault(); showTermsModal();" style="color: #4CAF50; text-decoration: underline;">Terms and Conditions</a> and <a href="#" onclick="event.preventDefault(); showPrivacyModal();" style="color: #4CAF50; text-decoration: underline;">Privacy Policy</a></span>
+                    </label>
+                </div>
+                <div style="text-align: left; margin-bottom: 10px;">
+                    <label style="display: flex; align-items: flex-start; cursor: pointer; font-size: 13px; color: #333;">
+                        <input type="checkbox" id="waiver-consent-checkbox" style="margin-right: 10px; margin-top: 2px; cursor: pointer; width: 18px; height: 18px;">
+                        <span>I request immediate access to Ratix Pro Tier features and understand that once I unlock these features, I will lose my right to cancel and receive a refund (UK Consumer Contracts Regulations 2013)</span>
+                    </label>
+                </div>
+                <div id="consent-error-message" style="display: none; color: #d32f2f; font-size: 12px; margin-top: 10px; text-align: left;"></div>
+            </div>
+
             <div style="margin-top: 25px;">
                 <div id="paypal-button-container" style="margin: 10px 0; min-height: 50px;">
                     <!-- PayPal button will render here -->
@@ -4084,11 +4255,11 @@
     <div id="donation-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
         <div style="background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; text-align: center;">
             <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
-                <span style="font-size: 24px; font-weight: bold;">💝 Support RATIX</span>
+                <span style="font-size: 24px; font-weight: bold;">💝 Support Ratix</span>
                 <button class="modal-close" onclick="closeDonationModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
             </div>
             <div style="margin: 20px 0;">
-                <h3 style="color: #333; margin-bottom: 15px;">Help Us Keep RATIX Running</h3>
+                <h3 style="color: #333; margin-bottom: 15px;">Help Us Keep Ratix Running</h3>
                 <p style="color: #666; margin-bottom: 20px;">Your support helps us maintain servers, add new features, and keep the game free for everyone!</p>
                 <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0;">
                     <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">💝 Get a heart badge on your profile (£1+ donations)</li>
@@ -4269,6 +4440,12 @@
          *     match /users/{userId} {
          *       allow read: if request.auth != null;
          *       allow write: if request.auth != null && request.auth.uid == userId;
+         *     }
+         *
+         *     // User consent records - authenticated users only
+         *     match /users/{userId}/consents/{consentId} {
+         *       allow read: if request.auth != null && request.auth.uid == userId;
+         *       allow create: if request.auth != null && request.auth.uid == userId;
          *     }
          *
          *     // Visitors collection - public read, authenticated write
@@ -5377,7 +5554,146 @@
 
         function closeUpgradeModal() {
             const modal = document.getElementById('upgrade-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                // Reset checkboxes when modal closes
+                const termsCheckbox = document.getElementById('terms-consent-checkbox');
+                const waiverCheckbox = document.getElementById('waiver-consent-checkbox');
+                if (termsCheckbox) termsCheckbox.checked = false;
+                if (waiverCheckbox) waiverCheckbox.checked = false;
+            }
+        }
+
+        // Terms & Conditions and Privacy Policy Modal Functions
+        function showTermsModal() {
+            const modal = document.getElementById('terms-modal');
+            if (modal) modal.style.display = 'block';
+        }
+
+        function closeTermsModal() {
+            const modal = document.getElementById('terms-modal');
             if (modal) modal.style.display = 'none';
+        }
+
+        function showPrivacyModal() {
+            const modal = document.getElementById('privacy-modal');
+            if (modal) modal.style.display = 'block';
+        }
+
+        function closePrivacyModal() {
+            const modal = document.getElementById('privacy-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        // Consent Logging Function (UK Legal Compliance)
+        async function logUserConsent() {
+            if (!currentUser) {
+                throw new Error('User not authenticated');
+            }
+
+            // Get user's IP address (approximation via third-party service)
+            let ipAddress = 'unavailable';
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                ipAddress = ipData.ip;
+            } catch (ipError) {
+                console.warn('Could not fetch IP address:', ipError);
+            }
+
+            const consentRecord = {
+                userId: currentUser.uid,
+                type: 'pro_tier_purchase',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                ipAddress: ipAddress,
+                termsAccepted: true,
+                waiverAccepted: true,
+                userAgent: navigator.userAgent,
+                consentText: 'I request immediate access to Ratix Pro Tier features and understand that once I unlock these features, I will lose my right to cancel and receive a refund (UK Consumer Contracts Regulations 2013)'
+            };
+
+            try {
+                await db.collection('users').doc(currentUser.uid).collection('consents').add(consentRecord);
+                console.log('User consent logged successfully');
+                return true;
+            } catch (error) {
+                console.warn('Primary consent log failed, attempting fallback to user document', error);
+                const fallbackRecord = {
+                    ...consentRecord,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                try {
+                    await db.collection('users').doc(currentUser.uid).set({
+                        latestConsent: fallbackRecord
+                    }, { merge: true });
+                    console.log('User consent logged on user document (fallback)');
+                    return true;
+                } catch (fallbackError) {
+                    console.error('Fallback consent logging failed:', fallbackError);
+                    throw fallbackError;
+                }
+            }
+        }
+
+        // Handle Consent Checkboxes
+        async function handleConsentCheckboxes() {
+            const termsCheckbox = document.getElementById('terms-consent-checkbox');
+            const waiverCheckbox = document.getElementById('waiver-consent-checkbox');
+            const errorMessage = document.getElementById('consent-error-message');
+            const paypalContainer = document.getElementById('paypal-button-container');
+
+            if (!termsCheckbox || !waiverCheckbox) return;
+
+            if (!currentUser) {
+                if (errorMessage) {
+                    errorMessage.textContent = 'Please sign in to upgrade your account before providing consent.';
+                    errorMessage.style.display = 'block';
+                }
+                if (paypalContainer) {
+                    paypalContainer.style.opacity = '0.5';
+                    paypalContainer.style.pointerEvents = 'none';
+                }
+                termsCheckbox.checked = false;
+                waiverCheckbox.checked = false;
+                return;
+            }
+
+            // Check if both checkboxes are ticked
+            if (termsCheckbox.checked && waiverCheckbox.checked) {
+                try {
+                    // Log consent to Firestore BEFORE enabling payment
+                    await logUserConsent();
+
+                    // Enable PayPal buttons
+                    if (paypalContainer) {
+                        paypalContainer.style.opacity = '1';
+                        paypalContainer.style.pointerEvents = 'auto';
+                    }
+
+                    // Hide any error message
+                    if (errorMessage) errorMessage.style.display = 'none';
+                } catch (error) {
+                    // If consent logging fails, keep button disabled and show error
+                    if (errorMessage) {
+                        errorMessage.textContent = 'Error recording consent. Please try again or contact support.';
+                        errorMessage.style.display = 'block';
+                    }
+                    if (paypalContainer) {
+                        paypalContainer.style.opacity = '0.5';
+                        paypalContainer.style.pointerEvents = 'none';
+                    }
+                    // Uncheck boxes so user can try again
+                    termsCheckbox.checked = false;
+                    waiverCheckbox.checked = false;
+                }
+            } else {
+                // Disable PayPal buttons if checkboxes are not both checked
+                if (paypalContainer) {
+                    paypalContainer.style.opacity = '0.5';
+                    paypalContainer.style.pointerEvents = 'none';
+                }
+                if (errorMessage) errorMessage.style.display = 'none';
+            }
         }
 
         function initPayPalButton() {
@@ -5409,10 +5725,10 @@
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
-                                value: '1.00',
+                                value: '3.00',
                                 currency_code: 'GBP'
                             },
-                            description: 'RATIX Pro Upgrade - Lifetime Access'
+                            description: 'Ratix Pro Upgrade - Lifetime Access'
                         }]
                     });
                 },
@@ -5441,7 +5757,25 @@
                     console.log('PayPal payment cancelled:', data);
                     alert('Payment cancelled. You can try again when ready.');
                 }
-            }).render('#paypal-button-container');
+            }).render('#paypal-button-container').then(() => {
+                // Disable PayPal buttons by default until consent is given
+                const paypalContainer = document.getElementById('paypal-button-container');
+                if (paypalContainer) {
+                    paypalContainer.style.opacity = '0.5';
+                    paypalContainer.style.pointerEvents = 'none';
+                }
+
+                // Attach event listeners to consent checkboxes
+                const termsCheckbox = document.getElementById('terms-consent-checkbox');
+                const waiverCheckbox = document.getElementById('waiver-consent-checkbox');
+
+                if (termsCheckbox) {
+                    termsCheckbox.addEventListener('change', handleConsentCheckboxes);
+                }
+                if (waiverCheckbox) {
+                    waiverCheckbox.addEventListener('change', handleConsentCheckboxes);
+                }
+            });
         }
 
         async function handleSuccessfulPayment(paymentData) {
@@ -5556,7 +5890,7 @@
                                 value: donationAmount,
                                 currency_code: 'GBP'
                             },
-                            description: 'RATIX Support Donation'
+                            description: 'Ratix Support Donation'
                         }]
                     });
                 },
@@ -5623,7 +5957,7 @@
                 if (isDonor) {
                     thankYouMessage += '✨ You now have a heart badge on your profile!\n';
                 }
-                thankYouMessage += '\nYour donation of £' + donationData.amount.toFixed(2) + ' helps keep RATIX running and improving!';
+                thankYouMessage += '\nYour donation of £' + donationData.amount.toFixed(2) + ' helps keep Ratix running and improving!';
 
                 alert(thankYouMessage);
             } catch (error) {
@@ -8782,7 +9116,7 @@
 
             let html = `
                 <h2>Game Overview</h2>
-                <p><strong>RATIX</strong> is a strategic chess-like war game where you command an army against an AI opponent. Victory comes through capturing the enemy King or achieving alternate win conditions. Each game features tactical depth with special abilities, summoning mechanics, and strategic resource management.</p>
+                <p><strong>Ratix</strong> is a strategic chess-like war game where you command an army against an AI opponent. Victory comes through capturing the enemy King or achieving alternate win conditions. Each game features tactical depth with special abilities, summoning mechanics, and strategic resource management.</p>
 
                 <h2>Game Variants</h2>
                 <ul>
@@ -8994,7 +9328,7 @@
 
             let html = `
                 <h2>Game Overview</h2>
-                <p><strong>RATIX</strong> is a strategic chess-like war game where you command an army against an AI opponent. Victory comes through capturing the enemy King or achieving alternate win conditions. Each game features tactical depth with special abilities, summoning mechanics, and strategic resource management.</p>
+                <p><strong>Ratix</strong> is a strategic chess-like war game where you command an army against an AI opponent. Victory comes through capturing the enemy King or achieving alternate win conditions. Each game features tactical depth with special abilities, summoning mechanics, and strategic resource management.</p>
 
                 <h2>Game Variants</h2>
                 <ul>
