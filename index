@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2211,7 +2212,7 @@
             border-color: #ccc;
         }
         .avatar-option.locked::after {
-            content: '🔒';
+            content: 'ðŸ”’';
             position: absolute;
             bottom: -5px;
             right: -5px;
@@ -2989,6 +2990,55 @@
             background-color: #f5f5f5;
         }
 
+        .leaderboard-main-tab,
+        .leaderboard-type-tab,
+        .leaderboard-type-tab-friends,
+        .leaderboard-period-tab,
+        .leaderboard-period-tab-you,
+        .leaderboard-period-tab-friends {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .leaderboard-main-tab {
+            font-weight: bold;
+            padding: 10px 20px;
+        }
+
+        .leaderboard-main-tab.active,
+        .leaderboard-type-tab.active,
+        .leaderboard-type-tab-friends.active,
+        .leaderboard-period-tab.active,
+        .leaderboard-period-tab-you.active,
+        .leaderboard-period-tab-friends.active {
+            background: #4CAF50;
+            color: white;
+            border-bottom: 2px solid #4CAF50;
+        }
+
+        .leaderboard-main-tab:hover,
+        .leaderboard-type-tab:hover,
+        .leaderboard-type-tab-friends:hover,
+        .leaderboard-period-tab:hover,
+        .leaderboard-period-tab-you:hover,
+        .leaderboard-period-tab-friends:hover {
+            background: #e0e0e0;
+        }
+
+        .leaderboard-main-tab.active:hover,
+        .leaderboard-type-tab.active:hover,
+        .leaderboard-type-tab-friends.active:hover,
+        .leaderboard-period-tab.active:hover,
+        .leaderboard-period-tab-you.active:hover,
+        .leaderboard-period-tab-friends.active:hover {
+            background: #45a049;
+        }
+
         /* Stats and Profile Screen */
         #stats-profile-screen {
             display: none;
@@ -3231,7 +3281,7 @@
 <body>
     <!-- Authentication Screen -->
     <div id="auth-screen">
-        <h1>🎮 Ratix Online 🎮</h1>
+        <h1>ðŸŽ® Ratix Online ðŸŽ®</h1>
         <div class="auth-tabs">
             <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
             <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
@@ -3259,7 +3309,7 @@
         </form>
 
         <div class="guest-play-section">
-            <button class="guest-play-btn" onclick="playAsGuest()">🎮 Play as Guest</button>
+            <button class="guest-play-btn" onclick="playAsGuest()">ðŸŽ® Play as Guest</button>
             <p class="guest-info">Play offline vs AI without creating an account</p>
         </div>
     </div>
@@ -3278,39 +3328,39 @@
                 <p style="font-size: 12px; color: #666; margin-bottom: 10px;">More avatars unlock when you upgrade to Pro or become a Supporter!</p>
                 <div class="avatar-grid" id="avatar-grid">
                     <!-- Free avatars -->
-                    <div class="avatar-option selected" data-avatar="👑" data-unlock="free" onclick="selectAvatar('👑', event)">👑</div>
-                    <div class="avatar-option" data-avatar="⚔️" data-unlock="free" onclick="selectAvatar('⚔️', event)">⚔️</div>
-                    <div class="avatar-option" data-avatar="🛡️" data-unlock="free" onclick="selectAvatar('🛡️', event)">🛡️</div>
-                    <div class="avatar-option" data-avatar="🏹" data-unlock="free" onclick="selectAvatar('🏹', event)">🏹</div>
-                    <div class="avatar-option" data-avatar="🧙" data-unlock="free" onclick="selectAvatar('🧙', event)">🧙</div>
-                    <div class="avatar-option" data-avatar="🐉" data-unlock="free" onclick="selectAvatar('🐉', event)">🐉</div>
-                    <div class="avatar-option" data-avatar="🦁" data-unlock="free" onclick="selectAvatar('🦁', event)">🦁</div>
-                    <div class="avatar-option" data-avatar="🦅" data-unlock="free" onclick="selectAvatar('🦅', event)">🦅</div>
-                    <div class="avatar-option" data-avatar="🐺" data-unlock="free" onclick="selectAvatar('🐺', event)">🐺</div>
-                    <div class="avatar-option" data-avatar="🦈" data-unlock="free" onclick="selectAvatar('🦈', event)">🦈</div>
-                    <div class="avatar-option" data-avatar="🔥" data-unlock="free" onclick="selectAvatar('🔥', event)">🔥</div>
-                    <div class="avatar-option" data-avatar="⚡" data-unlock="free" onclick="selectAvatar('⚡', event)">⚡</div>
+                    <div class="avatar-option selected" data-avatar="ðŸ‘‘" data-unlock="free" onclick="selectAvatar('ðŸ‘‘', event)">ðŸ‘‘</div>
+                    <div class="avatar-option" data-avatar="âš”ï¸" data-unlock="free" onclick="selectAvatar('âš”ï¸', event)">âš”ï¸</div>
+                    <div class="avatar-option" data-avatar="ðŸ›¡ï¸" data-unlock="free" onclick="selectAvatar('ðŸ›¡ï¸', event)">ðŸ›¡ï¸</div>
+                    <div class="avatar-option" data-avatar="ðŸ¹" data-unlock="free" onclick="selectAvatar('ðŸ¹', event)">ðŸ¹</div>
+                    <div class="avatar-option" data-avatar="ðŸ§™" data-unlock="free" onclick="selectAvatar('ðŸ§™', event)">ðŸ§™</div>
+                    <div class="avatar-option" data-avatar="ðŸ‰" data-unlock="free" onclick="selectAvatar('ðŸ‰', event)">ðŸ‰</div>
+                    <div class="avatar-option" data-avatar="ðŸ¦" data-unlock="free" onclick="selectAvatar('ðŸ¦', event)">ðŸ¦</div>
+                    <div class="avatar-option" data-avatar="ðŸ¦…" data-unlock="free" onclick="selectAvatar('ðŸ¦…', event)">ðŸ¦…</div>
+                    <div class="avatar-option" data-avatar="ðŸº" data-unlock="free" onclick="selectAvatar('ðŸº', event)">ðŸº</div>
+                    <div class="avatar-option" data-avatar="ðŸ¦ˆ" data-unlock="free" onclick="selectAvatar('ðŸ¦ˆ', event)">ðŸ¦ˆ</div>
+                    <div class="avatar-option" data-avatar="ðŸ”¥" data-unlock="free" onclick="selectAvatar('ðŸ”¥', event)">ðŸ”¥</div>
+                    <div class="avatar-option" data-avatar="âš¡" data-unlock="free" onclick="selectAvatar('âš¡', event)">âš¡</div>
                     <!-- Pro avatars -->
-                    <div class="avatar-option locked" data-avatar="💎" data-unlock="pro" onclick="selectAvatar('💎', event)">💎</div>
-                    <div class="avatar-option locked" data-avatar="🏆" data-unlock="pro" onclick="selectAvatar('🏆', event)">🏆</div>
-                    <div class="avatar-option locked" data-avatar="🎯" data-unlock="pro" onclick="selectAvatar('🎯', event)">🎯</div>
-                    <div class="avatar-option locked" data-avatar="🎖️" data-unlock="pro" onclick="selectAvatar('🎖️', event)">🎖️</div>
-                    <div class="avatar-option locked" data-avatar="🌟" data-unlock="pro" onclick="selectAvatar('🌟', event)">🌟</div>
-                    <div class="avatar-option locked" data-avatar="🔱" data-unlock="pro" onclick="selectAvatar('🔱', event)">🔱</div>
+                    <div class="avatar-option locked" data-avatar="ðŸ’Ž" data-unlock="pro" onclick="selectAvatar('ðŸ’Ž', event)">ðŸ’Ž</div>
+                    <div class="avatar-option locked" data-avatar="ðŸ†" data-unlock="pro" onclick="selectAvatar('ðŸ†', event)">ðŸ†</div>
+                    <div class="avatar-option locked" data-avatar="ðŸŽ¯" data-unlock="pro" onclick="selectAvatar('ðŸŽ¯', event)">ðŸŽ¯</div>
+                    <div class="avatar-option locked" data-avatar="ðŸŽ–ï¸" data-unlock="pro" onclick="selectAvatar('ðŸŽ–ï¸', event)">ðŸŽ–ï¸</div>
+                    <div class="avatar-option locked" data-avatar="ðŸŒŸ" data-unlock="pro" onclick="selectAvatar('ðŸŒŸ', event)">ðŸŒŸ</div>
+                    <div class="avatar-option locked" data-avatar="ðŸ”±" data-unlock="pro" onclick="selectAvatar('ðŸ”±', event)">ðŸ”±</div>
                     <!-- Donor avatars -->
-                    <div class="avatar-option locked" data-avatar="💝" data-unlock="donor" onclick="selectAvatar('💝', event)">💝</div>
-                    <div class="avatar-option locked" data-avatar="🌹" data-unlock="donor" onclick="selectAvatar('🌹', event)">🌹</div>
-                    <div class="avatar-option locked" data-avatar="🦄" data-unlock="donor" onclick="selectAvatar('🦄', event)">🦄</div>
-                    <div class="avatar-option locked" data-avatar="🌈" data-unlock="donor" onclick="selectAvatar('🌈', event)">🌈</div>
-                    <div class="avatar-option locked" data-avatar="✨" data-unlock="donor" onclick="selectAvatar('✨', event)">✨</div>
-                    <div class="avatar-option locked" data-avatar="🎨" data-unlock="donor" onclick="selectAvatar('🎨', event)">🎨</div>
+                    <div class="avatar-option locked" data-avatar="ðŸ’" data-unlock="donor" onclick="selectAvatar('ðŸ’', event)">ðŸ’</div>
+                    <div class="avatar-option locked" data-avatar="ðŸŒ¹" data-unlock="donor" onclick="selectAvatar('ðŸŒ¹', event)">ðŸŒ¹</div>
+                    <div class="avatar-option locked" data-avatar="ðŸ¦„" data-unlock="donor" onclick="selectAvatar('ðŸ¦„', event)">ðŸ¦„</div>
+                    <div class="avatar-option locked" data-avatar="ðŸŒˆ" data-unlock="donor" onclick="selectAvatar('ðŸŒˆ', event)">ðŸŒˆ</div>
+                    <div class="avatar-option locked" data-avatar="âœ¨" data-unlock="donor" onclick="selectAvatar('âœ¨', event)">âœ¨</div>
+                    <div class="avatar-option locked" data-avatar="ðŸŽ¨" data-unlock="donor" onclick="selectAvatar('ðŸŽ¨', event)">ðŸŽ¨</div>
                     <!-- Pro + Donor avatars -->
-                    <div class="avatar-option locked" data-avatar="🌠" data-unlock="both" onclick="selectAvatar('🌠', event)">🌠</div>
-                    <div class="avatar-option locked" data-avatar="👾" data-unlock="both" onclick="selectAvatar('👾', event)">👾</div>
-                    <div class="avatar-option locked" data-avatar="🎭" data-unlock="both" onclick="selectAvatar('🎭', event)">🎭</div>
-                    <div class="avatar-option locked" data-avatar="🦚" data-unlock="both" onclick="selectAvatar('🦚', event)">🦚</div>
-                    <div class="avatar-option locked" data-avatar="🐲" data-unlock="both" onclick="selectAvatar('🐲', event)">🐲</div>
-                    <div class="avatar-option locked" data-avatar="🧚" data-unlock="both" onclick="selectAvatar('🧚', event)">🧚</div>
+                    <div class="avatar-option locked" data-avatar="ðŸŒ " data-unlock="both" onclick="selectAvatar('ðŸŒ ', event)">ðŸŒ </div>
+                    <div class="avatar-option locked" data-avatar="ðŸ‘¾" data-unlock="both" onclick="selectAvatar('ðŸ‘¾', event)">ðŸ‘¾</div>
+                    <div class="avatar-option locked" data-avatar="ðŸŽ­" data-unlock="both" onclick="selectAvatar('ðŸŽ­', event)">ðŸŽ­</div>
+                    <div class="avatar-option locked" data-avatar="ðŸ¦š" data-unlock="both" onclick="selectAvatar('ðŸ¦š', event)">ðŸ¦š</div>
+                    <div class="avatar-option locked" data-avatar="ðŸ²" data-unlock="both" onclick="selectAvatar('ðŸ²', event)">ðŸ²</div>
+                    <div class="avatar-option locked" data-avatar="ðŸ§š" data-unlock="both" onclick="selectAvatar('ðŸ§š', event)">ðŸ§š</div>
                 </div>
             </div>
 
@@ -3322,14 +3372,14 @@
     <div id="main-menu-screen">
         <div class="user-info-bar">
             <div class="user-profile">
-                <div class="user-avatar" id="menu-user-avatar">👑</div>
+                <div class="user-avatar" id="menu-user-avatar">ðŸ‘‘</div>
                 <div class="user-details">
                     <div class="user-name" id="menu-user-name">Player</div>
                     <div class="user-stats-summary" id="menu-user-stats">W: 0 | L: 0 | D: 0</div>
                     <div class="rank-line" id="menu-rank-line">
                         <div class="rank-row">
-                            <span id="menu-rank-emoji">🥉</span>
-                            <span id="menu-rank-text">Bronze · 0 pts</span>
+                            <span id="menu-rank-emoji">ðŸ¥‰</span>
+                            <span id="menu-rank-text">Bronze Â· 0 pts</span>
                         </div>
                         <div class="rank-progress-bar">
                             <div class="rank-progress-fill" id="menu-rank-progress"></div>
@@ -3377,16 +3427,24 @@
                     <h3>All-Time Games</h3>
                     <div class="stat-number" id="platform-all-time-count">0</div>
                 </div>
+                <div class="stat-card">
+                    <h3>Standard Games</h3>
+                    <div class="stat-number" id="platform-standard-count">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Pro Games</h3>
+                    <div class="stat-number" id="platform-pro-count">0</div>
+                </div>
             </div>
         </div>
 
         <div class="top-countries-wrapper">
             <div class="top-countries-header" onclick="toggleTopCountries()">
                 <div>
-                    <h3>Top Countries 🌍</h3>
+                    <h3>Top Countries ðŸŒ</h3>
                     <p>Most active countries by player count</p>
                 </div>
-                <span class="expand-icon" id="top-countries-expand-icon">▼</span>
+                <span class="expand-icon" id="top-countries-expand-icon">â–¼</span>
             </div>
             <div id="top-countries-content" class="top-countries-content" style="display: none;">
                 <div class="countries-tabs">
@@ -3482,12 +3540,12 @@
         </div>
 
         <div class="menu-options">
-            <button class="menu-btn" onclick="showMatchmakingLobby()" id="play-online-btn">🎯 Play Online</button>
-            <button class="menu-btn secondary" id="stats-profile-btn" onclick="showStatsProfile()">📊 Stats & Profile</button>
-            <button class="menu-btn secondary" onclick="playOffline()">🤖 Play vs AI (Offline)</button>
-            <button class="menu-btn secondary" onclick="showDonationModal()" style="background-color: #FF69B4; color: white;">💝 Support Us - Donate</button>
-            <button class="menu-btn secondary" onclick="openMainMenuHowToPlay()">📘 How to Play</button>
-            <button class="menu-btn guest-login-btn" onclick="showAuthScreen()" id="guest-login-btn" style="display: none;">🔑 Login / Sign Up</button>
+            <button class="menu-btn" onclick="showMatchmakingLobby()" id="play-online-btn">ðŸŽ¯ Play Online</button>
+            <button class="menu-btn secondary" id="stats-profile-btn" onclick="showStatsProfile()">ðŸ“Š Stats & Profile</button>
+            <button class="menu-btn secondary" onclick="playOffline()">ðŸ¤– Play vs AI (Offline)</button>
+            <button class="menu-btn secondary" onclick="showDonationModal()" style="background-color: #FF69B4; color: white;">ðŸ’ Support Us - Donate</button>
+            <button class="menu-btn secondary" onclick="openMainMenuHowToPlay()">ðŸ“˜ How to Play</button>
+            <button class="menu-btn guest-login-btn" onclick="showAuthScreen()" id="guest-login-btn" style="display: none;">ðŸ”‘ Login / Sign Up</button>
         </div>
     </div>
 
@@ -3510,12 +3568,12 @@
     <div id="matchmaking-lobby">
         <div class="lobby-header">
             <h2>Matchmaking Lobby</h2>
-            <button onclick="backToMainMenu()">← Back</button>
+            <button onclick="backToMainMenu()">â† Back</button>
         </div>
         <div class="rank-line" id="lobby-rank-line" style="margin-bottom: 15px;">
             <div class="rank-row">
-                <span id="lobby-rank-emoji">🥉</span>
-                <span id="lobby-rank-text">Bronze · 0 pts</span>
+                <span id="lobby-rank-emoji">ðŸ¥‰</span>
+                <span id="lobby-rank-text">Bronze Â· 0 pts</span>
             </div>
             <div class="rank-progress-bar">
                 <div class="rank-progress-fill" id="lobby-rank-progress"></div>
@@ -3544,7 +3602,7 @@
                             <button class="variant-select-btn" id="variant-supreme-btn" onclick="selectMatchVariant('36s-supreme')">
                                 36s Supreme
                             </button>
-                            <p id="supreme-status" style="font-size: 13px; color: #ff9800; margin-top: 8px; font-weight: bold;">🔒 Pro Only</p>
+                            <p id="supreme-status" style="font-size: 13px; color: #ff9800; margin-top: 8px; font-weight: bold;">ðŸ”’ Pro Only</p>
                         </div>
                     </div>
                     <div style="margin: 20px 0;">
@@ -3562,7 +3620,7 @@
                 <div class="friend-match-section">
                     <!-- Pending Invitations (Incoming) -->
                     <div id="incoming-invitations-container" style="margin-bottom: 20px; display: none;">
-                        <h3 style="color: #4CAF50;">📨 Incoming Challenges</h3>
+                        <h3 style="color: #4CAF50;">ðŸ“¨ Incoming Challenges</h3>
                         <div id="incoming-invitations-list"></div>
                     </div>
 
@@ -3579,12 +3637,12 @@
                             <button class="variant-select-btn" id="friend-variant-supreme-btn" onclick="selectFriendMatchVariant('36s-supreme')">
                                 36s Supreme
                             </button>
-                            <p id="friend-supreme-status" style="font-size: 13px; color: #ff9800; margin-top: 8px; font-weight: bold;">🔒 Pro Only</p>
+                            <p id="friend-supreme-status" style="font-size: 13px; color: #ff9800; margin-top: 8px; font-weight: bold;">ðŸ”’ Pro Only</p>
                         </div>
                     </div>
 
                     <!-- Online Friends List -->
-                    <h3>👥 Challenge a Friend</h3>
+                    <h3>ðŸ‘¥ Challenge a Friend</h3>
                     <div id="friends-list-container">
                         <div id="friends-loading" style="text-align: center; color: #666; padding: 20px;">
                             Loading friends...
@@ -3598,27 +3656,105 @@
 
                     <!-- Sent Invitations (Outgoing) -->
                     <div id="outgoing-invitations-container" style="margin-top: 20px; display: none;">
-                        <h3>⏳ Sent Challenges</h3>
+                        <h3>â³ Sent Challenges</h3>
                         <div id="outgoing-invitations-list"></div>
                     </div>
                 </div>
             </div>
 
             <div id="leaderboard-section" class="lobby-section">
-                <h3>Top Players</h3>
-                <table class="leaderboard-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Player</th>
-                            <th>Wins</th>
-                            <th>Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-tbody">
-                        <tr><td colspan="4" style="text-align:center; color:#666;">Loading...</td></tr>
-                    </tbody>
-                </table>
+                <!-- Main Tab Navigation -->
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="leaderboard-main-tab active" onclick="switchLeaderboardMainTab('top-players')">Top Players</button>
+                    <button class="leaderboard-main-tab" onclick="switchLeaderboardMainTab('you')">You</button>
+                    <button class="leaderboard-main-tab" onclick="switchLeaderboardMainTab('friends')">Friends</button>
+                </div>
+
+                <!-- Top Players View -->
+                <div id="leaderboard-top-players-view">
+                    <h3>Top Players</h3>
+
+                    <!-- Leaderboard Type Tabs -->
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <button class="leaderboard-type-tab active" onclick="switchLeaderboardType('combined')">Combined</button>
+                        <button class="leaderboard-type-tab" onclick="switchLeaderboardType('standard')">Standard</button>
+                        <button class="leaderboard-type-tab" onclick="switchLeaderboardType('pro')">Pro</button>
+                    </div>
+
+                    <!-- Leaderboard Period Tabs -->
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <button class="leaderboard-period-tab active" onclick="switchLeaderboardPeriod('monthly')">Monthly</button>
+                        <button class="leaderboard-period-tab" onclick="switchLeaderboardPeriod('yearly')">Yearly</button>
+                        <button class="leaderboard-period-tab" onclick="switchLeaderboardPeriod('alltime')">All-Time</button>
+                    </div>
+
+                    <table class="leaderboard-table">
+                        <thead id="leaderboard-thead">
+                            <tr>
+                                <th>Position</th>
+                                <th>Player</th>
+                                <th>W</th>
+                                <th>D</th>
+                                <th>L</th>
+                                <th>GP</th>
+                                <th>SP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-tbody">
+                            <tr><td colspan="7" style="text-align:center; color:#666;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- You View -->
+                <div id="leaderboard-you-view" style="display: none;">
+                    <h3>Your Rankings</h3>
+
+                    <!-- Leaderboard Period Tabs -->
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <button class="leaderboard-period-tab-you active" onclick="switchLeaderboardPeriodYou('monthly')">Monthly</button>
+                        <button class="leaderboard-period-tab-you" onclick="switchLeaderboardPeriodYou('yearly')">Yearly</button>
+                        <button class="leaderboard-period-tab-you" onclick="switchLeaderboardPeriodYou('alltime')">All-Time</button>
+                    </div>
+
+                    <div id="you-leaderboard-content"></div>
+                </div>
+
+                <!-- Friends View -->
+                <div id="leaderboard-friends-view" style="display: none;">
+                    <h3>Friends Leaderboard</h3>
+
+                    <!-- Leaderboard Type Tabs -->
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <button class="leaderboard-type-tab-friends active" onclick="switchLeaderboardTypeFriends('combined')">Combined</button>
+                        <button class="leaderboard-type-tab-friends" onclick="switchLeaderboardTypeFriends('standard')">Standard</button>
+                        <button class="leaderboard-type-tab-friends" onclick="switchLeaderboardTypeFriends('pro')">Pro</button>
+                    </div>
+
+                    <!-- Leaderboard Period Tabs -->
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <button class="leaderboard-period-tab-friends active" onclick="switchLeaderboardPeriodFriends('monthly')">Monthly</button>
+                        <button class="leaderboard-period-tab-friends" onclick="switchLeaderboardPeriodFriends('yearly')">Yearly</button>
+                        <button class="leaderboard-period-tab-friends" onclick="switchLeaderboardPeriodFriends('alltime')">All-Time</button>
+                    </div>
+
+                    <table class="leaderboard-table">
+                        <thead id="leaderboard-friends-thead">
+                            <tr>
+                                <th>Position</th>
+                                <th>Player</th>
+                                <th>W</th>
+                                <th>D</th>
+                                <th>L</th>
+                                <th>GP</th>
+                                <th>SP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-friends-tbody">
+                            <tr><td colspan="7" style="text-align:center; color:#666;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -3627,13 +3763,13 @@
     <div id="stats-profile-screen">
         <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:20px;">
             <h2>Your Profile</h2>
-            <button onclick="backToMainMenu()">← Back</button>
+            <button onclick="backToMainMenu()">â† Back</button>
         </div>
 
         <div class="user-profile" style="margin-bottom:30px;">
             <div style="position: relative; display: inline-block;">
-                <div class="user-avatar" id="profile-user-avatar" style="width:80px; height:80px; font-size:40px;">👑</div>
-                <button onclick="showEditAvatarModal()" style="position: absolute; bottom: 0; right: 0; background: #4CAF50; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">✏️</button>
+                <div class="user-avatar" id="profile-user-avatar" style="width:80px; height:80px; font-size:40px;">ðŸ‘‘</div>
+                <button onclick="showEditAvatarModal()" style="position: absolute; bottom: 0; right: 0; background: #4CAF50; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">âœï¸</button>
             </div>
             <div class="user-details">
                 <div style="display: flex; align-items: center; gap: 10px;">
@@ -3642,8 +3778,8 @@
                 </div>
                 <div class="rank-line" id="profile-rank-line">
                     <div class="rank-row">
-                        <span id="profile-rank-emoji">🥉</span>
-                        <span id="profile-rank-text">Bronze · 0 pts</span>
+                        <span id="profile-rank-emoji">ðŸ¥‰</span>
+                        <span id="profile-rank-text">Bronze Â· 0 pts</span>
                     </div>
                     <div class="rank-progress-bar">
                         <div class="rank-progress-fill" id="profile-rank-progress"></div>
@@ -3652,14 +3788,14 @@
                 </div>
                 <div class="user-stats-summary">Member since: <span id="member-since">-</span></div>
                 <div id="pro-status-display" style="margin-top: 10px; font-size: 16px; font-weight: bold; color: #4CAF50; display: none;">
-                    <span class="pro-badge">⭐</span> Pro Member
+                    <span class="pro-badge">â­</span> Pro Member
                 </div>
                 <div id="donor-status-display" style="margin-top: 10px; font-size: 16px; font-weight: bold; color: #FF69B4; display: none;">
-                    <span class="donor-badge">💝</span> Supporter
+                    <span class="donor-badge">ðŸ’</span> Supporter
                 </div>
                 <div id="upgrade-to-pro-section" style="margin-top: 10px;">
                     <button onclick="showUpgradeModal()" style="padding: 10px 20px; background-color: #FFD700; color: #333; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 14px;">
-                        ⭐ Upgrade to Pro - £3
+                        â­ Upgrade to Pro - Â£3
                     </button>
                     <p style="font-size: 12px; color: #666; margin-top: 5px;">Unlock 36s Supreme & unlimited ranked games</p>
                 </div>
@@ -3759,7 +3895,7 @@
     <div id="start-menu" style="display:none;">
         <div class="start-menu-header">
             <h2>Select Game Variant</h2>
-            <button class="back-btn" onclick="backToMainMenu()">← Back to Menu</button>
+            <button class="back-btn" onclick="backToMainMenu()">â† Back to Menu</button>
         </div>
         <div class="variant-option">
             <button id="variant-btn-24s" data-ready="false" onclick="handleVariantClick('24s')">24's (Standard)</button>
@@ -3873,10 +4009,10 @@
                 <button class="toggle-button" id="graveyard-toggle" onclick="toggleGraveyard()">Graveyard</button>
                 <div class="online-stats-display" style="display: flex; gap: 10px; align-items: center; margin-left: 15px;">
                     <div class="online-stat-box" style="background: #4CAF50; color: white; padding: 8px 12px; border-radius: 5px; font-size: 13px; font-weight: bold;">
-                        <span>👥 Friends: <span id="in-game-friends-count">0</span></span>
+                        <span>ðŸ‘¥ Friends: <span id="in-game-friends-count">0</span></span>
                     </div>
                     <div class="online-stat-box" style="background: #2196F3; color: white; padding: 8px 12px; border-radius: 5px; font-size: 13px; font-weight: bold;">
-                        <span>🌐 Players: <span id="in-game-players-count">0</span></span>
+                        <span>ðŸŒ Players: <span id="in-game-players-count">0</span></span>
                     </div>
                 </div>
             </div>
@@ -4020,7 +4156,7 @@
             <span id="coin-toss-title">Coin Toss</span>
         </div>
         <div class="modal-content">
-            <div id="coin-result" class="coin">☠︎</div>
+            <div id="coin-result" class="coin">â˜ ï¸Ž</div>
             <p id="coin-toss-message"></p>
             <p id="coin-toss-description" style="font-size: 14px; margin-top: 10px;"></p>
         </div>
@@ -4082,7 +4218,7 @@
                 <p>By accessing and using Ratix ("the Game"), operated by Skobel Games ("we", "us", "our"), you agree to be bound by these Terms & Conditions. If you do not agree, please do not use the Game.</p>
 
                 <h3 style="margin-top: 20px; margin-bottom: 10px;">2. Pro Tier Purchase</h3>
-                <p>The Pro Tier is available for a one-time payment of £3.00 (GBP). Upon purchase:</p>
+                <p>The Pro Tier is available for a one-time payment of Â£3.00 (GBP). Upon purchase:</p>
                 <ul style="margin-left: 20px; margin-bottom: 15px;">
                     <li>You will receive immediate access to Pro features</li>
                     <li>Your purchase is non-refundable once digital content has been accessed</li>
@@ -4209,20 +4345,20 @@
     <div id="upgrade-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
         <div style="background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; text-align: center;">
             <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
-                <span style="font-size: 24px; font-weight: bold;">⭐ Upgrade to Pro</span>
+                <span style="font-size: 24px; font-weight: bold;">â­ Upgrade to Pro</span>
                 <button class="modal-close" onclick="closeUpgradeModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
             </div>
             <div style="margin: 20px 0;">
                 <h3 style="color: #333; margin-bottom: 15px;">Unlock Premium Features</h3>
                 <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0;">
-                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Access to 36s Supreme variant</li>
-                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Unlimited ranked games (no daily limits)</li>
-                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Star badge next to your name</li>
-                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Priority matchmaking</li>
-                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">✓ Future tournament & league access</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">âœ“ Access to 36s Supreme variant</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">âœ“ Unlimited ranked games (no daily limits)</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">âœ“ Star badge next to your name</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">âœ“ Priority matchmaking</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #f9f9f9; border-radius: 5px;">âœ“ Future tournament & league access</li>
                 </ul>
-                <div style="font-size: 32px; font-weight: bold; color: #4CAF50; margin: 20px 0;">£3.00</div>
-                <p style="color: #666; font-size: 14px;">One-time payment • Lifetime access</p>
+                <div style="font-size: 32px; font-weight: bold; color: #4CAF50; margin: 20px 0;">Â£3.00</div>
+                <p style="color: #666; font-size: 14px;">One-time payment â€¢ Lifetime access</p>
             </div>
 
             <!-- UK Legal Compliance Consent Checkboxes -->
@@ -4247,7 +4383,7 @@
                     <!-- PayPal button will render here -->
                 </div>
             </div>
-            <p style="font-size: 12px; color: #999; margin-top: 20px;">Secure payment processing • Money-back guarantee</p>
+            <p style="font-size: 12px; color: #999; margin-top: 20px;">Secure payment processing â€¢ Money-back guarantee</p>
         </div>
     </div>
 
@@ -4255,29 +4391,29 @@
     <div id="donation-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto;">
         <div style="background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; text-align: center;">
             <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 20px;">
-                <span style="font-size: 24px; font-weight: bold;">💝 Support Ratix</span>
+                <span style="font-size: 24px; font-weight: bold;">ðŸ’ Support Ratix</span>
                 <button class="modal-close" onclick="closeDonationModal()" aria-label="Close" style="float: right; background: none; border: none; font-size: 28px; cursor: pointer;">&times;</button>
             </div>
             <div style="margin: 20px 0;">
                 <h3 style="color: #333; margin-bottom: 15px;">Help Us Keep Ratix Running</h3>
                 <p style="color: #666; margin-bottom: 20px;">Your support helps us maintain servers, add new features, and keep the game free for everyone!</p>
                 <ul style="text-align: left; list-style: none; padding: 0; margin: 20px 0;">
-                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">💝 Get a heart badge on your profile (£1+ donations)</li>
-                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">🙏 Support ongoing development</li>
-                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">🎮 Help keep servers running</li>
-                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">✨ Enable new features & improvements</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">ðŸ’ Get a heart badge on your profile (Â£1+ donations)</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">ðŸ™ Support ongoing development</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">ðŸŽ® Help keep servers running</li>
+                    <li style="padding: 10px; margin: 5px 0; background: #fff0f5; border-radius: 5px; border-left: 4px solid #FF69B4;">âœ¨ Enable new features & improvements</li>
                 </ul>
                 <div style="margin: 20px 0;">
                     <label for="donation-amount" style="display: block; margin-bottom: 10px; font-weight: bold; color: #333;">Choose your donation amount:</label>
                     <select id="donation-amount" style="width: 100%; padding: 10px; font-size: 16px; border: 2px solid #FF69B4; border-radius: 5px; margin-bottom: 10px;">
-                        <option value="1.00">£1.00</option>
-                        <option value="2.00">£2.00</option>
-                        <option value="5.00" selected>£5.00</option>
-                        <option value="10.00">£10.00</option>
-                        <option value="20.00">£20.00</option>
+                        <option value="1.00">Â£1.00</option>
+                        <option value="2.00">Â£2.00</option>
+                        <option value="5.00" selected>Â£5.00</option>
+                        <option value="10.00">Â£10.00</option>
+                        <option value="20.00">Â£20.00</option>
                         <option value="custom">Custom amount</option>
                     </select>
-                    <input type="number" id="custom-donation-amount" placeholder="Enter custom amount (£)" min="1" step="0.01" style="width: 100%; padding: 10px; font-size: 16px; border: 2px solid #FF69B4; border-radius: 5px; display: none;">
+                    <input type="number" id="custom-donation-amount" placeholder="Enter custom amount (Â£)" min="1" step="0.01" style="width: 100%; padding: 10px; font-size: 16px; border: 2px solid #FF69B4; border-radius: 5px; display: none;">
                 </div>
             </div>
             <div style="margin-top: 25px;">
@@ -4285,7 +4421,7 @@
                     <!-- PayPal donation button will render here -->
                 </div>
             </div>
-            <p style="font-size: 12px; color: #999; margin-top: 20px;">Secure payment via PayPal • Thank you for your support!</p>
+            <p style="font-size: 12px; color: #999; margin-top: 20px;">Secure payment via PayPal â€¢ Thank you for your support!</p>
         </div>
     </div>
 
@@ -4521,7 +4657,7 @@
         let currentUser = null;
         let currentUserProfile = null;
         let isGuest = false; // Flag to track if user is playing as guest
-        let selectedAvatar = '👑';
+        let selectedAvatar = 'ðŸ‘‘';
         let currentGameId = null;
         let gameListener = null;
         let isOnlineGame = false;
@@ -4550,10 +4686,19 @@
         let onlineStatsRefreshIntervalId = null;
         let friendInvitationsListener = null; // Listener for incoming friend challenges
         let outgoingInvitationsListener = null; // Listener for sent challenges
+        let platformStatsListener = null; // Listener for live platform stats
         const NON_PRO_DAILY_GAME_LIMIT = 5;
 
         // Session tracking for visitors
         let sessionId = null;
+
+        // Leaderboard state
+        let currentLeaderboardMainTab = 'top-players'; // 'top-players', 'you', 'friends'
+        let currentLeaderboardType = 'combined'; // 'combined', 'standard', 'pro'
+        let currentLeaderboardPeriod = 'monthly'; // 'monthly', 'yearly', 'alltime'
+        let currentLeaderboardTypeFriends = 'combined'; // For friends tab
+        let currentLeaderboardPeriodFriends = 'monthly'; // For friends tab
+        let currentLeaderboardPeriodYou = 'monthly'; // For you tab
 
         // Initialize Firebase when DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
@@ -4564,7 +4709,7 @@
                 storage = firebase.storage();
 
                 console.log('Firebase initialized successfully');
-                console.log('📋 If you see permission errors, check the Firebase Security Rules documentation at the top of the script.');
+                console.log('ðŸ“‹ If you see permission errors, check the Firebase Security Rules documentation at the top of the script.');
 
                 // Check authentication state
                 auth.onAuthStateChanged(user => {
@@ -4683,7 +4828,7 @@
                 uid: currentUser.uid,
                 email: currentUser.email,
                 username: 'Guest',
-                avatar: '👤',
+                avatar: 'ðŸ‘¤',
                 country: 'Unknown',
                 isPro: false,
                 isDonor: false,
@@ -4757,14 +4902,28 @@
             }
         };
 
-        const RANK_TIERS = [
-            { name: 'Bronze', emoji: '🥉', color: '#c47a3a', min: 0 },
-            { name: 'Silver', emoji: '🥈', color: '#9e9e9e', min: 100 },
-            { name: 'Gold', emoji: '🥇', color: '#c9a000', min: 250 },
-            { name: 'Platinum', emoji: '💠', color: '#00bcd4', min: 500 },
-            { name: 'Diamond', emoji: '💎', color: '#00e5ff', min: 800 },
-            { name: 'Mythic', emoji: '🏆', color: '#d4af37', min: 1200 }
+        const STANDARD_RANK_TIERS = [
+            { name: 'Bronze', emoji: 'ðŸ¥‰', color: '#c47a3a', min: 0, honorBonus: 0 },
+            { name: 'Silver', emoji: 'ðŸ¥ˆ', color: '#9e9e9e', min: 100, honorBonus: 0 },
+            { name: 'Gold', emoji: 'ðŸ¥‡', color: '#c9a000', min: 250, honorBonus: 10 },
+            { name: 'Platinum', emoji: 'ðŸ’ ', color: '#00bcd4', min: 500, honorBonus: 20 },
+            { name: 'Diamond', emoji: 'ðŸ’Ž', color: '#00e5ff', min: 800, honorBonus: 30 },
+            { name: 'Mythic', emoji: 'ðŸ†', color: '#d4af37', min: 1200, honorBonus: 40 }
         ];
+
+        const PRO_RANK_TIERS = [
+            { name: 'Bronze', emoji: 'ðŸ¥‰', color: '#c47a3a', min: 0, honorBonus: 10 },
+            { name: 'Silver', emoji: 'ðŸ¥ˆ', color: '#9e9e9e', min: 100, honorBonus: 20 },
+            { name: 'Gold', emoji: 'ðŸ¥‡', color: '#c9a000', min: 250, honorBonus: 30 },
+            { name: 'Platinum', emoji: 'ðŸ’ ', color: '#00bcd4', min: 500, honorBonus: 40 },
+            { name: 'Diamond', emoji: 'ðŸ’Ž', color: '#00e5ff', min: 800, honorBonus: 50 },
+            { name: 'Mythic', emoji: 'ðŸ†', color: '#d4af37', min: 1200, honorBonus: 60 },
+            { name: 'Master', emoji: 'ðŸ‘‘', color: '#ff6b00', min: 1800, honorBonus: 70 },
+            { name: 'Legend', emoji: 'â­', color: '#ff1744', min: 2500, honorBonus: 80 }
+        ];
+
+        // Keep for backwards compatibility
+        const RANK_TIERS = STANDARD_RANK_TIERS;
 
         function computeLadderPoints(result, reason = '') {
             const base = RANKING_POINTS[result] ?? 0;
@@ -4780,8 +4939,9 @@
             return total;
         }
 
-        function getRankInfo(points = 0) {
-            const tiers = [...RANK_TIERS].sort((a, b) => a.min - b.min);
+        function getRankInfo(points = 0, tierType = 'standard') {
+            const tierSet = tierType === 'pro' ? PRO_RANK_TIERS : STANDARD_RANK_TIERS;
+            const tiers = [...tierSet].sort((a, b) => a.min - b.min);
             let current = tiers[0];
             for (const t of tiers) {
                 if (points >= t.min) current = t;
@@ -5003,9 +5163,41 @@
         }
 
         function applyProfileDefaults(data) {
+            const stats = data.stats || {};
+            const standardStats = data.standardStats || {};
+            const proStats = data.proStats || {};
             const friendStats = data.friendStats || createDefaultFriendStats();
+
             return {
                 ...data,
+                avatar: data.avatar || 'ðŸ‘¤',
+                username: data.username || 'Guest',
+                country: data.country || '',
+                isPro: data.isPro || false,
+                isDonor: data.isDonor || false,
+                gamesRemaining: data.gamesRemaining !== undefined ? data.gamesRemaining : 50,
+                stats: {
+                    wins: stats.wins || 0,
+                    losses: stats.losses || 0,
+                    draws: stats.draws || 0,
+                    totalGames: stats.totalGames || 0,
+                    highestScore: stats.highestScore || 0,
+                    totalPoints: stats.totalPoints || 0
+                },
+                standardStats: {
+                    wins: standardStats.wins || 0,
+                    losses: standardStats.losses || 0,
+                    draws: standardStats.draws || 0,
+                    gamePoints: standardStats.gamePoints || 0,
+                    scorePoints: standardStats.scorePoints || 0
+                },
+                proStats: {
+                    wins: proStats.wins || 0,
+                    losses: proStats.losses || 0,
+                    draws: proStats.draws || 0,
+                    gamePoints: proStats.gamePoints || 0,
+                    scorePoints: proStats.scorePoints || 0
+                },
                 friends: Array.isArray(data.friends) ? data.friends : [],
                 friendStats: {
                     ...createDefaultFriendStats(),
@@ -5027,8 +5219,12 @@
             return currentUserProfile;
         }
 
-        async function updateUserStats(result, { gameScore = 0, ladderPoints = 0, reason = '' } = {}) {
+        async function updateUserStats(result, { gameScore = 0, ladderPoints = 0, reason = '', variant = '' } = {}) {
             if (!currentUser || !currentUserProfile) return;
+
+            // Determine if this is a Standard or Pro game
+            const isProGame = variant === '36s-supreme';
+            const statsPrefix = isProGame ? 'proStats' : 'standardStats';
 
             const updates = {
                 'stats.totalGames': firebase.firestore.FieldValue.increment(1),
@@ -5036,14 +5232,31 @@
                 lastActive: firebase.firestore.FieldValue.serverTimestamp()
             };
 
+            // Update W/D/L for appropriate tier
             if (result === 'win') {
+                updates[`${statsPrefix}.wins`] = firebase.firestore.FieldValue.increment(1);
                 updates['stats.wins'] = firebase.firestore.FieldValue.increment(1);
             } else if (result === 'loss') {
+                updates[`${statsPrefix}.losses`] = firebase.firestore.FieldValue.increment(1);
                 updates['stats.losses'] = firebase.firestore.FieldValue.increment(1);
             } else if (result === 'draw') {
+                updates[`${statsPrefix}.draws`] = firebase.firestore.FieldValue.increment(1);
                 updates['stats.draws'] = firebase.firestore.FieldValue.increment(1);
             }
 
+            // Update Game Points
+            updates[`${statsPrefix}.gamePoints`] = firebase.firestore.FieldValue.increment(ladderPoints);
+
+            // Update Score Points based on tier rules
+            // Standard: Always collect Score Points
+            // Pro: Only collect Score Points on win or draw (NOT on loss)
+            const shouldCollectScorePoints = isProGame ? (result !== 'loss') : true;
+
+            if (shouldCollectScorePoints) {
+                updates[`${statsPrefix}.scorePoints`] = firebase.firestore.FieldValue.increment(gameScore);
+            }
+
+            // Update highest score (legacy)
             if (gameScore > currentUserProfile.stats.highestScore) {
                 updates['stats.highestScore'] = gameScore;
             }
@@ -5228,6 +5441,11 @@
 
             }
 
+            if (platformStatsListener) {
+                platformStatsListener();
+                platformStatsListener = null;
+            }
+
             if (onlineStatsRefreshIntervalId) {
 
                 clearInterval(onlineStatsRefreshIntervalId);
@@ -5244,16 +5462,11 @@
 
             if (!db) return;
 
-
-
             refreshRealtimeOnlineStats();
-
-
+            startPlatformStatsListener();
 
             if (!onlineStatsRefreshIntervalId) {
-
                 onlineStatsRefreshIntervalId = setInterval(refreshRealtimeOnlineStats, 60000);
-
             }
 
         }
@@ -5317,7 +5530,7 @@
                 if (friendsCount) friendsCount.textContent = onlineFriendsCount;
             } catch (error) {
                 console.error('Error loading friends online count:', error);
-                console.log('💡 Fix: Ensure Firestore Security Rules allow reading user documents (see rules documentation in code)');
+                console.log('ðŸ’¡ Fix: Ensure Firestore Security Rules allow reading user documents (see rules documentation in code)');
             }
         }
 
@@ -5342,7 +5555,7 @@
                     supremeBtn.disabled = false;
                 }
                 if (supremeStatus) {
-                    supremeStatus.textContent = '⭐ Pro Unlocked';
+                    supremeStatus.textContent = 'â­ Pro Unlocked';
                     supremeStatus.style.color = '#4CAF50';
                 }
 
@@ -5359,7 +5572,7 @@
                     supremeBtn.disabled = true;
                 }
                 if (supremeStatus) {
-                    supremeStatus.textContent = '🔒 Pro Only';
+                    supremeStatus.textContent = 'ðŸ”’ Pro Only';
                     supremeStatus.style.color = '#ff9800';
                 }
 
@@ -5381,12 +5594,12 @@
 
             // Add pro badge
             if (currentUserProfile.isPro) {
-                badges += '⭐ ';
+                badges += 'â­ ';
             }
 
             // Add donor badge
             if (currentUserProfile.isDonor) {
-                badges += '💝 ';
+                badges += 'ðŸ’ ';
             }
 
             const rankInfo = currentUserProfile.stats ? getRankInfo(currentUserProfile.stats.totalPoints || 0) : null;
@@ -5797,7 +6010,7 @@
                 await checkAndUpdateProStatus();
 
                 closeUpgradeModal();
-                alert('🎉 Congratulations! You are now a Pro user!\n\nYou now have access to:\n✓ 36s Supreme variant\n✓ Unlimited ranked games\n✓ Pro badge');
+                alert('ðŸŽ‰ Congratulations! You are now a Pro user!\n\nYou now have access to:\nâœ“ 36s Supreme variant\nâœ“ Unlimited ranked games\nâœ“ Pro badge');
             } catch (error) {
                 console.error('Error updating Pro status:', error);
                 alert('Error upgrading account. Please contact support.');
@@ -5953,11 +6166,11 @@
 
                 closeDonationModal();
 
-                let thankYouMessage = '💝 Thank you so much for your support!\n\n';
+                let thankYouMessage = 'ðŸ’ Thank you so much for your support!\n\n';
                 if (isDonor) {
-                    thankYouMessage += '✨ You now have a heart badge on your profile!\n';
+                    thankYouMessage += 'âœ¨ You now have a heart badge on your profile!\n';
                 }
-                thankYouMessage += '\nYour donation of £' + donationData.amount.toFixed(2) + ' helps keep Ratix running and improving!';
+                thankYouMessage += '\nYour donation of Â£' + donationData.amount.toFixed(2) + ' helps keep Ratix running and improving!';
 
                 alert(thankYouMessage);
             } catch (error) {
@@ -6021,39 +6234,39 @@
 
             const avatars = [
                 // Free avatars
-                { emoji: '👑', unlock: 'free' },
-                { emoji: '⚔️', unlock: 'free' },
-                { emoji: '🛡️', unlock: 'free' },
-                { emoji: '🏹', unlock: 'free' },
-                { emoji: '🧙', unlock: 'free' },
-                { emoji: '🐉', unlock: 'free' },
-                { emoji: '🦁', unlock: 'free' },
-                { emoji: '🦅', unlock: 'free' },
-                { emoji: '🐺', unlock: 'free' },
-                { emoji: '🦈', unlock: 'free' },
-                { emoji: '🔥', unlock: 'free' },
-                { emoji: '⚡', unlock: 'free' },
+                { emoji: 'ðŸ‘‘', unlock: 'free' },
+                { emoji: 'âš”ï¸', unlock: 'free' },
+                { emoji: 'ðŸ›¡ï¸', unlock: 'free' },
+                { emoji: 'ðŸ¹', unlock: 'free' },
+                { emoji: 'ðŸ§™', unlock: 'free' },
+                { emoji: 'ðŸ‰', unlock: 'free' },
+                { emoji: 'ðŸ¦', unlock: 'free' },
+                { emoji: 'ðŸ¦…', unlock: 'free' },
+                { emoji: 'ðŸº', unlock: 'free' },
+                { emoji: 'ðŸ¦ˆ', unlock: 'free' },
+                { emoji: 'ðŸ”¥', unlock: 'free' },
+                { emoji: 'âš¡', unlock: 'free' },
                 // Pro avatars
-                { emoji: '💎', unlock: 'pro' },
-                { emoji: '🏆', unlock: 'pro' },
-                { emoji: '🎯', unlock: 'pro' },
-                { emoji: '🎖️', unlock: 'pro' },
-                { emoji: '🌟', unlock: 'pro' },
-                { emoji: '🔱', unlock: 'pro' },
+                { emoji: 'ðŸ’Ž', unlock: 'pro' },
+                { emoji: 'ðŸ†', unlock: 'pro' },
+                { emoji: 'ðŸŽ¯', unlock: 'pro' },
+                { emoji: 'ðŸŽ–ï¸', unlock: 'pro' },
+                { emoji: 'ðŸŒŸ', unlock: 'pro' },
+                { emoji: 'ðŸ”±', unlock: 'pro' },
                 // Donor avatars
-                { emoji: '💝', unlock: 'donor' },
-                { emoji: '🌹', unlock: 'donor' },
-                { emoji: '🦄', unlock: 'donor' },
-                { emoji: '🌈', unlock: 'donor' },
-                { emoji: '✨', unlock: 'donor' },
-                { emoji: '🎨', unlock: 'donor' },
+                { emoji: 'ðŸ’', unlock: 'donor' },
+                { emoji: 'ðŸŒ¹', unlock: 'donor' },
+                { emoji: 'ðŸ¦„', unlock: 'donor' },
+                { emoji: 'ðŸŒˆ', unlock: 'donor' },
+                { emoji: 'âœ¨', unlock: 'donor' },
+                { emoji: 'ðŸŽ¨', unlock: 'donor' },
                 // Both avatars
-                { emoji: '🌠', unlock: 'both' },
-                { emoji: '👾', unlock: 'both' },
-                { emoji: '🎭', unlock: 'both' },
-                { emoji: '🦚', unlock: 'both' },
-                { emoji: '🐲', unlock: 'both' },
-                { emoji: '🧚', unlock: 'both' }
+                { emoji: 'ðŸŒ ', unlock: 'both' },
+                { emoji: 'ðŸ‘¾', unlock: 'both' },
+                { emoji: 'ðŸŽ­', unlock: 'both' },
+                { emoji: 'ðŸ¦š', unlock: 'both' },
+                { emoji: 'ðŸ²', unlock: 'both' },
+                { emoji: 'ðŸ§š', unlock: 'both' }
             ];
 
             const isPro = currentUserProfile.isPro || false;
@@ -6200,41 +6413,58 @@
             }
         }
 
-        async function loadPlatformStats() {
+                async function loadPlatformStats() {
             if (!db) return;
             try {
-                const statsRef = db.collection(PLATFORM_STATS_COLLECTION).doc(PLATFORM_STATS_DOC);
-                const doc = await statsRef.get();
-                if (!doc.exists) {
-                    const initialData = {
-                        dailyGames: 0,
-                        weeklyGames: 0,
-                        monthlyGames: 0,
-                        yearlyGames: 0,
-                        allTimeGames: 0,
-                        lastDailyReset: 0,
-                        lastWeeklyReset: 0,
-                        lastMonthlyReset: 0,
-                        lastYearlyReset: 0
-                    };
-                    // Show default values if document doesn't exist
-                    displayPlatformStats(initialData);
-                } else {
-                    displayPlatformStats(doc.data());
-                }
-                loadOnlinePlayersCount();
+                startPlatformStatsListener();
             } catch (error) {
-                console.error('Error loading platform stats:', error);
-                console.log('💡 Fix: Add Firestore Security Rules for "platformStats" collection (see rules documentation in code)');
-                // Show zeros on error (likely permissions issue)
+                console.error("Error loading platform stats:", error);
+                console.log('⚠️ Fix: Add Firestore Security Rules for "platformStats" collection (see rules documentation in code)');
                 displayPlatformStats({
                     dailyGames: 0,
                     weeklyGames: 0,
                     monthlyGames: 0,
                     yearlyGames: 0,
-                    allTimeGames: 0
+                    allTimeGames: 0,
+                    standardGames: 0,
+                    proGames: 0
                 });
             }
+        }
+
+        function startPlatformStatsListener() {
+            if (!db) return;
+            if (platformStatsListener) {
+                platformStatsListener();
+                platformStatsListener = null;
+            }
+            const statsRef = db.collection(PLATFORM_STATS_COLLECTION).doc(PLATFORM_STATS_DOC);
+            platformStatsListener = statsRef.onSnapshot(snapshot => {
+                if (snapshot.exists) {
+                    displayPlatformStats(snapshot.data());
+                } else {
+                    displayPlatformStats({
+                        dailyGames: 0,
+                        weeklyGames: 0,
+                        monthlyGames: 0,
+                        yearlyGames: 0,
+                        allTimeGames: 0,
+                        standardGames: 0,
+                        proGames: 0
+                    });
+                }
+            }, error => {
+                console.error('Error listening to platform stats:', error);
+                displayPlatformStats({
+                    dailyGames: 0,
+                    weeklyGames: 0,
+                    monthlyGames: 0,
+                    yearlyGames: 0,
+                    allTimeGames: 0,
+                    standardGames: 0,
+                    proGames: 0
+                });
+            });
         }
 
         async function loadOnlinePlayersCount() {
@@ -6259,7 +6489,9 @@
                 { id: 'platform-weekly-count', value: stats.weeklyGames },
                 { id: 'platform-monthly-count', value: stats.monthlyGames },
                 { id: 'platform-yearly-count', value: stats.yearlyGames },
-                { id: 'platform-all-time-count', value: stats.allTimeGames }
+                { id: 'platform-all-time-count', value: stats.allTimeGames },
+                { id: 'platform-standard-count', value: stats.standardGames },
+                { id: 'platform-pro-count', value: stats.proGames }
             ];
             fields.forEach(({ id, value }) => {
                 const el = document.getElementById(id);
@@ -6269,7 +6501,7 @@
             });
         }
 
-        async function updatePlatformTotals(timestamp = new Date()) {
+        async function updatePlatformTotals({ timestamp = new Date(), variant = '' } = {}) {
             if (!db) return;
             try {
                 const statsRef = db.collection(PLATFORM_STATS_COLLECTION).doc(PLATFORM_STATS_DOC);
@@ -6290,6 +6522,9 @@
                     let monthlyCount = data.monthlyGames || 0;
                     let yearlyCount = data.yearlyGames || 0;
                     const newAllTime = (data.allTimeGames || 0) + 1;
+                    const isProGame = variant === '36s-supreme';
+                    let standardGames = data.standardGames || 0;
+                    let proGames = data.proGames || 0;
                     const updates = {};
 
                     if (lastDaily < startOfDayMs) {
@@ -6320,12 +6555,20 @@
                         yearlyCount += 1;
                     }
 
+                    if (isProGame) {
+                        proGames += 1;
+                    } else {
+                        standardGames += 1;
+                    }
+
                     tx.set(statsRef, {
                         dailyGames: dailyCount,
                         weeklyGames: weeklyCount,
                         monthlyGames: monthlyCount,
                         yearlyGames: yearlyCount,
                         allTimeGames: newAllTime,
+                        standardGames: standardGames,
+                        proGames: proGames,
                         lastDailyReset: updates.lastDailyReset !== undefined ? updates.lastDailyReset : (lastDaily || startOfDayMs),
                         lastWeeklyReset: updates.lastWeeklyReset !== undefined ? updates.lastWeeklyReset : (lastWeekly || startOfWeekMs),
                         lastMonthlyReset: updates.lastMonthlyReset !== undefined ? updates.lastMonthlyReset : (lastMonthly || startOfMonthMs),
@@ -6457,7 +6700,7 @@
 
                 const avatarEl = document.createElement('div');
                 avatarEl.className = 'friend-avatar';
-                avatarEl.textContent = player.avatar || '🙂';
+                avatarEl.textContent = player.avatar || 'ðŸ™‚';
 
                 const details = document.createElement('div');
                 details.className = 'friend-details';
@@ -6577,10 +6820,10 @@
                 await db.collection('friendRequests').add({
                     fromUid: currentUser.uid,
                     fromUsername: currentUserProfile.username,
-                    fromAvatar: currentUserProfile.avatar || '🙂',
+                    fromAvatar: currentUserProfile.avatar || 'ðŸ™‚',
                     toUid: targetUid,
                     toUsername: targetDoc.data()?.username || 'Unknown',
-                    toAvatar: targetDoc.data()?.avatar || '🙂',
+                    toAvatar: targetDoc.data()?.avatar || 'ðŸ™‚',
                     status: 'pending',
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
@@ -6820,7 +7063,7 @@
 
                 row.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <div class="friend-avatar">${data.fromAvatar || '🙂'}</div>
+                        <div class="friend-avatar">${data.fromAvatar || 'ðŸ™‚'}</div>
                         <div class="friend-details">
                             <strong>${data.fromUsername || 'Unknown'}</strong>
                             <span class="friend-record">wants to be your friend</span>
@@ -6856,7 +7099,7 @@
 
                 row.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <div class="friend-avatar">${data.toAvatar || '🙂'}</div>
+                        <div class="friend-avatar">${data.toAvatar || 'ðŸ™‚'}</div>
                         <div class="friend-details">
                             <strong>${data.toUsername || 'Unknown'}</strong>
                             <span class="friend-record">pending...</span>
@@ -6899,7 +7142,7 @@
 
                     const avatarEl = document.createElement('div');
                     avatarEl.className = 'friend-avatar';
-                    avatarEl.textContent = friend.avatar || '🙂';
+                    avatarEl.textContent = friend.avatar || 'ðŸ™‚';
 
                     const details = document.createElement('div');
                     details.className = 'friend-details';
@@ -6908,7 +7151,7 @@
                     const recordEl = document.createElement('span');
                     recordEl.className = 'friend-record';
                     const record = getFriendRecord(currentUserProfile.friendStats, friend.uid);
-                    recordEl.textContent = `W:${record.wins} • L:${record.losses} • D:${record.draws}`;
+                    recordEl.textContent = `W:${record.wins} â€¢ L:${record.losses} â€¢ D:${record.draws}`;
                     details.appendChild(nameEl);
                     details.appendChild(recordEl);
 
@@ -7032,15 +7275,15 @@
 
         // ========== ACHIEVEMENTS SYSTEM ==========
         const ACHIEVEMENTS = [
-            { id: 'first_win', name: 'First Victory', icon: '🏆', desc: 'Win your first game' },
-            { id: 'win_streak_3', name: 'On a Roll', icon: '🔥', desc: 'Win 3 games in a row' },
-            { id: 'win_10', name: 'Veteran', icon: '⚔️', desc: 'Win 10 games' },
-            { id: 'win_50', name: 'Champion', icon: '👑', desc: 'Win 50 games' },
-            { id: 'high_score_100', name: 'Centurion', icon: '💯', desc: 'Score 100+ points' },
-            { id: 'high_score_200', name: 'Destroyer', icon: '💥', desc: 'Score 200+ points' },
-            { id: 'play_100', name: 'Dedicated', icon: '🎮', desc: 'Play 100 games' },
-            { id: 'dragon_master', name: 'Dragon Master', icon: '🐉', desc: 'Capture 50 dragons' },
-            { id: 'perfect_game', name: 'Flawless Victory', icon: '✨', desc: 'Win without losing a piece' }
+            { id: 'first_win', name: 'First Victory', icon: 'ðŸ†', desc: 'Win your first game' },
+            { id: 'win_streak_3', name: 'On a Roll', icon: 'ðŸ”¥', desc: 'Win 3 games in a row' },
+            { id: 'win_10', name: 'Veteran', icon: 'âš”ï¸', desc: 'Win 10 games' },
+            { id: 'win_50', name: 'Champion', icon: 'ðŸ‘‘', desc: 'Win 50 games' },
+            { id: 'high_score_100', name: 'Centurion', icon: 'ðŸ’¯', desc: 'Score 100+ points' },
+            { id: 'high_score_200', name: 'Destroyer', icon: 'ðŸ’¥', desc: 'Score 200+ points' },
+            { id: 'play_100', name: 'Dedicated', icon: 'ðŸŽ®', desc: 'Play 100 games' },
+            { id: 'dragon_master', name: 'Dragon Master', icon: 'ðŸ‰', desc: 'Capture 50 dragons' },
+            { id: 'perfect_game', name: 'Flawless Victory', icon: 'âœ¨', desc: 'Win without losing a piece' }
         ];
 
         async function checkAchievements() {
@@ -7119,10 +7362,18 @@
         // ========== MATCHMAKING FUNCTIONS ==========
         let matchmakingListener = null;
         let currentMatchmakingRef = null;
+        let matchmakingPollInterval = null;
 
         async function startQuickMatch() {
 
-                    if (!currentUser || !currentUserProfile) return;
+                    console.log('[Matchmaking] Current user:', currentUser ? currentUser.uid : 'NOT LOGGED IN');
+                    console.log('[Matchmaking] Firebase auth user:', firebase.auth().currentUser ? firebase.auth().currentUser.uid : 'NOT AUTHENTICATED');
+
+                    if (!currentUser || !currentUserProfile) {
+                        console.error('[Matchmaking] User not logged in or profile not loaded');
+                        alert('Please log in to use matchmaking');
+                        return;
+                    }
 
         
 
@@ -7152,42 +7403,72 @@
 
                         document.getElementById('searching-indicator').classList.add('active');
 
-        
 
-                        // Check for waiting opponents with same variant
 
+                        // Get current user's friends list to exclude from matchmaking
+                        let friendIds = [];
+                        try {
+                            console.log('[Matchmaking] Fetching user profile for friends list...');
+                            const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                            if (userDoc.exists) {
+                                const userData = userDoc.data();
+                                friendIds = userData.friends || [];
+                                console.log('[Matchmaking] Friends list loaded:', friendIds.length, 'friends');
+                            } else {
+                                console.warn('[Matchmaking] User document does not exist');
+                            }
+                        } catch (error) {
+                            console.error('[Matchmaking] ERROR fetching friends list:', error);
+                            // Continue without friend filtering if fetch fails
+                        }
+
+                        // Check for waiting opponents with same variant (excluding friends)
+
+                        console.log('[Matchmaking] Querying matchmaking queue with variant:', selectedMatchVariant);
                         const waitingQuery = await db.collection('matchmakingQueue')
 
                             .where('status', '==', 'waiting')
 
                             .where('variant', '==', selectedMatchVariant)
 
-                            .limit(1)
-
                             .get();
 
-        
+                        console.log('[Matchmaking] Query successful, found', waitingQuery.docs.length, 'waiting opponents');
 
-                        if (!waitingQuery.empty) {
 
-                            // Join existing game
+                        // Filter out friends from potential matches
+                        let matchDoc = null;
+                        let matchId = null;
+                        let matchData = null;
 
-                            const matchDoc = waitingQuery.docs[0];
+                        for (const doc of waitingQuery.docs) {
+                            const docData = doc.data();
+                            // Skip if the waiting player is a friend or is the current user
+                            if (!friendIds.includes(docData.playerId) && docData.playerId !== currentUser.uid) {
+                                matchDoc = doc;
+                                matchId = doc.id;
+                                matchData = docData;
+                                break;
+                            }
+                        }
 
-                            const matchId = matchDoc.id;
+                        if (matchDoc && matchData) {
 
-                            const matchData = matchDoc.data();
+                            console.log('[Matchmaking] Found match with player:', matchData.playerId);
 
-        
+                            // Join existing game (not a friend)
 
                             // Create game with both players
 
+                            console.log('[Matchmaking] Creating game...');
                             const gameId = await createOnlineGame(matchData.playerId, currentUser.uid, selectedMatchVariant);
+                            console.log('[Matchmaking] Game created with ID:', gameId);
 
-        
+
 
                             // Update the matchmaking entry with the gameId to signal the waiting player
 
+                            console.log('[Matchmaking] Updating matchmaking queue entry...');
                             await db.collection('matchmakingQueue').doc(matchId).update({
 
                                 status: 'matched',
@@ -7195,11 +7476,13 @@
                                 gameId: gameId
 
                             });
+                            console.log('[Matchmaking] Queue entry updated');
 
-        
+
 
                             // Player 2 (the joiner) starts the game here.
 
+                            console.log('[Matchmaking] Starting online game...');
                             await startOnlineGame(gameId);
 
                         } else {
@@ -7226,7 +7509,40 @@
 
                             currentMatchmakingRef = matchRef;
 
-        
+                            let hasHandledMatch = false;
+
+                            const handleMatchFound = async (gameId) => {
+                                if (!gameId || hasHandledMatch) return;
+                                hasHandledMatch = true;
+
+                                if (matchmakingListener) {
+                                    matchmakingListener();
+                                    matchmakingListener = null;
+                                }
+                                if (matchmakingPollInterval) {
+                                    clearInterval(matchmakingPollInterval);
+                                    matchmakingPollInterval = null;
+                                }
+
+                                try {
+                                    if (currentMatchmakingRef) {
+                                        await currentMatchmakingRef.delete();
+                                    } else {
+                                        const matchmakingDocRef = db.collection('matchmakingQueue').doc(matchRef.id);
+                                        await matchmakingDocRef.delete();
+                                    }
+                                } catch (cleanupError) {
+                                    console.warn('[Matchmaking] Failed to clean up queue entry:', cleanupError);
+                                } finally {
+                                    currentMatchmakingRef = null;
+                                }
+
+                                console.log('Found game! Joining:', gameId);
+
+                                isOnlineGame = true;
+                                myPlayerColor = 'W'; // Waiting player is always Player 1 (White)
+                                await startOnlineGame(gameId);
+                            };
 
                             matchmakingListener = db.collection('matchmakingQueue').doc(matchRef.id)
 
@@ -7234,63 +7550,36 @@
 
                                     if (snapshot.exists && snapshot.data().status === 'matched') {
 
-                                        const gameId = snapshot.data().gameId;
-
-                                        if (gameId) {
-
-                                            if (matchmakingListener) {
-
-                                                matchmakingListener();
-
-                                                matchmakingListener = null;
-
-                                            }
-
-                                            
-
-                                            if (currentMatchmakingRef) {
-
-                                                await currentMatchmakingRef.delete();
-
-                                                currentMatchmakingRef = null;
-
-                                            } else {
-
-                                                // Fallback to delete by ID if ref is lost
-
-                                                const matchmakingDocRef = db.collection('matchmakingQueue').doc(snapshot.id);
-
-                                                await matchmakingDocRef.delete();
-
-                                            }
-
-        
-
-                                            console.log('Found game! Joining:', gameId);
-
-        
-
-                                            isOnlineGame = true;
-
-                                            myPlayerColor = 'W'; // Waiting player is always Player 1 (White)
-
-                                            startOnlineGame(gameId);
-
-                                        }
+                                        await handleMatchFound(snapshot.data().gameId);
 
                                     }
 
                                 });
+
+                            matchmakingPollInterval = setInterval(async () => {
+                                try {
+                                    const pollSnapshot = await db.collection('matchmakingQueue').doc(matchRef.id).get();
+                                    if (pollSnapshot.exists) {
+                                        const pollData = pollSnapshot.data();
+                                        if (pollData && pollData.status === 'matched' && pollData.gameId) {
+                                            await handleMatchFound(pollData.gameId);
+                                        }
+                                    }
+                                } catch (pollError) {
+                                    console.error('[Matchmaking] Polling matchmaking queue failed:', pollError);
+                                }
+                            }, 1500);
 
                         }
 
                     } catch (error) {
 
                         console.error('Matchmaking error:', error);
+                        console.error('Error details:', error);
 
                         cancelQuickMatch();
 
-                        alert('Error finding match: ' + error.message);
+                        alert('Error finding match: ' + error.message + '\n\nMake sure you are logged in and have proper permissions.');
 
                     }
 
@@ -7305,6 +7594,10 @@
             if (currentMatchmakingRef) {
                 await currentMatchmakingRef.delete();
                 currentMatchmakingRef = null;
+            }
+            if (matchmakingPollInterval) {
+                clearInterval(matchmakingPollInterval);
+                matchmakingPollInterval = null;
             }
 
             isOnlineGame = false;
@@ -7324,8 +7617,8 @@
                 const p2Data = p2Doc.data();
 
                 // Add pro badge to usernames if applicable
-                const p1Username = (p1Data.isPro ? '⭐ ' : '') + (p1Data.isDonor ? '💝 ' : '') + p1Data.username;
-                const p2Username = (p2Data.isPro ? '⭐ ' : '') + (p2Data.isDonor ? '💝 ' : '') + p2Data.username;
+                const p1Username = (p1Data.isPro ? 'â­ ' : '') + (p1Data.isDonor ? 'ðŸ’ ' : '') + p1Data.username;
+                const p2Username = (p2Data.isPro ? 'â­ ' : '') + (p2Data.isDonor ? 'ðŸ’ ' : '') + p2Data.username;
 
                 // Create game document
                 const gameRef = await db.collection('games').add({
@@ -7343,6 +7636,8 @@
                         color: 'B',
                         isPro: p2Data.isPro || false
                     },
+                    whiteUid: player1Id,
+                    blackUid: player2Id,
                     currentTurn: 'W',
                     status: 'active',
                     variant: variant,
@@ -7575,7 +7870,9 @@
                 capturedPieces: capturedPieces,
                 gameLog: gameLog,
                 roundCount: roundCount || 1,
-                nextRoundModifier: nextRoundModifier // Sync warcry/despair bonuses
+                nextRoundModifier: nextRoundModifier, // Sync warcry/despair bonuses
+                pendingWarcryBonus: pendingWarcryBonus,
+                warcryReadyRound: warcryReadyRound
             };
         }
 
@@ -7594,7 +7891,11 @@
             }
             const nextTurn = state.currentPlayer || state.currentTurn || currentPlayer || 'W';
             currentPlayer = nextTurn;
-            scores = state.scores;
+            const incomingScores = state.scores || {};
+            scores = {
+                'W': (typeof incomingScores['W'] === 'number') ? incomingScores['W'] : (prevScores['W'] || 0),
+                'B': (typeof incomingScores['B'] === 'number') ? incomingScores['B'] : (prevScores['B'] || 0)
+            };
             const fallbackMoves = calculateBaseMoves ? calculateBaseMoves(nextTurn) : 0;
             movesLeft = (typeof state.movesLeft === 'number') ? state.movesLeft : fallbackMoves;
             // Use a safe default if captured pieces are missing or malformed
@@ -7609,6 +7910,22 @@
             // Restore warcry/despair modifiers from synced state
             if (state.nextRoundModifier) {
                 nextRoundModifier = { ...state.nextRoundModifier };
+            }
+            if (state.pendingWarcryBonus) {
+                pendingWarcryBonus = {
+                    'W': Number(state.pendingWarcryBonus['W']) || 0,
+                    'B': Number(state.pendingWarcryBonus['B']) || 0
+                };
+            } else {
+                pendingWarcryBonus = { 'W': 0, 'B': 0 };
+            }
+            if (state.warcryReadyRound) {
+                warcryReadyRound = {
+                    'W': state.warcryReadyRound['W'] ?? null,
+                    'B': state.warcryReadyRound['B'] ?? null
+                };
+            } else {
+                warcryReadyRound = { 'W': null, 'B': null };
             }
 
             // Reset transient turn state when syncing from network to allow moves/captures
@@ -7679,6 +7996,7 @@
                 const gameRef = db.collection('games').doc(currentGameId);
                 const gameSnapshot = await gameRef.get();
                 const gameData = gameSnapshot.exists ? gameSnapshot.data() : null;
+                const variant = gameData ? (gameData.variant || '36s-elite') : '36s-elite';
 
                 let opponentInfo = null;
                 let opponentProfile = null;
@@ -7717,8 +8035,13 @@
                         ladderPoints
                     });
                 } else {
-                    await updateUserStats(myResult, { gameScore: myScore, ladderPoints, reason: result.reason || '' });
-                    await updatePlatformTotals();
+                    await updateUserStats(myResult, {
+                        gameScore: myScore,
+                        ladderPoints,
+                        reason: result.reason || '',
+                        variant: variant  // Pass variant to updateUserStats
+                    });
+                    await updatePlatformTotals({ variant });
                 }
                 onlineStatsRecorded = true;
 
@@ -7853,7 +8176,7 @@
             if (!rankInfo) return;
             if (emojiEl) emojiEl.textContent = rankInfo.emoji;
             if (textEl) {
-                textEl.textContent = `${rankInfo.name} · ${rankInfo.points} pts`;
+                textEl.textContent = `${rankInfo.name} Â· ${rankInfo.points} pts`;
                 textEl.style.color = rankInfo.color;
             }
             if (progressEl) {
@@ -7977,7 +8300,7 @@
                 const badge = document.createElement('div');
                 badge.className = 'achievement-badge' + (unlocked ? ' unlocked' : '');
                 badge.innerHTML = `
-                    <div class="badge-icon">${unlocked ? ach.icon : '🔒'}</div>
+                    <div class="badge-icon">${unlocked ? ach.icon : 'ðŸ”’'}</div>
                     <div class="badge-title">${ach.name}</div>
                     <div class="badge-desc">${ach.desc}</div>
                 `;
@@ -8084,21 +8407,21 @@
                 friendProfiles.forEach(friend => {
                     const friendRecord = getFriendRecord(currentUserProfile.friendStats, friend.uid);
                     const statusClass = friend.isOnline ? 'friend-status-online' : 'friend-status-offline';
-                    const statusText = friend.isOnline ? '🟢 Online' : '⚫ Offline';
+                    const statusText = friend.isOnline ? 'ðŸŸ¢ Online' : 'âš« Offline';
 
                     const friendItem = document.createElement('div');
                     friendItem.className = 'friend-list-item';
                     friendItem.innerHTML = `
                         <div class="friend-info">
-                            <div class="avatar">${friend.avatar || '😊'}</div>
+                            <div class="avatar">${friend.avatar || 'ðŸ˜Š'}</div>
                             <div class="friend-details">
-                                <h4>${friend.isPro ? '⭐ ' : ''}${friend.username}</h4>
+                                <h4>${friend.isPro ? 'â­ ' : ''}${friend.username}</h4>
                                 <p class="${statusClass}">${statusText}</p>
                                 <p style="font-size: 12px; color: #999;">Record: ${friendRecord.wins}W - ${friendRecord.losses}L - ${friendRecord.draws}D</p>
                             </div>
                         </div>
-                        <button class="challenge-btn" onclick="challengeFriend('${friend.uid}', '${friend.username}', '${friend.avatar || '😊'}')" ${!friend.isOnline ? 'disabled' : ''}>
-                            ${friend.isOnline ? '⚔️ Challenge' : 'Offline'}
+                        <button class="challenge-btn" onclick="challengeFriend('${friend.uid}', '${friend.username}', '${friend.avatar || 'ðŸ˜Š'}')" ${!friend.isOnline ? 'disabled' : ''}>
+                            ${friend.isOnline ? 'âš”ï¸ Challenge' : 'Offline'}
                         </button>
                     `;
                     friendsList.appendChild(friendItem);
@@ -8143,11 +8466,11 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                alert(`Challenge sent to ${friendUsername}! 🎮`);
+                alert(`Challenge sent to ${friendUsername}! ðŸŽ®`);
 
             } catch (error) {
                 console.error('Error sending challenge:', error);
-                console.log('💡 Fix: Add Firestore Security Rules for "friendInvitations" collection (see rules documentation in code)');
+                console.log('ðŸ’¡ Fix: Add Firestore Security Rules for "friendInvitations" collection (see rules documentation in code)');
                 alert('Error sending challenge: ' + error.message + '\n\nCheck console for setup instructions.');
             }
         }
@@ -8190,15 +8513,15 @@
                         invitationCard.className = 'friend-invitation-card';
                         invitationCard.innerHTML = `
                             <div class="friend-invitation-info">
-                                <div class="avatar">${invitation.fromAvatar || '😊'}</div>
+                                <div class="avatar">${invitation.fromAvatar || 'ðŸ˜Š'}</div>
                                 <div class="friend-invitation-details">
                                     <h4>${invitation.fromUsername} challenges you!</h4>
                                     <p>Game mode: ${invitation.variant === '36s-elite' ? '36s Elite' : '36s Supreme'}</p>
                                 </div>
                             </div>
                             <div class="friend-invitation-actions">
-                                <button class="accept-btn" onclick="acceptChallenge('${doc.id}', '${invitation.fromUid}')">✓ Accept</button>
-                                <button class="decline-btn" onclick="declineChallenge('${doc.id}')">✗ Decline</button>
+                                <button class="accept-btn" onclick="acceptChallenge('${doc.id}', '${invitation.fromUid}')">âœ“ Accept</button>
+                                <button class="decline-btn" onclick="declineChallenge('${doc.id}')">âœ— Decline</button>
                             </div>
                         `;
                         incomingList.appendChild(invitationCard);
@@ -8227,11 +8550,11 @@
                         invitationCard.className = 'outgoing-invitation-card';
                         invitationCard.innerHTML = `
                             <div class="outgoing-invitation-info">
-                                <div class="avatar">${invitation.toAvatar || '😊'}</div>
+                                <div class="avatar">${invitation.toAvatar || 'ðŸ˜Š'}</div>
                                 <div>
                                     <h4 style="margin: 0; color: #333;">Challenging ${invitation.toUsername}</h4>
                                     <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">
-                                        ${invitation.variant === '36s-elite' ? '36s Elite' : '36s Supreme'} • Waiting for response...
+                                        ${invitation.variant === '36s-elite' ? '36s Elite' : '36s Supreme'} â€¢ Waiting for response...
                                     </p>
                                 </div>
                             </div>
@@ -8339,8 +8662,8 @@
                 const p2Data = p2Doc.data();
 
                 // Add pro badge to usernames if applicable
-                const p1Username = (p1Data.isPro ? '⭐ ' : '') + p1Data.username;
-                const p2Username = (p2Data.isPro ? '⭐ ' : '') + p2Data.username;
+                const p1Username = (p1Data.isPro ? 'â­ ' : '') + p1Data.username;
+                const p2Username = (p2Data.isPro ? 'â­ ' : '') + p2Data.username;
 
                 // Create game document
                 const gameRef = await db.collection('games').add({
@@ -8358,6 +8681,8 @@
                         color: 'B',
                         isPro: p2Data.isPro || false
                     },
+                    whiteUid: player1Id,
+                    blackUid: player2Id,
                     currentTurn: 'W',
                     status: 'active',
                     variant: variant,
@@ -8375,35 +8700,528 @@
             }
         }
 
+        function switchLeaderboardType(type) {
+            currentLeaderboardType = type;
+
+            // Update tab styling
+            document.querySelectorAll('.leaderboard-type-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Reload leaderboard
+            loadLeaderboard();
+        }
+
+        function switchLeaderboardPeriod(period) {
+            currentLeaderboardPeriod = period;
+
+            // Update tab styling
+            document.querySelectorAll('.leaderboard-period-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Reload leaderboard
+            loadLeaderboard();
+        }
+
         async function loadLeaderboard() {
             try {
-                const snapshot = await db.collection('users')
-                    .orderBy('stats.wins', 'desc')
-                    .limit(10)
-                    .get();
+                const snapshot = await db.collection('users').get();
+                const now = new Date();
+                const currentYear = now.getFullYear();
+                const currentMonth = now.getMonth();
 
+                const players = [];
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+
+                    // Initialize stats if missing
+                    const standardStats = data.standardStats || { wins: 0, losses: 0, draws: 0, gamePoints: 0, scorePoints: 0 };
+                    const proStats = data.proStats || { wins: 0, losses: 0, draws: 0, gamePoints: 0, scorePoints: 0 };
+
+                    // Filter by time period if needed
+                    // For now, use all-time. Add time filtering logic later.
+
+                    players.push({
+                        uid: doc.id,
+                        username: data.username || 'Anonymous',
+                        avatar: data.avatar || 'ðŸ‘¤',
+                        country: data.country || '',
+                        standardStats,
+                        proStats
+                    });
+                });
+
+                // Update table header based on leaderboard type
+                const thead = document.getElementById('leaderboard-thead');
+                if (currentLeaderboardType === 'combined') {
+                    thead.innerHTML = `
+                        <tr>
+                            <th>Position</th>
+                            <th>Player</th>
+                            <th>W</th>
+                            <th>D</th>
+                            <th>L</th>
+                            <th>GP</th>
+                            <th>HB</th>
+                            <th>SP</th>
+                        </tr>
+                    `;
+                } else {
+                    thead.innerHTML = `
+                        <tr>
+                            <th>Position</th>
+                            <th>Player</th>
+                            <th>W</th>
+                            <th>D</th>
+                            <th>L</th>
+                            <th>GP</th>
+                            <th>SP</th>
+                        </tr>
+                    `;
+                }
+
+                // Sort based on leaderboard type
+                let sortedPlayers = [];
+                if (currentLeaderboardType === 'standard') {
+                    sortedPlayers = players.sort((a, b) => {
+                        const pointsDiff = b.standardStats.gamePoints - a.standardStats.gamePoints;
+                        if (pointsDiff !== 0) return pointsDiff;
+                        return b.standardStats.scorePoints - a.standardStats.scorePoints;
+                    });
+                } else if (currentLeaderboardType === 'pro') {
+                    sortedPlayers = players.sort((a, b) => {
+                        const pointsDiff = b.proStats.gamePoints - a.proStats.gamePoints;
+                        if (pointsDiff !== 0) return pointsDiff;
+                        return b.proStats.scorePoints - a.proStats.scorePoints;
+                    });
+                } else { // combined
+                    sortedPlayers = players.map(p => {
+                        const standardRank = getRankInfo(p.standardStats.gamePoints, 'standard');
+                        const proRank = getRankInfo(p.proStats.gamePoints, 'pro');
+                        const totalHonorBonus = standardRank.honorBonus + proRank.honorBonus;
+                        const combinedScore = p.standardStats.gamePoints + p.proStats.gamePoints +
+                                             totalHonorBonus;
+                        const combinedScorePoints = p.standardStats.scorePoints + p.proStats.scorePoints;
+                        return {
+                            ...p,
+                            combinedScore,
+                            combinedScorePoints,
+                            totalHonorBonus,
+                            standardRank,
+                            proRank
+                        };
+                    }).sort((a, b) => {
+                        const scoreDiff = b.combinedScore - a.combinedScore;
+                        if (scoreDiff !== 0) return scoreDiff;
+                        return b.combinedScorePoints - a.combinedScorePoints;
+                    });
+                }
+
+                // Display leaderboard
                 const tbody = document.getElementById('leaderboard-tbody');
                 tbody.innerHTML = '';
 
-                snapshot.docs.forEach((doc, index) => {
-                    const data = doc.data();
-                    const countryFlag = data.country ? getCountryFlag(data.country) + ' ' : '';
+                const topPlayers = sortedPlayers.slice(0, 10);
+                const colspan = currentLeaderboardType === 'combined' ? '8' : '7';
+
+                topPlayers.forEach((player, index) => {
+                    const countryFlag = player.country ? getCountryFlag(player.country) + ' ' : '';
                     const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${countryFlag}${data.avatar} ${data.username}</td>
-                        <td>${data.stats.wins}</td>
-                        <td>${data.stats.totalPoints}</td>
-                    `;
+
+                    if (currentLeaderboardType === 'standard') {
+                        const stats = player.standardStats;
+                        const rank = getRankInfo(stats.gamePoints, 'standard');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${countryFlag}${rank.emoji} ${player.avatar} ${player.username}</td>
+                            <td>${stats.wins}</td>
+                            <td>${stats.draws}</td>
+                            <td>${stats.losses}</td>
+                            <td>${stats.gamePoints}</td>
+                            <td>${stats.scorePoints}</td>
+                        `;
+                    } else if (currentLeaderboardType === 'pro') {
+                        const stats = player.proStats;
+                        const rank = getRankInfo(stats.gamePoints, 'pro');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${countryFlag}${rank.emoji} ${player.avatar} ${player.username}</td>
+                            <td>${stats.wins}</td>
+                            <td>${stats.draws}</td>
+                            <td>${stats.losses}</td>
+                            <td>${stats.gamePoints}</td>
+                            <td>${stats.scorePoints}</td>
+                        `;
+                    } else { // combined
+                        const totalGP = player.standardStats.gamePoints + player.proStats.gamePoints;
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${countryFlag}${player.standardRank.emoji}+${player.proRank.emoji} ${player.avatar} ${player.username}</td>
+                            <td>${player.standardStats.wins + player.proStats.wins}</td>
+                            <td>${player.standardStats.draws + player.proStats.draws}</td>
+                            <td>${player.standardStats.losses + player.proStats.losses}</td>
+                            <td>${totalGP}</td>
+                            <td>${player.totalHonorBonus}</td>
+                            <td>${player.combinedScorePoints}</td>
+                        `;
+                    }
                     tbody.appendChild(row);
                 });
 
-                if (snapshot.empty) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#666;">No players yet</td></tr>';
+                if (topPlayers.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="${colspan}" style="text-align:center; color:#666;">No players yet</td></tr>`;
                 }
             } catch (error) {
                 console.error('Error loading leaderboard:', error);
             }
+        }
+
+        // Main tab switching for leaderboards
+        function switchLeaderboardMainTab(tab) {
+            currentLeaderboardMainTab = tab;
+
+            // Update main tab styling
+            document.querySelectorAll('.leaderboard-main-tab').forEach(tabBtn => {
+                tabBtn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Hide all views
+            document.getElementById('leaderboard-top-players-view').style.display = 'none';
+            document.getElementById('leaderboard-you-view').style.display = 'none';
+            document.getElementById('leaderboard-friends-view').style.display = 'none';
+
+            // Show selected view
+            if (tab === 'top-players') {
+                document.getElementById('leaderboard-top-players-view').style.display = 'block';
+                loadLeaderboard();
+            } else if (tab === 'you') {
+                document.getElementById('leaderboard-you-view').style.display = 'block';
+                loadYouLeaderboard();
+            } else if (tab === 'friends') {
+                document.getElementById('leaderboard-friends-view').style.display = 'block';
+                loadFriendsLeaderboard();
+            }
+        }
+
+        // Load "You" leaderboard showing current user's positions
+        async function loadYouLeaderboard() {
+            if (!currentUser) {
+                document.getElementById('you-leaderboard-content').innerHTML =
+                    '<p style="text-align:center; color:#666; padding:20px;">Please log in to view your rankings.</p>';
+                return;
+            }
+
+            try {
+                const snapshot = await db.collection('users').get();
+                const players = [];
+
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const standardStats = data.standardStats || { wins: 0, losses: 0, draws: 0, gamePoints: 0, scorePoints: 0 };
+                    const proStats = data.proStats || { wins: 0, losses: 0, draws: 0, gamePoints: 0, scorePoints: 0 };
+
+                    players.push({
+                        uid: doc.id,
+                        username: data.username || 'Anonymous',
+                        avatar: data.avatar || 'ðŸ‘¤',
+                        country: data.country || '',
+                        standardStats,
+                        proStats
+                    });
+                });
+
+                let content = '';
+
+                // Standard leaderboard position
+                const standardSorted = [...players].sort((a, b) => {
+                    const pointsDiff = b.standardStats.gamePoints - a.standardStats.gamePoints;
+                    if (pointsDiff !== 0) return pointsDiff;
+                    return b.standardStats.scorePoints - a.standardStats.scorePoints;
+                });
+                const standardPosition = standardSorted.findIndex(p => p.uid === currentUser.uid) + 1;
+                const standardPlayer = standardSorted.find(p => p.uid === currentUser.uid);
+
+                // Pro leaderboard position
+                const proSorted = [...players].sort((a, b) => {
+                    const pointsDiff = b.proStats.gamePoints - a.proStats.gamePoints;
+                    if (pointsDiff !== 0) return pointsDiff;
+                    return b.proStats.scorePoints - a.proStats.scorePoints;
+                });
+                const proPosition = proSorted.findIndex(p => p.uid === currentUser.uid) + 1;
+                const proPlayer = proSorted.find(p => p.uid === currentUser.uid);
+
+                // Combined leaderboard position
+                const combinedSorted = players.map(p => {
+                    const standardRank = getRankInfo(p.standardStats.gamePoints, 'standard');
+                    const proRank = getRankInfo(p.proStats.gamePoints, 'pro');
+                    const totalHonorBonus = standardRank.honorBonus + proRank.honorBonus;
+                    const combinedScore = p.standardStats.gamePoints + p.proStats.gamePoints + totalHonorBonus;
+                    const combinedScorePoints = p.standardStats.scorePoints + p.proStats.scorePoints;
+                    return { ...p, combinedScore, combinedScorePoints, totalHonorBonus, standardRank, proRank };
+                }).sort((a, b) => {
+                    const scoreDiff = b.combinedScore - a.combinedScore;
+                    if (scoreDiff !== 0) return scoreDiff;
+                    return b.combinedScorePoints - a.combinedScorePoints;
+                });
+                const combinedPosition = combinedSorted.findIndex(p => p.uid === currentUser.uid) + 1;
+                const combinedPlayer = combinedSorted.find(p => p.uid === currentUser.uid);
+
+                if (standardPlayer) {
+                    const standardRank = getRankInfo(standardPlayer.standardStats.gamePoints, 'standard');
+                    const countryFlag = standardPlayer.country ? getCountryFlag(standardPlayer.country) + ' ' : '';
+
+                    content += '<h4>Standard Leaderboard</h4>';
+                    content += '<table class="leaderboard-table" style="margin-bottom: 20px;"><thead><tr><th>Position</th><th>Player</th><th>W</th><th>D</th><th>L</th><th>GP</th><th>SP</th></tr></thead><tbody>';
+                    content += `<tr>
+                        <td>${standardPosition}</td>
+                        <td>${countryFlag}${standardRank.emoji} ${standardPlayer.avatar} ${standardPlayer.username}</td>
+                        <td>${standardPlayer.standardStats.wins}</td>
+                        <td>${standardPlayer.standardStats.draws}</td>
+                        <td>${standardPlayer.standardStats.losses}</td>
+                        <td>${standardPlayer.standardStats.gamePoints}</td>
+                        <td>${standardPlayer.standardStats.scorePoints}</td>
+                    </tr>`;
+                    content += '</tbody></table>';
+                }
+
+                if (proPlayer) {
+                    const proRank = getRankInfo(proPlayer.proStats.gamePoints, 'pro');
+                    const countryFlag = proPlayer.country ? getCountryFlag(proPlayer.country) + ' ' : '';
+
+                    content += '<h4>Pro Leaderboard</h4>';
+                    content += '<table class="leaderboard-table" style="margin-bottom: 20px;"><thead><tr><th>Position</th><th>Player</th><th>W</th><th>D</th><th>L</th><th>GP</th><th>SP</th></tr></thead><tbody>';
+                    content += `<tr>
+                        <td>${proPosition}</td>
+                        <td>${countryFlag}${proRank.emoji} ${proPlayer.avatar} ${proPlayer.username}</td>
+                        <td>${proPlayer.proStats.wins}</td>
+                        <td>${proPlayer.proStats.draws}</td>
+                        <td>${proPlayer.proStats.losses}</td>
+                        <td>${proPlayer.proStats.gamePoints}</td>
+                        <td>${proPlayer.proStats.scorePoints}</td>
+                    </tr>`;
+                    content += '</tbody></table>';
+                }
+
+                if (combinedPlayer) {
+                    const countryFlag = combinedPlayer.country ? getCountryFlag(combinedPlayer.country) + ' ' : '';
+                    const totalGP = combinedPlayer.standardStats.gamePoints + combinedPlayer.proStats.gamePoints;
+
+                    content += '<h4>Combined Leaderboard</h4>';
+                    content += '<table class="leaderboard-table"><thead><tr><th>Position</th><th>Player</th><th>W</th><th>D</th><th>L</th><th>GP</th><th>HB</th><th>SP</th></tr></thead><tbody>';
+                    content += `<tr>
+                        <td>${combinedPosition}</td>
+                        <td>${countryFlag}${combinedPlayer.standardRank.emoji}+${combinedPlayer.proRank.emoji} ${combinedPlayer.avatar} ${combinedPlayer.username}</td>
+                        <td>${combinedPlayer.standardStats.wins + combinedPlayer.proStats.wins}</td>
+                        <td>${combinedPlayer.standardStats.draws + combinedPlayer.proStats.draws}</td>
+                        <td>${combinedPlayer.standardStats.losses + combinedPlayer.proStats.losses}</td>
+                        <td>${totalGP}</td>
+                        <td>${combinedPlayer.totalHonorBonus}</td>
+                        <td>${combinedPlayer.combinedScorePoints}</td>
+                    </tr>`;
+                    content += '</tbody></table>';
+                }
+
+                document.getElementById('you-leaderboard-content').innerHTML = content;
+            } catch (error) {
+                console.error('Error loading you leaderboard:', error);
+                document.getElementById('you-leaderboard-content').innerHTML =
+                    '<p style="text-align:center; color:#f44336; padding:20px;">Error loading your rankings.</p>';
+            }
+        }
+
+        function switchLeaderboardPeriodYou(period) {
+            currentLeaderboardPeriodYou = period;
+            document.querySelectorAll('.leaderboard-period-tab-you').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            loadYouLeaderboard();
+        }
+
+        // Load Friends leaderboard
+        async function loadFriendsLeaderboard() {
+            if (!currentUser) {
+                document.getElementById('leaderboard-friends-tbody').innerHTML =
+                    '<tr><td colspan="7" style="text-align:center; color:#666;">Please log in to view friends.</td></tr>';
+                return;
+            }
+
+            try {
+                // Get current user's friends list
+                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                const userData = userDoc.data();
+                const friendIds = userData.friends || [];
+
+                if (friendIds.length === 0) {
+                    const colspan = currentLeaderboardTypeFriends === 'combined' ? '8' : '7';
+                    document.getElementById('leaderboard-friends-tbody').innerHTML =
+                        `<tr><td colspan="${colspan}" style="text-align:center; color:#666;">You don't have any friends yet. Add friends from your Profile!</td></tr>`;
+                    return;
+                }
+
+                // Fetch all users
+                const snapshot = await db.collection('users').get();
+                const allPlayers = [];
+
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const standardStats = data.standardStats || { wins: 0, losses: 0, draws: 0, gamePoints: 0, scorePoints: 0 };
+                    const proStats = data.proStats || { wins: 0, losses: 0, draws: 0, gamePoints: 0, scorePoints: 0 };
+
+                    allPlayers.push({
+                        uid: doc.id,
+                        username: data.username || 'Anonymous',
+                        avatar: data.avatar || 'ðŸ‘¤',
+                        country: data.country || '',
+                        standardStats,
+                        proStats
+                    });
+                });
+
+                // Filter to only friends (including current user)
+                const friendPlayers = allPlayers.filter(p => friendIds.includes(p.uid) || p.uid === currentUser.uid);
+
+                // Update table header based on type
+                const theadFriends = document.getElementById('leaderboard-friends-thead');
+                if (currentLeaderboardTypeFriends === 'combined') {
+                    theadFriends.innerHTML = `
+                        <tr>
+                            <th>Position</th>
+                            <th>Player</th>
+                            <th>W</th>
+                            <th>D</th>
+                            <th>L</th>
+                            <th>GP</th>
+                            <th>HB</th>
+                            <th>SP</th>
+                        </tr>
+                    `;
+                } else {
+                    theadFriends.innerHTML = `
+                        <tr>
+                            <th>Position</th>
+                            <th>Player</th>
+                            <th>W</th>
+                            <th>D</th>
+                            <th>L</th>
+                            <th>GP</th>
+                            <th>SP</th>
+                        </tr>
+                    `;
+                }
+
+                // Sort friends based on type
+                let sortedFriends = [];
+                if (currentLeaderboardTypeFriends === 'standard') {
+                    sortedFriends = friendPlayers.sort((a, b) => {
+                        const pointsDiff = b.standardStats.gamePoints - a.standardStats.gamePoints;
+                        if (pointsDiff !== 0) return pointsDiff;
+                        return b.standardStats.scorePoints - a.standardStats.scorePoints;
+                    });
+                } else if (currentLeaderboardTypeFriends === 'pro') {
+                    sortedFriends = friendPlayers.sort((a, b) => {
+                        const pointsDiff = b.proStats.gamePoints - a.proStats.gamePoints;
+                        if (pointsDiff !== 0) return pointsDiff;
+                        return b.proStats.scorePoints - a.proStats.scorePoints;
+                    });
+                } else { // combined
+                    sortedFriends = friendPlayers.map(p => {
+                        const standardRank = getRankInfo(p.standardStats.gamePoints, 'standard');
+                        const proRank = getRankInfo(p.proStats.gamePoints, 'pro');
+                        const totalHonorBonus = standardRank.honorBonus + proRank.honorBonus;
+                        const combinedScore = p.standardStats.gamePoints + p.proStats.gamePoints + totalHonorBonus;
+                        const combinedScorePoints = p.standardStats.scorePoints + p.proStats.scorePoints;
+                        return { ...p, combinedScore, combinedScorePoints, totalHonorBonus, standardRank, proRank };
+                    }).sort((a, b) => {
+                        const scoreDiff = b.combinedScore - a.combinedScore;
+                        if (scoreDiff !== 0) return scoreDiff;
+                        return b.combinedScorePoints - a.combinedScorePoints;
+                    });
+                }
+
+                // Display friends leaderboard
+                const tbody = document.getElementById('leaderboard-friends-tbody');
+                tbody.innerHTML = '';
+                const colspan = currentLeaderboardTypeFriends === 'combined' ? '8' : '7';
+
+                sortedFriends.forEach((player, index) => {
+                    const countryFlag = player.country ? getCountryFlag(player.country) + ' ' : '';
+                    const row = document.createElement('tr');
+
+                    // Highlight current user
+                    if (player.uid === currentUser.uid) {
+                        row.style.background = '#e8f5e9';
+                        row.style.fontWeight = 'bold';
+                    }
+
+                    if (currentLeaderboardTypeFriends === 'standard') {
+                        const stats = player.standardStats;
+                        const rank = getRankInfo(stats.gamePoints, 'standard');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${countryFlag}${rank.emoji} ${player.avatar} ${player.username}${player.uid === currentUser.uid ? ' (You)' : ''}</td>
+                            <td>${stats.wins}</td>
+                            <td>${stats.draws}</td>
+                            <td>${stats.losses}</td>
+                            <td>${stats.gamePoints}</td>
+                            <td>${stats.scorePoints}</td>
+                        `;
+                    } else if (currentLeaderboardTypeFriends === 'pro') {
+                        const stats = player.proStats;
+                        const rank = getRankInfo(stats.gamePoints, 'pro');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${countryFlag}${rank.emoji} ${player.avatar} ${player.username}${player.uid === currentUser.uid ? ' (You)' : ''}</td>
+                            <td>${stats.wins}</td>
+                            <td>${stats.draws}</td>
+                            <td>${stats.losses}</td>
+                            <td>${stats.gamePoints}</td>
+                            <td>${stats.scorePoints}</td>
+                        `;
+                    } else { // combined
+                        const totalGP = player.standardStats.gamePoints + player.proStats.gamePoints;
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${countryFlag}${player.standardRank.emoji}+${player.proRank.emoji} ${player.avatar} ${player.username}${player.uid === currentUser.uid ? ' (You)' : ''}</td>
+                            <td>${player.standardStats.wins + player.proStats.wins}</td>
+                            <td>${player.standardStats.draws + player.proStats.draws}</td>
+                            <td>${player.standardStats.losses + player.proStats.losses}</td>
+                            <td>${totalGP}</td>
+                            <td>${player.totalHonorBonus}</td>
+                            <td>${player.combinedScorePoints}</td>
+                        `;
+                    }
+                    tbody.appendChild(row);
+                });
+
+                if (sortedFriends.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="${colspan}" style="text-align:center; color:#666;">No friends found</td></tr>`;
+                }
+            } catch (error) {
+                console.error('Error loading friends leaderboard:', error);
+            }
+        }
+
+        function switchLeaderboardTypeFriends(type) {
+            currentLeaderboardTypeFriends = type;
+            document.querySelectorAll('.leaderboard-type-tab-friends').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            loadFriendsLeaderboard();
+        }
+
+        function switchLeaderboardPeriodFriends(period) {
+            currentLeaderboardPeriodFriends = period;
+            document.querySelectorAll('.leaderboard-period-tab-friends').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            loadFriendsLeaderboard();
         }
 
         // Country name lookup
@@ -8509,7 +9327,7 @@
                 listElement.innerHTML = displayCountries.map(([ code, count], index) => {
                     const flag = getCountryFlag(code);
                     const name = getCountryName(code);
-                    const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+                    const rankEmoji = index === 0 ? 'ðŸ¥‡' : index === 1 ? 'ðŸ¥ˆ' : index === 2 ? 'ðŸ¥‰' : '';
 
                     return `
                         <div class="country-item">
@@ -8923,7 +9741,7 @@
                     });
                 } else {
                     await updateUserStats(myResult, { gameScore: myScore, ladderPoints, reason: result.reason || '' });
-                    await updatePlatformTotals();
+                    await updatePlatformTotals({ variant: gameData ? gameData.variant : '' });
                 }
             } catch (error) {
                 console.error('Error recording completion stats:', error);
@@ -9120,18 +9938,18 @@
 
                 <h2>Game Variants</h2>
                 <ul>
-                    <li><strong>24's (Standard):</strong> 10×14 board, 24 pieces per side. Perfect for learning the fundamentals with Infantry, Cavalry, Trolls, Dragons, Wizards, Guards, a Champion, and King.</li>
-                    <li><strong>36's (Advanced):</strong> 10×14 board, 36 pieces per side. Adds Archers, Ballistas, and Ogres for expanded tactical options.</li>
-                    <li><strong>36's (Expert):</strong> 10×14 board, 36 pieces per side. Includes all Advanced pieces plus Mercenaries and Elephantry with powerful special abilities.</li>
-                    <li><strong>36's (Elite):</strong> 10×14 board, 36 pieces per side. Adds Necromancers, Liches, and Zombies enabling advanced summoning strategies and dark magic.</li>
-                    <li><strong>36's (Supreme):</strong> 10×14 board with the Elite roster. Unlocks experimental spellcraft including Energy Blast, Sacrifice spells, and Champion-summoned Huntsmen.</li>
-                    <li><strong>24's Close-Combat Battle:</strong> Compact 8×12 board for fast-paced aggressive gameplay with immediate piece-to-piece contact.</li>
+                    <li><strong>24's (Standard):</strong> 10Ã—14 board, 24 pieces per side. Perfect for learning the fundamentals with Infantry, Cavalry, Trolls, Dragons, Wizards, Guards, a Champion, and King.</li>
+                    <li><strong>36's (Advanced):</strong> 10Ã—14 board, 36 pieces per side. Adds Archers, Ballistas, and Ogres for expanded tactical options.</li>
+                    <li><strong>36's (Expert):</strong> 10Ã—14 board, 36 pieces per side. Includes all Advanced pieces plus Mercenaries and Elephantry with powerful special abilities.</li>
+                    <li><strong>36's (Elite):</strong> 10Ã—14 board, 36 pieces per side. Adds Necromancers, Liches, and Zombies enabling advanced summoning strategies and dark magic.</li>
+                    <li><strong>36's (Supreme):</strong> 10Ã—14 board with the Elite roster. Unlocks experimental spellcraft including Energy Blast, Sacrifice spells, and Champion-summoned Huntsmen.</li>
+                    <li><strong>24's Close-Combat Battle:</strong> Compact 8Ã—12 board for fast-paced aggressive gameplay with immediate piece-to-piece contact.</li>
                 </ul>
 
                 <h2>Victory Conditions</h2>
                 <ul>
                     <li><strong>Regicide:</strong> Capture the enemy King for instant victory (most common).</li>
-                    <li><strong>Supremacy:</strong> Capture the enemy Champion, reduce their score to ≤1 point, and move your King or Champion to their back row.</li>
+                    <li><strong>Supremacy:</strong> Capture the enemy Champion, reduce their score to â‰¤1 point, and move your King or Champion to their back row.</li>
                     <li><strong>Relentless:</strong> Activate 3 reinforcements using Infantry while your opponent has zero reinforcements available.</li>
                     <li><strong>Score Victory:</strong> Have the highest score when the game timer expires.</li>
                 </ul>
@@ -9156,7 +9974,7 @@
                 <ul>
                     <li>You start each round with <strong>3 move points</strong> (reduced to 2 if your Champion is captured).</li>
                     <li>Basic moves cost 1 point, special abilities cost 1-3 points depending on power.</li>
-                    <li>Plan your actions carefully—once you spend your points, your turn ends.</li>
+                    <li>Plan your actions carefullyâ€”once you spend your points, your turn ends.</li>
                 </ul>
 
                 <h3>Bonus Moves & Penalties</h3>
@@ -9177,7 +9995,7 @@
                 <ul>
                     <li>Infantry reinforcements: Return any captured piece.</li>
                     <li>Champion/King reinforcements: In Expert+ variants, you can select Ballistas, Elephantry, or Mercenaries for immediate tactical pressure.</li>
-                    <li>Strategic tip: Reinforcements can swing the game—protect pieces making the journey to the back row!</li>
+                    <li>Strategic tip: Reinforcements can swing the gameâ€”protect pieces making the journey to the back row!</li>
                 </ul>
 
                 <h2>Special Abilities by Piece</h2>
@@ -9192,7 +10010,7 @@
                     <li><strong>Wizard - Teleport:</strong> Instantly move to any empty square of the same color (costs 2 points, usable twice per game).</li>
                     <li><strong>Wizard - Teleport Swap:</strong> Swap positions with an enemy Wizard on the same color square (costs 2 points, usable once per game).</li>
                     <li><strong>Necromancer:</strong> Can summon Zombies and Spectres near Dark Void tiles (costs 2 points, requires coin flip). Can also create Dark Void squares (costs 2 points).</li>
-                    <li><strong>Lich:</strong> Requires souls from captures to unlock abilities. Can use Soulstride (2-square leap) after 2 captures and Soul Blast (ranged attack) with increasing range per 3 souls collected. Immune to most magical attacks—requires Wizards, Necromancers, or Spectres to capture.</li>
+                    <li><strong>Lich:</strong> Requires souls from captures to unlock abilities. Can use Soulstride (2-square leap) after 2 captures and Soul Blast (ranged attack) with increasing range per 3 souls collected. Immune to most magical attacksâ€”requires Wizards, Necromancers, or Spectres to capture.</li>
                 </ul>
 
                 <h3>Heavy Assault</h3>
@@ -9200,7 +10018,7 @@
                     <li><strong>Cavalry - Charge:</strong> Move unlimited squares in one straight direction (costs 2 points, usable once per game). Great for surprise attacks or escaping.</li>
                     <li><strong>Dragon - Inferno:</strong> Move 1 square and capture all adjacent enemies in a devastating area attack (costs 2 points, usable once per game).</li>
                     <li><strong>Dragon - Strafe:</strong> Move then attack diagonally (usable twice per game).</li>
-                    <li><strong>Ogre - Rage:</strong> Rush 2 squares straight (horizontal or vertical) and capture every enemy in a 2×3 corridor along the path (costs 2 points, usable once per game).</li>
+                    <li><strong>Ogre - Rage:</strong> Rush 2 squares straight (horizontal or vertical) and capture every enemy in a 2Ã—3 corridor along the path (costs 2 points, usable once per game).</li>
                     <li><strong>Elephantry - Charge:</strong> One-time 3-square charge that captures all enemies along the path (devastating when lanes are clear).</li>
                     <li><strong>Elephantry - Triple Shot:</strong> Fire three coin-flip attacks at 2-square range without moving (costs 2 points).</li>
                     <li><strong>Elephantry - Move+Shoot:</strong> Move then shoot in one action (costs 2 points).</li>
@@ -9219,7 +10037,7 @@
                 <h3>Elite Units</h3>
                 <ul>
                     <li><strong>Mercenary - Bonus Turn:</strong> After a successful capture, flip a coin. If you win, continue moving with this piece and ignore move point costs for the rest of the round (usable once per round). High risk, high reward!</li>
-                    <li><strong>Huntsman (Supreme only):</strong> Champions can summon Huntsmen (max 2 active, 6 total per game). Huntsmen move 1 square normally or spend 2 points for Burst—flip four coins to chain up to 4 movement steps. Opponents need coin flips to capture Huntsmen, but Huntsmen auto-capture Zombies.</li>
+                    <li><strong>Huntsman (Supreme only):</strong> Champions can summon Huntsmen (max 2 active, 6 total per game). Huntsmen move 1 square normally or spend 2 points for Burstâ€”flip four coins to chain up to 4 movement steps. Opponents need coin flips to capture Huntsmen, but Huntsmen auto-capture Zombies.</li>
                 </ul>
 
                 <h2>Advanced Mechanics</h2>
@@ -9236,7 +10054,7 @@
                 <p>When you earn a <strong>Moral Boost</strong> (by winning multiple coin flips or achieving specific thresholds), your Champion or King can unleash Barrage (costs 2 points, requires Champion alive).</p>
                 <ul>
                     <li>Targets six random squares across the board.</li>
-                    <li>Each square is resolved with an independent coin flip—success captures the piece.</li>
+                    <li>Each square is resolved with an independent coin flipâ€”success captures the piece.</li>
                     <li><strong>Warning:</strong> Barrage can hit your own pieces! Use carefully.</li>
                     <li>AI opponents can also use Barrage when they earn Moral Boosts.</li>
                 </ul>
@@ -9251,9 +10069,9 @@
 
                 <h2>Strategy Tips</h2>
                 <ul>
-                    <li><strong>Protect Your Royals:</strong> Losing your King ends the game. Losing your Champion reduces your move points to 2 per round and disables Barrage—protect them at all costs!</li>
-                    <li><strong>Plan Your Move Points:</strong> With only 3 points per round, every action matters. Think ahead—can you afford that special ability or should you save points for critical captures?</li>
-                    <li><strong>Save Special Abilities:</strong> Most special abilities can only be used once or twice per game. Don't waste them on low-value targets—save them for game-changing moments.</li>
+                    <li><strong>Protect Your Royals:</strong> Losing your King ends the game. Losing your Champion reduces your move points to 2 per round and disables Barrageâ€”protect them at all costs!</li>
+                    <li><strong>Plan Your Move Points:</strong> With only 3 points per round, every action matters. Think aheadâ€”can you afford that special ability or should you save points for critical captures?</li>
+                    <li><strong>Save Special Abilities:</strong> Most special abilities can only be used once or twice per game. Don't waste them on low-value targetsâ€”save them for game-changing moments.</li>
                     <li><strong>Mind the Timers:</strong> Both game and round timers are ticking. Running out of time forfeits your turn or can lead to time-based defeat. Stay focused!</li>
                     <li><strong>Control the Back Row:</strong> Getting Infantry, Champions, or your King to the enemy back row without capturing earns reinforcements. Plan safe paths to resurrect your fallen pieces.</li>
                     <li><strong>Value High-Point Targets:</strong> Prioritize capturing high-value pieces like Wizards (9), Necromancers (10), Mercenaries (10), Elephantry (11), and Champions (12) to boost your score.</li>
@@ -9261,7 +10079,7 @@
                     <li><strong>Avoid Despair:</strong> Losing 2+ non-Infantry pieces in a round costs you 2 moves next round. Play defensively when exposed.</li>
                     <li><strong>Use Coin Flips Wisely:</strong> Many advanced abilities require coin flips. Don't gamble important pieces unless you can afford to lose the flip.</li>
                     <li><strong>Study Your Opponent:</strong> Different AI personalities (Berserker, Guardian, Tactician, Sorcerer, Nomad) play differently. Adapt your strategy!</li>
-                    <li><strong>Dark Void Dangers:</strong> In Elite/Supreme variants, avoid clustering near Dark Void tiles—all captures adjacent to them require coin flips.</li>
+                    <li><strong>Dark Void Dangers:</strong> In Elite/Supreme variants, avoid clustering near Dark Void tilesâ€”all captures adjacent to them require coin flips.</li>
                     <li><strong>Friendly Fire Warning:</strong> Barrage, Dragon Inferno, and some spell effects can hit your own pieces. Position carefully before unleashing area attacks!</li>
                 </ul>
             `;
@@ -9332,18 +10150,18 @@
 
                 <h2>Game Variants</h2>
                 <ul>
-                    <li><strong>24's (Standard):</strong> 10×14 board, 24 pieces per side. Perfect for learning the fundamentals with Infantry, Cavalry, Trolls, Dragons, Wizards, Guards, a Champion, and King.</li>
-                    <li><strong>36's (Advanced):</strong> 10×14 board, 36 pieces per side. Adds Archers, Ballistas, and Ogres for expanded tactical options.</li>
-                    <li><strong>36's (Expert):</strong> 10×14 board, 36 pieces per side. Includes all Advanced pieces plus Mercenaries and Elephantry with powerful special abilities.</li>
-                    <li><strong>36's (Elite):</strong> 10×14 board, 36 pieces per side. Adds Necromancers, Liches, and Zombies enabling advanced summoning strategies and dark magic.</li>
-                    <li><strong>36's (Supreme):</strong> 10×14 board with the Elite roster. Unlocks experimental spellcraft including Energy Blast, Sacrifice spells, and Champion-summoned Huntsmen.</li>
-                    <li><strong>24's Close-Combat Battle:</strong> Compact 8×12 board for fast-paced aggressive gameplay with immediate piece-to-piece contact.</li>
+                    <li><strong>24's (Standard):</strong> 10Ã—14 board, 24 pieces per side. Perfect for learning the fundamentals with Infantry, Cavalry, Trolls, Dragons, Wizards, Guards, a Champion, and King.</li>
+                    <li><strong>36's (Advanced):</strong> 10Ã—14 board, 36 pieces per side. Adds Archers, Ballistas, and Ogres for expanded tactical options.</li>
+                    <li><strong>36's (Expert):</strong> 10Ã—14 board, 36 pieces per side. Includes all Advanced pieces plus Mercenaries and Elephantry with powerful special abilities.</li>
+                    <li><strong>36's (Elite):</strong> 10Ã—14 board, 36 pieces per side. Adds Necromancers, Liches, and Zombies enabling advanced summoning strategies and dark magic.</li>
+                    <li><strong>36's (Supreme):</strong> 10Ã—14 board with the Elite roster. Unlocks experimental spellcraft including Energy Blast, Sacrifice spells, and Champion-summoned Huntsmen.</li>
+                    <li><strong>24's Close-Combat Battle:</strong> Compact 8Ã—12 board for fast-paced aggressive gameplay with immediate piece-to-piece contact.</li>
                 </ul>
 
                 <h2>Victory Conditions</h2>
                 <ul>
                     <li><strong>Regicide:</strong> Capture the enemy King for instant victory (most common).</li>
-                    <li><strong>Supremacy:</strong> Capture the enemy Champion, reduce their score to ≤1 point, and move your King or Champion to their back row.</li>
+                    <li><strong>Supremacy:</strong> Capture the enemy Champion, reduce their score to â‰¤1 point, and move your King or Champion to their back row.</li>
                     <li><strong>Relentless:</strong> Activate 3 reinforcements using Infantry while your opponent has zero reinforcements available.</li>
                     <li><strong>Score Victory:</strong> Have the highest score when the game timer expires.</li>
                 </ul>
@@ -9368,7 +10186,7 @@
                 <ul>
                     <li>You start each round with <strong>3 move points</strong> (reduced to 2 if your Champion is captured).</li>
                     <li>Basic moves cost 1 point, special abilities cost 1-3 points depending on power.</li>
-                    <li>Plan your actions carefully—once you spend your points, your turn ends.</li>
+                    <li>Plan your actions carefullyâ€”once you spend your points, your turn ends.</li>
                 </ul>
 
                 <h3>Bonus Moves & Penalties</h3>
@@ -9389,7 +10207,7 @@
                 <ul>
                     <li>Infantry reinforcements: Return any captured piece.</li>
                     <li>Champion/King reinforcements: In Expert+ variants, you can select Ballistas, Elephantry, or Mercenaries for immediate tactical pressure.</li>
-                    <li>Strategic tip: Reinforcements can swing the game—protect pieces making the journey to the back row!</li>
+                    <li>Strategic tip: Reinforcements can swing the gameâ€”protect pieces making the journey to the back row!</li>
                 </ul>
 
                 <h2>Special Abilities by Piece</h2>
@@ -9404,7 +10222,7 @@
                     <li><strong>Wizard - Teleport:</strong> Instantly move to any empty square of the same color (costs 2 points, usable twice per game).</li>
                     <li><strong>Wizard - Teleport Swap:</strong> Swap positions with an enemy Wizard on the same color square (costs 2 points, usable once per game).</li>
                     <li><strong>Necromancer:</strong> Can summon Zombies and Spectres near Dark Void tiles (costs 2 points, requires coin flip). Can also create Dark Void squares (costs 2 points).</li>
-                    <li><strong>Lich:</strong> Requires souls from captures to unlock abilities. Can use Soulstride (2-square leap) after 2 captures and Soul Blast (ranged attack) with increasing range per 3 souls collected. Immune to most magical attacks—requires Wizards, Necromancers, or Spectres to capture.</li>
+                    <li><strong>Lich:</strong> Requires souls from captures to unlock abilities. Can use Soulstride (2-square leap) after 2 captures and Soul Blast (ranged attack) with increasing range per 3 souls collected. Immune to most magical attacksâ€”requires Wizards, Necromancers, or Spectres to capture.</li>
                 </ul>
 
                 <h3>Heavy Assault</h3>
@@ -9412,7 +10230,7 @@
                     <li><strong>Cavalry - Charge:</strong> Move unlimited squares in one straight direction (costs 2 points, usable once per game). Great for surprise attacks or escaping.</li>
                     <li><strong>Dragon - Inferno:</strong> Move 1 square and capture all adjacent enemies in a devastating area attack (costs 2 points, usable once per game).</li>
                     <li><strong>Dragon - Strafe:</strong> Move then attack diagonally (usable twice per game).</li>
-                    <li><strong>Ogre - Rage:</strong> Rush 2 squares straight (horizontal or vertical) and capture every enemy in a 2×3 corridor along the path (costs 2 points, usable once per game).</li>
+                    <li><strong>Ogre - Rage:</strong> Rush 2 squares straight (horizontal or vertical) and capture every enemy in a 2Ã—3 corridor along the path (costs 2 points, usable once per game).</li>
                     <li><strong>Elephantry - Charge:</strong> One-time 3-square charge that captures all enemies along the path (devastating when lanes are clear).</li>
                     <li><strong>Elephantry - Triple Shot:</strong> Fire three coin-flip attacks at 2-square range without moving (costs 2 points).</li>
                     <li><strong>Elephantry - Move+Shoot:</strong> Move then shoot in one action (costs 2 points).</li>
@@ -9431,7 +10249,7 @@
                 <h3>Elite Units</h3>
                 <ul>
                     <li><strong>Mercenary - Bonus Turn:</strong> After a successful capture, flip a coin. If you win, continue moving with this piece and ignore move point costs for the rest of the round (usable once per round). High risk, high reward!</li>
-                    <li><strong>Huntsman (Supreme only):</strong> Champions can summon Huntsmen (max 2 active, 6 total per game). Huntsmen move 1 square normally or spend 2 points for Burst—flip four coins to chain up to 4 movement steps. Opponents need coin flips to capture Huntsmen, but Huntsmen auto-capture Zombies.</li>
+                    <li><strong>Huntsman (Supreme only):</strong> Champions can summon Huntsmen (max 2 active, 6 total per game). Huntsmen move 1 square normally or spend 2 points for Burstâ€”flip four coins to chain up to 4 movement steps. Opponents need coin flips to capture Huntsmen, but Huntsmen auto-capture Zombies.</li>
                 </ul>
 
                 <h2>Advanced Mechanics</h2>
@@ -9448,7 +10266,7 @@
                 <p>When you earn a <strong>Moral Boost</strong> (by winning multiple coin flips or achieving specific thresholds), your Champion or King can unleash Barrage (costs 2 points, requires Champion alive).</p>
                 <ul>
                     <li>Targets six random squares across the board.</li>
-                    <li>Each square is resolved with an independent coin flip—success captures the piece.</li>
+                    <li>Each square is resolved with an independent coin flipâ€”success captures the piece.</li>
                     <li><strong>Warning:</strong> Barrage can hit your own pieces! Use carefully.</li>
                     <li>AI opponents can also use Barrage when they earn Moral Boosts.</li>
                 </ul>
@@ -9463,9 +10281,9 @@
 
                 <h2>Strategy Tips</h2>
                 <ul>
-                    <li><strong>Protect Your Royals:</strong> Losing your King ends the game. Losing your Champion reduces your move points to 2 per round and disables Barrage—protect them at all costs!</li>
-                    <li><strong>Plan Your Move Points:</strong> With only 3 points per round, every action matters. Think ahead—can you afford that special ability or should you save points for critical captures?</li>
-                    <li><strong>Save Special Abilities:</strong> Most special abilities can only be used once or twice per game. Don't waste them on low-value targets—save them for game-changing moments.</li>
+                    <li><strong>Protect Your Royals:</strong> Losing your King ends the game. Losing your Champion reduces your move points to 2 per round and disables Barrageâ€”protect them at all costs!</li>
+                    <li><strong>Plan Your Move Points:</strong> With only 3 points per round, every action matters. Think aheadâ€”can you afford that special ability or should you save points for critical captures?</li>
+                    <li><strong>Save Special Abilities:</strong> Most special abilities can only be used once or twice per game. Don't waste them on low-value targetsâ€”save them for game-changing moments.</li>
                     <li><strong>Mind the Timers:</strong> Both game and round timers are ticking. Running out of time forfeits your turn or can lead to time-based defeat. Stay focused!</li>
                     <li><strong>Control the Back Row:</strong> Getting Infantry, Champions, or your King to the enemy back row without capturing earns reinforcements. Plan safe paths to resurrect your fallen pieces.</li>
                     <li><strong>Value High-Point Targets:</strong> Prioritize capturing high-value pieces like Wizards (9), Necromancers (10), Mercenaries (10), Elephantry (11), and Champions (12) to boost your score.</li>
@@ -9473,7 +10291,7 @@
                     <li><strong>Avoid Despair:</strong> Losing 2+ non-Infantry pieces in a round costs you 2 moves next round. Play defensively when exposed.</li>
                     <li><strong>Use Coin Flips Wisely:</strong> Many advanced abilities require coin flips. Don't gamble important pieces unless you can afford to lose the flip.</li>
                     <li><strong>Study Your Opponent:</strong> Different AI personalities (Berserker, Guardian, Tactician, Sorcerer, Nomad) play differently. Adapt your strategy!</li>
-                    <li><strong>Dark Void Dangers:</strong> In Elite/Supreme variants, avoid clustering near Dark Void tiles—all captures adjacent to them require coin flips.</li>
+                    <li><strong>Dark Void Dangers:</strong> In Elite/Supreme variants, avoid clustering near Dark Void tilesâ€”all captures adjacent to them require coin flips.</li>
                     <li><strong>Friendly Fire Warning:</strong> Barrage, Dragon Inferno, and some spell effects can hit your own pieces. Position carefully before unleashing area attacks!</li>
                 </ul>
             `;
@@ -9715,7 +10533,7 @@
             const coinResult = document.getElementById('coin-result');
             // Reset coin to initial state
             coinResult.className = 'coin';
-            coinResult.textContent = '☠︎';
+            coinResult.textContent = 'â˜ ï¸Ž';
             coinResult.style.backgroundColor = '#666';
             coinResult.style.color = 'white';
 
@@ -10296,7 +11114,10 @@
             let logUpdated = false;
 
             if (roundScoreGain[player] >= HONOUR_THRESHOLD) {
-                nextRoundModifier[player] += HONOUR_BONUS;
+                pendingWarcryBonus[player] = (pendingWarcryBonus[player] || 0) + HONOUR_BONUS;
+                warcryReadyRound[player] = (warcryReadyRound[player] === null)
+                    ? roundCount + 1
+                    : Math.max(warcryReadyRound[player], roundCount + 1);
                 gameStats.warcryBonusCount[player]++;
                 gameLog.push(`${player === 'W' ? 'Player' : 'AI'} triggered Warcry bonus (+${HONOUR_BONUS} moves next round).`);
                 logUpdated = true;
@@ -10408,12 +11229,31 @@
             pruneFusilierShotTracking(player);
             const opponent = getOpponent(player);
             let modifier = nextRoundModifier[player] || 0;
+            let appliedWarcry = 0;
+            const pendingWarcry = pendingWarcryBonus[player] || 0;
+            const warcryReady = warcryReadyRound[player];
+            const warcryUnlocked = pendingWarcry > 0 && (warcryReady === null || roundCount >= warcryReady);
+            if (warcryUnlocked) {
+                appliedWarcry = pendingWarcry;
+                modifier += appliedWarcry;
+                pendingWarcryBonus[player] = 0;
+                warcryReadyRound[player] = null;
+            }
             let moves = Math.max(0, baseMoves + modifier);
+            const isLocalTurn = !isOnlineGame || !myPlayerColor || player === myPlayerColor;
+            warcryActiveThisTurn = isLocalTurn && appliedWarcry > 0;
+            warcryDeactivateAtMoves = Math.max(0, moves - appliedWarcry);
 
-            if (modifier > 0) {
-                gameLog.push(`${player === 'W' ? 'Player' : 'AI'} gains Warcry bonus (+${modifier} moves).`);
-                // Apply warcry active background
-                applyWarcryActiveBackground();
+            if (appliedWarcry > 0) {
+                gameLog.push(`${player === 'W' ? 'Player' : 'AI'} gains Warcry bonus (+${appliedWarcry} moves).`);
+                if (isLocalTurn) {
+                    applyWarcryActiveBackground();
+                }
+            } else if (modifier > 0) {
+                gameLog.push(`${player === 'W' ? 'Player' : 'AI'} gains bonus moves (+${modifier}).`);
+                if (isLocalTurn) {
+                    applyWarcryActiveBackground();
+                }
             } else if (modifier < 0) {
                 gameLog.push(`${player === 'W' ? 'Player' : 'AI'} is hindered by Despair penalty (-${Math.abs(modifier)} moves).`);
             }
@@ -10731,7 +11571,7 @@
             coinResult.className = 'coin';
             coinResult.style.backgroundColor = '#666';
             coinResult.style.color = 'white';
-            coinResult.textContent = '☠︎';
+            coinResult.textContent = 'â˜ ï¸Ž';
 
             modal.dataset.zombieFlip = 'true';
             modal.style.display = 'block';
@@ -10765,7 +11605,7 @@
                     coinResult.className = 'coin';
                     coinResult.style.backgroundColor = '#666';
                     coinResult.style.color = 'white';
-                    coinResult.textContent = '☠︎';
+                    coinResult.textContent = 'â˜ ï¸Ž';
                     descriptionEl.textContent = '';
                     messageEl.textContent = '';
                     if (startBtn) startBtn.style.display = 'none';
@@ -10799,7 +11639,7 @@
                 coinResult.className = 'coin';
                 coinResult.style.backgroundColor = '#666';
                 coinResult.style.color = 'white';
-                coinResult.textContent = '☠︎';
+                coinResult.textContent = 'â˜ ï¸Ž';
             }
             if (descriptionEl) {
                 descriptionEl.textContent = '';
@@ -11101,15 +11941,13 @@
             capturedSquares.push([row, col]);
             recordGraveyardCapture(player, targetPiece);
             const captureValue = pieceValues[targetPiece.type] || 0;
-            scores[player] += captureValue;
-            registerScoreGain(player, captureValue, true);
+            awardCapturePoints(player, captureValue);
             registerPieceLoss(targetPiece.player, targetPiece.type);
-            trackCapture(player); // Track capture for statistics
             if (targetPiece.type === 'Champion') {
                 championCaptured[targetPiece.player] = true;
             }
             if (targetPiece.type === 'King') {
-                endGame(player);
+                queueVictory(player, 'Regicide');
                 return;
             }
             board[row][col] = null;
@@ -11529,54 +12367,54 @@
         // AI Reaction Emoji System
         const AI_REACTION_EMOJIS = {
             'Berserker': {
-                highCapture: ['😈', '💪', '🔥', '⚔️', '💀'],
-                mediumCapture: ['😁', '😏', '😎', '👊'],
-                lowCapture: ['😤', '😠'],
-                playerHighCapture: ['😡', '😠', '🤬', '👿'],
-                playerMediumCapture: ['😒', '😤', '🙄'],
-                neutral: ['😏', '😈', '💪'],
-                winning: ['😈', '👑', '💀', '🔥'],
-                losing: ['😤', '😡', '🤬']
+                highCapture: ['ðŸ˜ˆ', 'ðŸ’ª', 'ðŸ”¥', 'âš”ï¸', 'ðŸ’€'],
+                mediumCapture: ['ðŸ˜', 'ðŸ˜', 'ðŸ˜Ž', 'ðŸ‘Š'],
+                lowCapture: ['ðŸ˜¤', 'ðŸ˜ '],
+                playerHighCapture: ['ðŸ˜¡', 'ðŸ˜ ', 'ðŸ¤¬', 'ðŸ‘¿'],
+                playerMediumCapture: ['ðŸ˜’', 'ðŸ˜¤', 'ðŸ™„'],
+                neutral: ['ðŸ˜', 'ðŸ˜ˆ', 'ðŸ’ª'],
+                winning: ['ðŸ˜ˆ', 'ðŸ‘‘', 'ðŸ’€', 'ðŸ”¥'],
+                losing: ['ðŸ˜¤', 'ðŸ˜¡', 'ðŸ¤¬']
             },
             'Guardian': {
-                highCapture: ['😊', '🛡️', '✨', '😌'],
-                mediumCapture: ['🙂', '😇', '⚖️'],
-                lowCapture: ['😐', '🤔'],
-                playerHighCapture: ['😰', '😨', '😱', '🥺'],
-                playerMediumCapture: ['😟', '😕', '😔'],
-                neutral: ['😌', '🛡️', '😇'],
-                winning: ['😊', '✨', '🙏'],
-                losing: ['😰', '😨', '😱']
+                highCapture: ['ðŸ˜Š', 'ðŸ›¡ï¸', 'âœ¨', 'ðŸ˜Œ'],
+                mediumCapture: ['ðŸ™‚', 'ðŸ˜‡', 'âš–ï¸'],
+                lowCapture: ['ðŸ˜', 'ðŸ¤”'],
+                playerHighCapture: ['ðŸ˜°', 'ðŸ˜¨', 'ðŸ˜±', 'ðŸ¥º'],
+                playerMediumCapture: ['ðŸ˜Ÿ', 'ðŸ˜•', 'ðŸ˜”'],
+                neutral: ['ðŸ˜Œ', 'ðŸ›¡ï¸', 'ðŸ˜‡'],
+                winning: ['ðŸ˜Š', 'âœ¨', 'ðŸ™'],
+                losing: ['ðŸ˜°', 'ðŸ˜¨', 'ðŸ˜±']
             },
             'Tactician': {
-                highCapture: ['🤓', '🎯', '💡', '✅', '👌'],
-                mediumCapture: ['😏', '🤔', '🧐'],
-                lowCapture: ['😐', '🤨'],
-                playerHighCapture: ['😬', '🤔', '😑', '🙃'],
-                playerMediumCapture: ['😐', '🤨', '😕'],
-                neutral: ['🤓', '🧐', '💡'],
-                winning: ['🤓', '🎯', '👑'],
-                losing: ['😬', '🤔', '😑']
+                highCapture: ['ðŸ¤“', 'ðŸŽ¯', 'ðŸ’¡', 'âœ…', 'ðŸ‘Œ'],
+                mediumCapture: ['ðŸ˜', 'ðŸ¤”', 'ðŸ§'],
+                lowCapture: ['ðŸ˜', 'ðŸ¤¨'],
+                playerHighCapture: ['ðŸ˜¬', 'ðŸ¤”', 'ðŸ˜‘', 'ðŸ™ƒ'],
+                playerMediumCapture: ['ðŸ˜', 'ðŸ¤¨', 'ðŸ˜•'],
+                neutral: ['ðŸ¤“', 'ðŸ§', 'ðŸ’¡'],
+                winning: ['ðŸ¤“', 'ðŸŽ¯', 'ðŸ‘‘'],
+                losing: ['ðŸ˜¬', 'ðŸ¤”', 'ðŸ˜‘']
             },
             'Sorcerer': {
-                highCapture: ['✨', '🔮', '⚡', '💫', '🌟'],
-                mediumCapture: ['😏', '🪄', '💜'],
-                lowCapture: ['🤨', '😑'],
-                playerHighCapture: ['😵', '🤯', '😖', '😣'],
-                playerMediumCapture: ['😕', '😟', '🙁'],
-                neutral: ['🔮', '✨', '🪄'],
-                winning: ['✨', '🔮', '🌟'],
-                losing: ['😵', '🤯', '😖']
+                highCapture: ['âœ¨', 'ðŸ”®', 'âš¡', 'ðŸ’«', 'ðŸŒŸ'],
+                mediumCapture: ['ðŸ˜', 'ðŸª„', 'ðŸ’œ'],
+                lowCapture: ['ðŸ¤¨', 'ðŸ˜‘'],
+                playerHighCapture: ['ðŸ˜µ', 'ðŸ¤¯', 'ðŸ˜–', 'ðŸ˜£'],
+                playerMediumCapture: ['ðŸ˜•', 'ðŸ˜Ÿ', 'ðŸ™'],
+                neutral: ['ðŸ”®', 'âœ¨', 'ðŸª„'],
+                winning: ['âœ¨', 'ðŸ”®', 'ðŸŒŸ'],
+                losing: ['ðŸ˜µ', 'ðŸ¤¯', 'ðŸ˜–']
             },
             'Nomad': {
-                highCapture: ['😄', '🎉', '🚀', '💨', '⭐'],
-                mediumCapture: ['😊', '🙂', '👍'],
-                lowCapture: ['😅', '😬'],
-                playerHighCapture: ['😅', '😬', '😓', '😰'],
-                playerMediumCapture: ['😐', '😕', '🤷'],
-                neutral: ['🙂', '😊', '👍'],
-                winning: ['😄', '🎉', '⭐'],
-                losing: ['😅', '😰', '😓']
+                highCapture: ['ðŸ˜„', 'ðŸŽ‰', 'ðŸš€', 'ðŸ’¨', 'â­'],
+                mediumCapture: ['ðŸ˜Š', 'ðŸ™‚', 'ðŸ‘'],
+                lowCapture: ['ðŸ˜…', 'ðŸ˜¬'],
+                playerHighCapture: ['ðŸ˜…', 'ðŸ˜¬', 'ðŸ˜“', 'ðŸ˜°'],
+                playerMediumCapture: ['ðŸ˜', 'ðŸ˜•', 'ðŸ¤·'],
+                neutral: ['ðŸ™‚', 'ðŸ˜Š', 'ðŸ‘'],
+                winning: ['ðŸ˜„', 'ðŸŽ‰', 'â­'],
+                losing: ['ðŸ˜…', 'ðŸ˜°', 'ðŸ˜“']
             }
         };
 
@@ -11676,10 +12514,10 @@
 
             // Player emojis when AI is doing well (inverse of AI emotions)
             const playerEmojiSets = {
-                highCapture: ['😰', '😨', '😱', '🥺', '😓'],
-                mediumCapture: ['😟', '😕', '😔', '😐'],
-                lowCapture: ['😐', '🤨', '😑'],
-                neutral: ['😐', '🙂', '😊']
+                highCapture: ['ðŸ˜°', 'ðŸ˜¨', 'ðŸ˜±', 'ðŸ¥º', 'ðŸ˜“'],
+                mediumCapture: ['ðŸ˜Ÿ', 'ðŸ˜•', 'ðŸ˜”', 'ðŸ˜'],
+                lowCapture: ['ðŸ˜', 'ðŸ¤¨', 'ðŸ˜‘'],
+                neutral: ['ðŸ˜', 'ðŸ™‚', 'ðŸ˜Š']
             };
 
             let emojiArray;
@@ -11727,7 +12565,7 @@
 
         const pieceIcons = {
             'Cavalry': 'C', 'Troll': 'T', 'Dragon': 'D', 'Wizard': 'W', 'Guard': 'G',
-            'King': 'K', 'Champion': '✠', 'Infantry': 'I', 'Archer': 'A', 'Ballista': 'B',
+            'King': 'K', 'Champion': 'âœ ', 'Infantry': 'I', 'Archer': 'A', 'Ballista': 'B',
             'Elephantry': 'E', 'Mercenary': 'M', 'Ogre': 'O', 'Spectre': 'S', 'Pistolier': 'P', 'Fusilier': 'F',
             'Lich': 'L'
         };
@@ -11735,7 +12573,7 @@
         pieceIcons['Zombie'] = 'Z';
         pieceIcons['Undead'] = 'U';
         pieceIcons['Undead3'] = 'U';
-        pieceIcons['UndeadChampion'] = 'Ʊ';
+        pieceIcons['UndeadChampion'] = 'Æ±';
         pieceIcons['Huntsman'] = 'H';
         const facingIcons = {
             'U': '^', 'D': 'v', 'L': '<', 'R': '>'
@@ -11847,9 +12685,16 @@
         let roundLosses = { 'W': {}, 'B': {} };
         let nextRoundModifier = { 'W': 0, 'B': 0 };
         let warcryAchievedThisRound = { 'W': false, 'B': false };
+        let warcryAchievementActive = false;
+        let pendingWarcryBonus = { 'W': 0, 'B': 0 };
+        let warcryReadyRound = { 'W': null, 'B': null };
+        let warcryActiveThisTurn = false;
+        let warcryDeactivateAtMoves = 0;
         let pendingWarcryCelebrations = [];
         let warcryPopupTimeoutId = null;
         let captureEffectActiveUntil = 0;
+        let pendingVictory = null;
+        let pendingVictoryTimeoutId = null;
         let reinforcementTotals = { 'W': 0, 'B': 0 };
         let infantryReinforcements = { 'W': 0, 'B': 0 };
 
@@ -12520,6 +13365,18 @@
             trackScore(player, amount);
         }
 
+        function awardCapturePoints(player, amount) {
+            const points = Number(amount) || 0;
+            if (!player || points === 0) return 0;
+            if (typeof scores[player] !== 'number') {
+                scores[player] = 0;
+            }
+            scores[player] += points;
+            registerScoreGain(player, points, true);
+            trackCapture(player);
+            return points;
+        }
+
         function queueWarcryCelebration(player) {
             pendingWarcryCelebrations.push(player);
             if (pendingWarcryCelebrations.length === 1) {
@@ -12580,7 +13437,7 @@
             if (infantryReinforcements[player] >= RELENTLESS_THRESHOLD && (reinforcementTotals[opponent] || 0) === 0) {
                 gameLog.push(`${player === 'W' ? 'Player' : 'AI'} achieved Relentless victory!`);
                 updateGameLog();
-                endGame(player, 'Relentless');
+                queueVictory(player, 'Relentless');
                 return true;
             }
             return false;
@@ -12606,17 +13463,53 @@
             if (!isSupremacyPosition(player)) return;
             gameLog.push(`${player === 'W' ? 'Player' : 'AI'} achieved Supremacy victory!`);
             updateGameLog();
-            endGame(player, 'Supremacy');
+            queueVictory(player, 'Supremacy');
+        }
+
+        function finalizePendingVictory() {
+            if (!pendingVictory) return;
+            if (pendingVictoryTimeoutId) {
+                clearTimeout(pendingVictoryTimeoutId);
+                pendingVictoryTimeoutId = null;
+            }
+            const { winner, reason } = pendingVictory;
+            pendingVictory = null;
+            endGame(winner, reason);
+        }
+
+        function queueVictory(winner, reason = '') {
+            // Prevent duplicate scheduling
+            pendingVictory = { winner, reason };
+            if (pendingVictoryTimeoutId) {
+                clearTimeout(pendingVictoryTimeoutId);
+                pendingVictoryTimeoutId = null;
+            }
+            // Immediately block further actions
+            gameOver = true;
+            stopOpponentWaitingTimer();
+
+            const now = Date.now();
+            const settleDelay = Math.max(0, (captureEffectActiveUntil || 0) - now);
+            const warcryDelay = warcryAchievementActive ? 2600 : 0;
+            const queuedWarcryDelay = warcryPopupTimeoutId ? (WARCRY_POPUP_DELAY_MS + 2600) : 0;
+            const delay = Math.max(settleDelay, warcryDelay, queuedWarcryDelay);
+
+            const finalize = () => finalizePendingVictory();
+            if (delay > 0) {
+                pendingVictoryTimeoutId = setTimeout(finalize, delay);
+            } else {
+                finalize();
+            }
         }
 
         const pieceInfo = {
             'Archer': {
                 points: '1 point to move 1 square vertically/horizontally, shoot 2 squares in facing direction, or turn; 2 points to turn+shoot or use a special.',
-                extra: 'Specials: Move then shoot diagonally 1 square (2 uses per game); or shoot diagonally 2 squares without moving (2 uses per game). Can turn 90° left or right per action.'
+                extra: 'Specials: Move then shoot diagonally 1 square (2 uses per game); or shoot diagonally 2 squares without moving (2 uses per game). Can turn 90Â° left or right per action.'
             },
             'Ballista': {
                 points: '1 point to move 1 square vertically/horizontally or shoot 3 (or 4 with Extend Range) squares based on facing; 2 points to turn or activate specials.',
-                extra: 'Specials: Extend Range (+1 shoot range this round, 2 points, once per round); Double Time (move +1 extra square, 2 points, 2 uses per game). Shoots without moving. Can turn 90° left or right per action.'
+                extra: 'Specials: Extend Range (+1 shoot range this round, 2 points, once per round); Double Time (move +1 extra square, 2 points, 2 uses per game). Shoots without moving. Can turn 90Â° left or right per action.'
             },
             'Cavalry': {
                 points: '1 point to move up to 5 squares vertically or horizontally. Special Moves: Charge - once per game, move unlimited squares horizontally or vertically for 2 move points; Diagonal Rush - on rounds 1 and 2 only, move up to 3 squares diagonally for 2 move points.',
@@ -12624,7 +13517,7 @@
             },
             'Champion': {
                 points: '1 point to move 1 square in any direction; 2 points for 2 squares in any direction.',
-                extra: 'Cannot move through own pieces. Reduces opponent’s move points by 1 when on their back row. Can activate reinforcements.'
+                extra: 'Cannot move through own pieces. Reduces opponentâ€™s move points by 1 when on their back row. Can activate reinforcements.'
             },
             'Dragon': {
                 points: '1 point to move 1 square diagonally or jump 2 squares diagonally + 1 square in any diagonal direction. Special Moves: Inferno - once per game, move 1 square in any direction for 2 move points, capturing all adjacent opponent pieces (except Dragons); Strafe - twice per game, move 1 square horizontally or vertically for 2 move points (cannot capture).',
@@ -12632,7 +13525,7 @@
             },
             'Elephantry': {
                 points: '1 point to move 1 square any direction, shoot 1 square, or turn; 2 points to move+shoot.',
-                extra: 'Special Moves: Charge - once per piece per game, move forward (straight or diagonal) 3 squares, capturing anything except Spectre; stops on Elephantry/Ogre/Troll/Dragon. Triple Shot - 2 points for 3 shots at 2-square range with coin flip each (stays in position, can retarget). Can turn 90° left or right per action.'
+                extra: 'Special Moves: Charge - once per piece per game, move forward (straight or diagonal) 3 squares, capturing anything except Spectre; stops on Elephantry/Ogre/Troll/Dragon. Triple Shot - 2 points for 3 shots at 2-square range with coin flip each (stays in position, can retarget). Can turn 90Â° left or right per action.'
             },
             'Fusilier': {
                 points: '1 point to move 2 squares diagonally or shoot forward/diagonally up to 3 squares. Cannot move and shoot in same round.',
@@ -12644,7 +13537,7 @@
             },
             'Infantry': {
                 points: '1 point to move 1 square forward or diagonally forward; 1 point to turn.',
-                extra: 'Round 1 only: can move up to 3 squares forward. Turn (1 point) or Turn and Move (2 points) via buttons. Both finalize action. Cannot move then turn. Can turn 90° left or right per action.'
+                extra: 'Round 1 only: can move up to 3 squares forward. Turn (1 point) or Turn and Move (2 points) via buttons. Both finalize action. Cannot move then turn. Can turn 90Â° left or right per action.'
             },
             'King': {
                 points: '1 point to move 1 square vertically or horizontally.',
@@ -12668,11 +13561,11 @@
             },
             'Necromancer': {
                 points: '1 point to move 1 square in any direction. Special actions cost 2 points: summon Zombie or Spectre (coin flip) or channel a 2-range shot.',
-                extra: 'Max 2 per player, arrives via Champion summoning. Shoots require a 1-round cooldown and always resolve captures with coin flips. Teleport twice per game. Can summon Zombies, Spectres, and—after capturing enough souls—a single Lich onto the back row (all via coin flips).'
+                extra: 'Max 2 per player, arrives via Champion summoning. Shoots require a 1-round cooldown and always resolve captures with coin flips. Teleport twice per game. Can summon Zombies, Spectres, andâ€”after capturing enough soulsâ€”a single Lich onto the back row (all via coin flips).'
             },
             'Huntsman': {
                 points: '1 point to move 1 square in any direction.',
-                extra: '36’s (Supreme) exclusive. Special Move: Stalking Burst (2 move points) performs 4 coin flips—each success grants 1 chained step of movement (up to 4) that round. Huntsmen require a coin flip to be captured by shooting, but automatically capture Zombies without coin flips.'
+                extra: '36â€™s (Supreme) exclusive. Special Move: Stalking Burst (2 move points) performs 4 coin flipsâ€”each success grants 1 chained step of movement (up to 4) that round. Huntsmen require a coin flip to be captured by shooting, but automatically capture Zombies without coin flips.'
             },
             'Ogre': {
                 points: '1 point to move 1 square vertically/horizontally or jump 1 square in any direction.',
@@ -13477,10 +14370,10 @@
             element.classList.add('selected-diff');
 
             if (level === 'Easy') {
-                baseAiDepth = 25; // Increased by 60% intelligence + 30% general difficulty (12 * 1.6 * 1.3 ≈ 25) - plans 3+ moves ahead
+                baseAiDepth = 25; // Increased by 60% intelligence + 30% general difficulty (12 * 1.6 * 1.3 â‰ˆ 25) - plans 3+ moves ahead
                 pieceValueScale = 8.0031744; // Increased by 60% intelligence + 30% general difficulty (3.84768 * 1.6 * 1.3)
             } else if (level === 'Medium') {
-                baseAiDepth = 53; // Increased by additional 20% intelligence (44 * 1.2 ≈ 53) - deeper search for better tactical planning
+                baseAiDepth = 53; // Increased by additional 20% intelligence (44 * 1.2 â‰ˆ 53) - deeper search for better tactical planning
                 pieceValueScale = 12.9166202; // Increased by additional 10% difficulty (11.74238208 * 1.1) - better piece evaluation
             } else if (level === 'Hard') {
                 baseAiDepth = 91; // Increased by additional 40% intelligence (65 * 1.4 = 91) - extensive multi-move lookahead
@@ -13821,6 +14714,7 @@
             pausedTimers.game = gameTimerInterval;
             pausedTimers.turn = turnTimerInterval;
             pausedTimers.turnPlayer = currentTurnTimerPlayer;
+            warcryAchievementActive = true;
 
             // Stop timers
             if (gameTimerInterval) {
@@ -13883,6 +14777,7 @@
 
             // Resume game
             gamePaused = false;
+            warcryAchievementActive = false;
             if (pausedTimers.game && gameTimeRemaining > 0) {
                 startGameTimer();
             }
@@ -13894,6 +14789,11 @@
                 }
             }
             pausedTimers = { game: null, turn: null, turnPlayer: null };
+            if (pendingVictory) {
+                finalizePendingVictory();
+            }
+            // If warcry visuals were active at start of turn, ensure flags reset so they can be reapplied when bonus returns in a future turn
+            warcryActiveThisTurn = false;
         }
 
         function applyEnergyBlastGlow(options = {}) {
@@ -14263,6 +15163,7 @@
             if (boardDiv && boardDiv.classList.contains('warcry-active-border')) {
                 boardDiv.classList.remove('warcry-active-border');
             }
+            warcryActiveThisTurn = false;
         }
 
         function closeGameStats() {
@@ -15091,7 +15992,7 @@
             }
             const info = pieceInfo[piece.type];
             const lifeCount = piece.lives || 0;
-            const lifeSymbols = lifeCount > 0 ? Array(lifeCount).fill('♥').join(' ') : '';
+            const lifeSymbols = lifeCount > 0 ? Array(lifeCount).fill('â™¥').join(' ') : '';
             const livesHtml = lifeSymbols ? `<div class="piece-lives">${lifeSymbols}</div>` : '';
             infoBox.style.display = 'block';
             infoBox.innerHTML = `
@@ -17913,17 +18814,15 @@
                                 capturedSquares.push([captureRow, captureCol]);
                                 recordGraveyardCapture(currentPlayer, capturedPiece);
                                 const captureValue = pieceValues[capturedPiece.type];
-                                scores[currentPlayer] += captureValue;
-                                registerScoreGain(currentPlayer, captureValue, true);
+                                awardCapturePoints(currentPlayer, captureValue);
                                 registerPieceLoss(capturedPiece.player, capturedPiece.type);
-                                trackCapture(currentPlayer); // Track capture for statistics
                                 gameLog.push(`${currentPlayer === 'W' ? 'Player' : 'AI'} Elephantry charged and captured ${capturedPiece.type} (+${captureValue} points) at ${formatBoardCoordinates(captureRow,captureCol)}`);
 
                                 if (capturedPiece.type === 'Champion') {
                                     championCaptured[capturedPiece.player] = true;
                                 }
                                 if (capturedPiece.type === 'King') {
-                                    endGame(currentPlayer);
+                                    queueVictory(currentPlayer, 'Regicide');
                                     return;
                                 }
                                 board[captureRow][captureCol] = null;
@@ -18078,17 +18977,15 @@
                         capturedSquares.push([targetRow, targetCol]);
                         recordGraveyardCapture(currentPlayer, targetPiece);
                         const captureValue = pieceValues[targetPiece.type];
-                        scores[currentPlayer] += captureValue;
-                        registerScoreGain(currentPlayer, captureValue, true);
+                        awardCapturePoints(currentPlayer, captureValue);
                         registerPieceLoss(targetPiece.player, targetPiece.type);
-                        trackCapture(currentPlayer); // Track capture for statistics
                         gameLog.push(`${currentPlayer === 'W' ? 'Player' : 'AI'} Elephantry triple shot hit! Captured ${targetPiece.type} (+${captureValue} points)`);
 
                         if (targetPiece.type === 'Champion') {
                             championCaptured[targetPiece.player] = true;
                         }
                         if (targetPiece.type === 'King') {
-                            endGame(currentPlayer);
+                            queueVictory(currentPlayer, 'Regicide');
                             return;
                         }
                         board[targetRow][targetCol] = null;
@@ -20757,17 +21654,15 @@
                                 capturedSquares.push([captureRow, captureCol]);
                                 recordGraveyardCapture(currentPlayer, capturedPiece);
                                 const captureValue = pieceValues[capturedPiece.type];
-                                scores[currentPlayer] += captureValue;
-                                registerScoreGain(currentPlayer, captureValue, true);
+                                awardCapturePoints(currentPlayer, captureValue);
                                 registerPieceLoss(capturedPiece.player, capturedPiece.type);
-                                trackCapture(currentPlayer); // Track capture for statistics
                                 gameLog.push(`${currentPlayer === 'W' ? 'Player' : 'AI'} Elephantry charged and captured ${capturedPiece.type} (+${captureValue} points) at ${formatBoardCoordinates(captureRow,captureCol)}`);
 
                                 if (capturedPiece.type === 'Champion') {
                                     championCaptured[capturedPiece.player] = true;
                                 }
                                 if (capturedPiece.type === 'King') {
-                                    endGame(currentPlayer);
+                                    queueVictory(currentPlayer, 'Regicide');
                                     return;
                                 }
                                 board[captureRow][captureCol] = null;
@@ -20922,17 +21817,15 @@
                         capturedSquares.push([targetRow, targetCol]);
                         recordGraveyardCapture(currentPlayer, targetPiece);
                         const captureValue = pieceValues[targetPiece.type];
-                        scores[currentPlayer] += captureValue;
-                        registerScoreGain(currentPlayer, captureValue, true);
+                        awardCapturePoints(currentPlayer, captureValue);
                         registerPieceLoss(targetPiece.player, targetPiece.type);
-                        trackCapture(currentPlayer); // Track capture for statistics
                         gameLog.push(`${currentPlayer === 'W' ? 'Player' : 'AI'} Elephantry triple shot hit! Captured ${targetPiece.type} (+${captureValue} points)`);
 
                         if (targetPiece.type === 'Champion') {
                             championCaptured[targetPiece.player] = true;
                         }
                         if (targetPiece.type === 'King') {
-                            endGame(currentPlayer);
+                            queueVictory(currentPlayer, 'Regicide');
                             return;
                         }
                         board[targetRow][targetCol] = null;
@@ -22262,17 +23155,15 @@
                         recordGraveyardCapture(player, targetPiece);
                         const captureValue = pieceValues[targetPiece.type];
                         totalCaptureValue += captureValue; // Add to total
-                        scores[player] += captureValue;
-                        registerScoreGain(player, captureValue, true);
+                        awardCapturePoints(player, captureValue);
                         registerPieceLoss(opponent, targetPiece.type);
-                        trackCapture(player); // Track capture for statistics
                         gameLog.push(`${player === 'W' ? 'Player' : 'AI'} captured ${targetPiece.type} (+${captureValue} points) with Dragon's Inferno at ${formatBoardCoordinates(nr,nc)}`);
 
                         if (targetPiece.type === 'Champion') {
                             championCaptured[targetPiece.player] = true;
                         }
                         if (targetPiece.type === 'King') {
-                            endGame(player);
+                            queueVictory(player, 'Regicide');
                             return;
                         }
                         cleanupNecromancerTracking(targetPiece);
@@ -22325,10 +23216,8 @@
                 totalCaptureValue += captureValue;
                 capturedSquares.push([r, c]);
                 recordGraveyardCapture(player, targetPiece);
-                scores[player] += captureValue;
-                registerScoreGain(player, captureValue, true);
+                awardCapturePoints(player, captureValue);
                 registerPieceLoss(targetPiece.player, targetPiece.type);
-                trackCapture(player);
                 if (targetPiece.type === 'Champion') {
                     championCaptured[targetPiece.player] = true;
                 }
@@ -22336,7 +23225,7 @@
                 cleanupNecromancerTracking(targetPiece);
                 if (targetPiece.type === 'King') {
                     board[r][c] = null;
-                    endGame(player);
+                    queueVictory(player, 'Regicide');
                     return totalCaptureValue;
                 }
                 board[r][c] = null;
@@ -22415,11 +23304,7 @@
                 gameLog.push(`${actorLabel}'s ${attackerPiece.type} failed to slay the ${undeadName} and was destroyed (+${captureValue} points).`);
                 updateGameLog();
                 if (attackerPiece.type === 'King') {
-                    gameOver = true;
-                    const endGameDelay = 3000 + Math.random() * 2000;
-                    setTimeout(() => {
-                        endGame(undeadPiece.player);
-                    }, endGameDelay);
+                    queueVictory(undeadPiece.player, 'Regicide');
                 }
                 return { attackerRemoved: true };
             }
@@ -22445,10 +23330,8 @@
             if (!attackerPiece) return;
             capturedSquares.push([row, col]);
             recordGraveyardCapture(owner, attackerPiece);
-            scores[owner] += captureValue;
-            registerScoreGain(owner, captureValue, true);
+            awardCapturePoints(owner, captureValue);
             registerPieceLoss(attackerPiece.player, attackerPiece.type);
-            trackCapture(owner);
             checkSupremacy(owner);
             updateCapturedPiecesDisplay();
             updateScoreDisplay();
@@ -22497,10 +23380,8 @@
                     capturedSquares.push([jump[0], jump[1]]);
                     recordGraveyardCapture(piece.player, capturedPiece);
                     captureValue = pieceValues[capturedPiece.type];
-                    scores[piece.player] += captureValue;
-                    registerScoreGain(piece.player, captureValue, true);
+                    awardCapturePoints(piece.player, captureValue);
                     registerPieceLoss(opponent, capturedPiece.type);
-                    trackCapture(piece.player); // Track capture for statistics
                     gameLog.push(`${piece.player === 'W' ? 'Player' : 'AI'} captured ${capturedPiece.type} (+${captureValue} points) with ${piece.type} at ${formatBoardCoordinates(jump[0],jump[1])}`);
                     cleanupNecromancerTracking(capturedPiece);
                     board[jump[0]][jump[1]] = null;
@@ -22513,13 +23394,7 @@
                         updateScoreDisplay();
                         updateCapturedPiecesDisplay();
                         updateGameLog();
-                        // Immediately set gameOver flag to prevent any further actions
-                        gameOver = true;
-                        // Add 3-5 second delay before showing end game popup to allow final move animation to complete
-                        const endGameDelay = 3000 + Math.random() * 2000; // Random delay between 3000-5000ms
-                        setTimeout(() => {
-                            endGame(piece.player);
-                        }, endGameDelay);
+                        queueVictory(piece.player, 'Regicide');
                         return;
                     }
                     captured = true;
@@ -22610,13 +23485,9 @@
 
                                     captureValue = pieceValues[capturedPiece.type];
 
-                                    scores[piece.player] += captureValue;
-
-                                    registerScoreGain(piece.player, captureValue, true);
+                                    awardCapturePoints(piece.player, captureValue);
 
                                     registerPieceLoss(opponent, capturedPiece.type);
-
-                                    trackCapture(piece.player); // Track capture for statistics
 
                                     gameLog.push(`${piece.player === 'W' ? 'Player' : 'AI'} captured ${capturedPiece.type} (+${captureValue} points) with ${piece.type} at ${formatBoardCoordinates(toRow,toCol)}`);
 
@@ -22648,17 +23519,7 @@
 
                                         // Immediately set gameOver flag to prevent any further actions
 
-                                        gameOver = true;
-
-                                        // Add 3-5 second delay before showing end game popup to allow final move animation to complete
-
-                                        const endGameDelay = 3000 + Math.random() * 2000; // Random delay between 3000-5000ms
-
-                                        setTimeout(() => {
-
-                                            endGame(piece.player);
-
-                                        }, endGameDelay);
+                                        queueVictory(piece.player, 'Regicide');
 
                                         return;
 
@@ -22771,11 +23632,7 @@
                     updateCapturedPiecesDisplay();
 
                     if (piece.type === 'King') {
-                        gameOver = true;
-                        const endGameDelay = 3000 + Math.random() * 2000;
-                        setTimeout(() => {
-                            endGame(targetPiece.player);
-                        }, endGameDelay);
+                        queueVictory(targetPiece.player, 'Regicide');
                     }
                     return;
                 }
@@ -22789,10 +23646,8 @@
             capturedSquares.push([toRow, toCol]);
             recordGraveyardCapture(piece.player, targetPiece);
                     const captureValue = pieceValues[targetPiece.type];
-                    scores[piece.player] += captureValue;
-                    registerScoreGain(piece.player, captureValue, true);
+                    awardCapturePoints(piece.player, captureValue);
                     registerPieceLoss(getOpponent(piece.player), targetPiece.type);
-                    trackCapture(piece.player);
                     gameLog.push(`${actorLabel} shattered the ${undeadName}${abilityText}! (+${captureValue} points)`);
                     cleanupNecromancerTracking(targetPiece);
                     board[toRow][toCol] = null;
@@ -22847,28 +23702,20 @@
                 capturedSquares.push([toRow, toCol]);
                 recordGraveyardCapture(piece.player, targetPiece);
                 captureValue = pieceValues[targetPiece.type];
-                scores[piece.player] += captureValue;
-                registerScoreGain(piece.player, captureValue);
+                awardCapturePoints(piece.player, captureValue);
                 registerPieceLoss(getOpponent(piece.player), targetPiece.type);
-                trackCapture(piece.player); // Track capture for statistics
                 gameLog.push(`${piece.player === 'W' ? 'Player' : 'AI'} shot ${targetPiece.type} (+${captureValue} points) with ${piece.type}${abilityText} at ${formatBoardCoordinates(toRow,toCol)}`);
                 if (targetPiece.type === 'Champion') {
                     championCaptured[targetPiece.player] = true;
                 }
                 cleanupNecromancerTracking(targetPiece);
                 if (targetPiece.type === 'King') {
-                    // Immediately set gameOver flag to prevent any further actions
-                    gameOver = true;
                     board[toRow][toCol] = null;
                     renderBoard();
                     updateScoreDisplay();
                     updateCapturedPiecesDisplay();
                     updateGameLog();
-                    // Add 3-5 second delay before showing end game popup to allow final move animation to complete
-                    const endGameDelay = 3000 + Math.random() * 2000; // Random delay between 3000-5000ms
-                    setTimeout(() => {
-                        endGame(piece.player);
-                    }, endGameDelay);
+                    queueVictory(piece.player, 'Regicide');
                     return;
                 }
                 board[toRow][toCol] = null;
@@ -22916,10 +23763,8 @@
         capturedSquares.push([targetRow, targetCol]);
         recordGraveyardCapture(attackerPlayer, targetPiece);
             const captureValue = pieceValues[targetPiece.type] || 0;
-            scores[attackerPlayer] += captureValue;
-            registerScoreGain(attackerPlayer, captureValue, true);
+            awardCapturePoints(attackerPlayer, captureValue);
             registerPieceLoss(targetPiece.player, targetPiece.type);
-            trackCapture(attackerPlayer);
             if (options.logMessage) {
                 gameLog.push(options.logMessage);
             }
@@ -22931,7 +23776,7 @@
             board[targetRow][targetCol] = null;
             if (targetPiece.type === 'King') {
                 const victoryReason = options.victoryReason || options.ability || null;
-                endGame(attackerPlayer, victoryReason);
+                queueVictory(attackerPlayer, victoryReason || 'Regicide');
             }
             return true;
         }
@@ -22965,7 +23810,7 @@
                         gameLog.push(`${playerLabel}'s Barrage destroyed friendly ${occupant.type} at ${coordLabel}.`);
                         captureOccurred = true;
                         if (occupant.type === 'King') {
-                            endGame(getOpponent(attackerPlayer), 'Barrage Friendly Fire');
+                            queueVictory(getOpponent(attackerPlayer), 'Barrage Friendly Fire');
                             return true;
                         }
                     }
@@ -23415,8 +24260,8 @@
                             }
                         } else if (move.special) {
                             let specialBonus = 2.0; // Base special move bonus
-                            if (aiDifficulty === 'Hard') specialBonus = 5.85; // +30% difficulty (4.5 → 5.85)
-                            else if (aiDifficulty === 'Medium') specialBonus = 4.2; // +20% difficulty (3.5 → 4.2)
+                            if (aiDifficulty === 'Hard') specialBonus = 5.85; // +30% difficulty (4.5 â†’ 5.85)
+                            else if (aiDifficulty === 'Medium') specialBonus = 4.2; // +20% difficulty (3.5 â†’ 4.2)
                             else if (aiDifficulty === 'Easy') specialBonus = 2.2; // Slightly higher for Easy (+10%)
 
                             // Encourage summoning and high-impact specials
@@ -23616,8 +24461,8 @@
                                         // Add 40% bonus to encourage using Inferno special ability
                                         infernoValue *= 1.4;
                                         // Apply difficulty multiplier for special moves: Medium 1.2x, Hard 1.4x
-                                        if (aiDifficulty === 'Hard') infernoValue *= 1.82; // +30% difficulty (1.4 → 1.82)
-                                        else if (aiDifficulty === 'Medium') infernoValue *= 1.44; // +20% difficulty (1.2 → 1.44)
+                                        if (aiDifficulty === 'Hard') infernoValue *= 1.82; // +30% difficulty (1.4 â†’ 1.82)
+                                        else if (aiDifficulty === 'Medium') infernoValue *= 1.44; // +20% difficulty (1.2 â†’ 1.44)
                                         allPossibleActions.push({ type: 'move', pos: [nr, nc], from: [r,c], cost: 2, special: 'inferno', pieceType: 'Dragon', targetValue: infernoValue });
                                     }
                                 }
@@ -23632,8 +24477,8 @@
                                     if (isValid(nr, nc) && !board[nr][nc]) {
                                         // Strafe is a positional move, increased value for tactical positioning
                                         let strafeValue = 2.5;
-                                        if (aiDifficulty === 'Hard') strafeValue *= 1.69; // +30% difficulty (1.3 → 1.69)
-                                        else if (aiDifficulty === 'Medium') strafeValue *= 1.38; // +20% difficulty (1.15 → 1.38)
+                                        if (aiDifficulty === 'Hard') strafeValue *= 1.69; // +30% difficulty (1.3 â†’ 1.69)
+                                        else if (aiDifficulty === 'Medium') strafeValue *= 1.38; // +20% difficulty (1.15 â†’ 1.38)
                                         allPossibleActions.push({ type: 'move', pos: [nr, nc], from: [r,c], cost: 2, special: 'strafe', pieceType: 'Wizard', targetValue: strafeValue });
                                     }
                                 }
@@ -23648,8 +24493,8 @@
                                     if (isValid(nr, nc) && !board[nr][nc]) {
                                         // Strafe is a positional move, increased value for tactical positioning
                                         let strafeValue = 2.5;
-                                        if (aiDifficulty === 'Hard') strafeValue *= 1.69; // +30% difficulty (1.3 → 1.69)
-                                        else if (aiDifficulty === 'Medium') strafeValue *= 1.38; // +20% difficulty (1.15 → 1.38)
+                                        if (aiDifficulty === 'Hard') strafeValue *= 1.69; // +30% difficulty (1.3 â†’ 1.69)
+                                        else if (aiDifficulty === 'Medium') strafeValue *= 1.38; // +20% difficulty (1.15 â†’ 1.38)
                                         allPossibleActions.push({ type: 'move', pos: [nr, nc], from: [r,c], cost: 2, special: 'strafe', pieceType: 'Dragon', targetValue: strafeValue });
                                     }
                                 }
@@ -23743,8 +24588,8 @@
                                             // Base value = 0.5 * 9 = 4.5, increased to 15.0 to heavily encourage summoning
                                             // Apply difficulty multiplier: Easy 1.0x, Medium 1.3x, Hard 1.5x
                                             let summonValue = 15.0;
-                                            if (aiDifficulty === 'Hard') summonValue *= 1.95; // +30% difficulty (1.5 → 1.95)
-                                            else if (aiDifficulty === 'Medium') summonValue *= 1.56; // +20% difficulty (1.3 → 1.56)
+                                            if (aiDifficulty === 'Hard') summonValue *= 1.95; // +30% difficulty (1.5 â†’ 1.95)
+                                            else if (aiDifficulty === 'Medium') summonValue *= 1.56; // +20% difficulty (1.3 â†’ 1.56)
                                             allPossibleActions.push({ type: 'summon', pos: [nr, nc], from: [r,c], cost: 2, special: 'summonSpectre', pieceType: 'Wizard', targetValue: summonValue });
                                         }
                                     }
@@ -23763,8 +24608,8 @@
                                             // Expected value = 0.5 * 3 = 1.5, increased to 12.0 to encourage summoning
                                             // Apply difficulty multiplier: Easy 1.0x, Medium 1.3x, Hard 1.5x
                                             let summonValue = 12.0;
-                                            if (aiDifficulty === 'Hard') summonValue *= 1.95; // +30% difficulty (1.5 → 1.95)
-                                            else if (aiDifficulty === 'Medium') summonValue *= 1.56; // +20% difficulty (1.3 → 1.56)
+                                            if (aiDifficulty === 'Hard') summonValue *= 1.95; // +30% difficulty (1.5 â†’ 1.95)
+                                            else if (aiDifficulty === 'Medium') summonValue *= 1.56; // +20% difficulty (1.3 â†’ 1.56)
                                             allPossibleActions.push({ type: 'summon', pos: [backRow, col], from: [r,c], cost: 2, special: 'summonZombie', pieceType: 'Necromancer', targetValue: summonValue });
                                         }
                                     }
@@ -25810,6 +26655,15 @@
                 clearTimeout(warcryPopupTimeoutId);
                 warcryPopupTimeoutId = null;
             }
+            if (pendingVictoryTimeoutId) {
+                clearTimeout(pendingVictoryTimeoutId);
+                pendingVictoryTimeoutId = null;
+            }
+            pendingVictory = null;
+            pendingWarcryBonus = { 'W': 0, 'B': 0 };
+            warcryReadyRound = { 'W': null, 'B': null };
+            warcryActiveThisTurn = false;
+            warcryDeactivateAtMoves = 0;
             protectionUsed = { 'W': false, 'B': false };
             pendingProtection = null;
             kingSpecialUsed = { 'W': false, 'B': false };
@@ -26011,7 +26865,8 @@
             document.getElementById('status').textContent = `${turnLabel} turn: ${movesLeft} moves remaining`;
 
             // Remove warcry active background when bonus moves are spent
-            if (movesLeft <= baseMovesThisTurn) {
+            if (warcryActiveThisTurn && movesLeft <= warcryDeactivateAtMoves) {
+                warcryActiveThisTurn = false;
                 removeWarcryActiveBackground();
             }
 
@@ -26475,3 +27330,4 @@
     </script>
 </body>
 </html>
+
